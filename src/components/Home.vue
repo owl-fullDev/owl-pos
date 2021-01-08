@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid mt-2">
     <h1>Create Sale</h1>
-    <form class="mt-3">
+    <form id="saleForm" class="mt-3">
       <!-- Customer info -->
       <h3>Customer information</h3>
       <hr />
@@ -40,7 +40,7 @@
               />
             </div>
           </div>
-          <div class="mb-3 row ">
+          <div class="mb-3 row">
             <div class="col">
               <button
                 class="btn btn-info mr-5"
@@ -106,7 +106,7 @@
           </div>
           <!-- Right Eye -->
           <h6>Right eye</h6>
-          <div class="row mb-3 ">
+          <div class="row mb-3">
             <div class="col">
               <label for="RightEyeSphere" class="form-label">
                 Right Eye Sphere
@@ -220,9 +220,7 @@
               />
             </div>
             <div class="col">
-              <label for="LeftEyeAdd" class="form-label">
-                Left Eye Add
-              </label>
+              <label for="LeftEyeAdd" class="form-label"> Left Eye Add </label>
               <input
                 v-model="prescription.leftEyeAdd"
                 type="text"
@@ -276,7 +274,7 @@
                 aria-label="Product"
                 aria-describedby="productId"
                 v-model.trim="product.productId"
-                @change="validateFrameBarcode(index)"
+                @change="validateBarcodeInput(index, 'frame')"
                 required
               />
               <small class="form-text text-danger">
@@ -298,7 +296,7 @@
                 v-model.number="product.quantity"
                 min="1"
                 :max="product.availableAmt"
-                @change="validateQuantity(index, 'frame')"
+                @change="validateInputQuantity(index, 'frame')"
                 :disabled="product.barcodeError || !product.productId"
               />
               <small class="form-text text-danger">
@@ -331,7 +329,7 @@
           </div>
           <div class="row" :class="{ 'd-none': productIds.lenses.length < 1 }">
             <div class="col">
-              <h4>Lenses</h4>
+              <h4>Stock Lenses</h4>
             </div>
           </div>
           <div
@@ -340,15 +338,94 @@
             :key="product.id"
           >
             <div class="col">
-              <label for="productId" class="form-label">Lens</label>
+              <label for="ProductId" class="form-label">Lens Barcode</label>
+              <input
+                type="text"
+                class="form-control"
+                :class="{
+                  'is-invalid':
+                    product.barcodeError && product.barcodeError != null,
+                  'is-valid': product.barcodeError === null,
+                }"
+                aria-label="Product"
+                aria-describedby="productId"
+                v-model.trim="product.productId"
+                @change="validateBarcodeInput(index, 'lens')"
+                required
+              />
+              <small class="form-text text-danger">
+                {{ product.barcodeError }}
+              </small>
+            </div>
+            <div class="col">
+              <label for="Quantity" class="form-label">Quantity</label>
+              <input
+                type="number"
+                class="form-control"
+                :class="{
+                  'is-invalid':
+                    product.quantityError && product.quantityError != null,
+                  'is-valid': product.quantityError === null,
+                }"
+                aria-label="ProductQuantity"
+                aria-describedby="productQuantity"
+                v-model.number="product.quantity"
+                min="1"
+                :max="product.availableAmt"
+                @change="validateInputQuantity(index, 'lens')"
+                :disabled="product.barcodeError || !product.productId"
+              />
+              <small class="form-text text-danger">
+                {{ product.quantityError }}
+              </small>
+            </div>
+            <div class="col-2">
+              <label for="Remove Product" class="form-label">
+                Remove Product
+              </label>
+              <button
+                class="btn btn-danger form-control"
+                type="button"
+                @click="removeStockLensInput(index)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-dash-circle-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            class="row"
+            :class="{ 'd-none': productIds.customLenses.length < 1 }"
+          >
+            <div class="col">
+              <h4>Custom Lenses</h4>
+            </div>
+          </div>
+          <div
+            class="mb-3 row"
+            v-for="(product, index) in productIds.customLenses"
+            :key="product.id"
+          >
+            <div class="col">
+              <label for="productId" class="form-label">Custom Lens</label>
               <select
                 class="form-control"
                 v-model="product.productId"
                 @change="setLensDetails(index)"
               >
-                <option selected disabled value="">Select Lens</option>
+                <option selected disabled value="">Select Custom Lens</option>
                 <option
-                  v-for="lens in lenses"
+                  v-for="lens in customLenses"
                   :key="lens.id"
                   :value="lens.productId"
                 >
@@ -370,7 +447,7 @@
                 v-model.number="product.quantity"
                 min="1"
                 :max="product.availableAmt"
-                @change="validateQuantity(index, 'lens')"
+                @change="validateInputQuantity(index, 'customLens')"
                 :disabled="!product.productId"
               />
               <small class="form-text text-danger">
@@ -384,7 +461,7 @@
               <button
                 class="btn btn-danger form-control"
                 type="button"
-                @click="removeLensInput(index)"
+                @click="removeCustomLensInput(index)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -406,7 +483,7 @@
               <button
                 class="btn btn-primary mr-2"
                 type="button"
-                @click="addFrameInput"
+                @click="addBarcodeInput('frame')"
               >
                 Add Frame
                 <svg
@@ -423,11 +500,30 @@
                 </svg>
               </button>
               <button
+                class="btn btn-primary mr-2"
+                type="button"
+                @click="addBarcodeInput('lens')"
+              >
+                Add Stock Lens
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-plus-circle-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"
+                  ></path>
+                </svg>
+              </button>
+              <button
                 class="btn btn-secondary"
                 type="button"
-                @click="addLensInput"
+                @click="addCustomLensInput"
               >
-                Add Lens
+                Add Custom Lens
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -456,7 +552,7 @@
             aria-label="promotion selection"
             v-model="selectedPromotion"
           >
-            <option value="">Select promo</option>
+            <option value="0">Select promo</option>
             <option
               v-for="promo in promotions"
               :key="promo.id"
@@ -501,6 +597,12 @@
                   <td>{{ lens.quantity }}</td>
                   <td>{{ lens.quantity * lens.price }}</td>
                 </tr>
+                <tr v-for="lens in productIds.customLenses" :key="lens.id">
+                  <th scope="row">{{ lens.productId }}</th>
+                  <td>{{ lens.name }}</td>
+                  <td>{{ lens.quantity }}</td>
+                  <td>{{ lens.quantity * lens.price }}</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -510,9 +612,7 @@
       <div id="costBreakdownDiv">
         <div class="row justify-content-end">
           <div class="col-2 text-right">
-            <h4>
-              Total Amount:
-            </h4>
+            <h4>Total Amount:</h4>
           </div>
           <div class="col-2 text-right">
             <span class="text-success align-middle costBreakdown">
@@ -522,9 +622,7 @@
         </div>
         <div class="row justify-content-end">
           <div class="col-2 text-right">
-            <h4>
-              Discount:
-            </h4>
+            <h4>Discount:</h4>
           </div>
           <div class="col-2 text-right">
             <span class="text-success align-middle costBreakdown">
@@ -534,9 +632,7 @@
         </div>
         <div class="row mb-3 justify-content-end">
           <div class="col-2 text-right">
-            <h4>
-              Net Amount:
-            </h4>
+            <h4>Net Amount:</h4>
           </div>
           <div class="col-2 text-right">
             <span class="text-success align-middle costBreakdown">
@@ -589,7 +685,7 @@
         <div class="col">
           <h3>Deposit Info</h3>
           <hr />
-          <div class="row -mb-3">
+          <div class="row mb-3">
             <div class="col">
               <label for="Initial Payment Amount" class="form-label">
                 Initial Payment Amount
@@ -641,20 +737,110 @@
       <div class="row mb-3">
         <div class="col-10"></div>
         <div class="col">
-          <button class="btn btn-warning mr-2" type="reset" @click="resetData">
-            Cancel Sale
+          <button
+            class="btn btn-primary float-right"
+            type="submit"
+            :disabled="formHasErrors"
+            data-toggle="modal"
+            data-target="#paymentModal"
+            id="continueToPaymentBtn"
+            @click="openPaymentModal($event)"
+          >
+            Continue
           </button>
           <button
-            class="btn btn-success"
-            type="submit"
-            @click="createSale($event)"
-            :disabled="formHasErrors"
+            class="btn btn-warning mr-2 float-right"
+            type="reset"
+            @click="resetData"
           >
-            Create Sale
+            Cancel Sale
           </button>
         </div>
       </div>
     </form>
+    <!-- Payment Modal -->
+    <div
+      ref="modal"
+      class="modal fade"
+      id="paymentModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="continueToPaymentBtn"
+      aria-hidden="true"
+      v-if="showPaymentModal"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Payment</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col">
+                <div class="form-check d-inline-block">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    v-model="hasCustomerPaid"
+                    name="hasCustomerPaid"
+                    id="hasCustomerPaid"
+                  />
+                  <label class="form-check-label" for="hasCustomerPaid">
+                    Customer Sudah Bayar?
+                  </label>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div v-if="hasCustomerPaid">
+              <div class="row mb-3">
+                <div class="col">
+                  <label for="Payment Type" class="form-label">
+                    Payment Type
+                  </label>
+                  <select
+                    class="form-control"
+                    v-model="selectedInStorePaymentType"
+                    :required="hasCustomerPaid"
+                  >
+                    <option value="">Select Payment Type</option>
+                    <option v-for="type in inStorePaymentType" :key="type.id">
+                      {{ type }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              data-dismiss="modal"
+              class="btn btn-success"
+              :disabled="!hasCustomerPaid"
+              @click="createSale()"
+            >
+              Create Sale
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -664,13 +850,15 @@ import "vue-datetime/dist/vue-datetime.min.css";
 import CustomerList from "./CustomerList.vue";
 import _ from "lodash";
 
+const apiUrl = "http://192.168.1.123:8080/posEndpoint";
 const initialData = () => {
   return {
     productIds: {
       frames: [],
       lenses: [],
+      customLenses: [],
     },
-    lenses: [],
+    customLenses: [],
     employees: [],
     selectedEmployeeId: "",
     firstName: "",
@@ -691,7 +879,7 @@ const initialData = () => {
       pd: null,
     },
     promotions: [],
-    selectedPromotion: "",
+    selectedPromotion: 0,
     showDepositInfo: false,
     initialPaymentAmt: 0,
     initialPaymentType: ["Cash", "Debit", "Credit"],
@@ -700,6 +888,10 @@ const initialData = () => {
     createNewCustomer: false,
     customerList: [],
     selectedCustomerId: null,
+    hasCustomerPaid: false,
+    showPaymentModal: false,
+    inStorePaymentType: ["Cash", "Debit", "Credit"],
+    selectedInStorePaymentType: "",
   };
 };
 export default {
@@ -729,23 +921,31 @@ export default {
     },
     totalAmount() {
       let frameCosts = 0;
-      let lensCosts = 0;
+      let stockLensCosts = 0;
+      let customLensCosts = 0;
       let total = 0;
 
       if (
         this.productIds.frames.length > 0 ||
-        this.productIds.lenses.length > 0
+        this.productIds.lenses.length > 0 ||
+        this.productIds.customLenses.length > 0
       ) {
         frameCosts = _.sumBy(
           this.productIds.frames,
           (f) => f.price * f.quantity
         );
-        total += frameCosts;
-        lensCosts = _.sumBy(
+
+        stockLensCosts = _.sumBy(
           this.productIds.lenses,
           (l) => l.price * l.quantity
         );
-        total += lensCosts;
+
+        customLensCosts = _.sumBy(
+          this.productIds.customLenses,
+          (l) => l.price * l.quantity
+        );
+
+        total += stockLensCosts + frameCosts + customLensCosts;
       }
 
       return total;
@@ -761,33 +961,38 @@ export default {
         netAmt -= discountVal;
       }
 
-      return netAmt;
+      return parseFloat(netAmt.toFixed(2));
     },
     formHasErrors() {
       let frameErrors = _.some(
         this.productIds.frames,
         (f) => f.barcodeError || f.quantityError
       );
-      let lensError = _.some(this.productIds.lenses, (l) => l.error);
+      let lensErrors = _.some(
+        this.productIds.lenses,
+        (l) => l.barcodeError || l.quantityError
+      );
+      let customLensError = _.some(
+        this.productIds.customLenses,
+        (l) => l.error
+      );
 
-      return frameErrors || lensError;
+      return frameErrors || lensErrors || customLensError;
     },
   },
   methods: {
     fetchDataFromServer() {
       axios
-        .get(
-          "http://192.168.1.106:8080/server-0.0/restEndpoint/getAllStoreLenses"
-        )
-        .then((response) => (this.lenses = [...response.data.returned]))
+        .get(`${apiUrl}/getCustomLensList`)
+        .then((response) => {
+          this.customLenses = response.data;
+        })
         .catch((err) => console.error(err));
 
       axios
-        .get(
-          `http://192.168.1.106:8080/server-0.0/restEndpoint/getStorePromotions?storeId=1`
-        )
+        .get(`${apiUrl}/getStorePromotions?storeId=1`)
         .then((response) => {
-          const promotionsReceived = response.data.returned;
+          const promotionsReceived = response.data;
           this.promotions = promotionsReceived.map((p) => ({
             name: p.promotionName,
             discountVal: p.percentage,
@@ -797,11 +1002,9 @@ export default {
         .catch((err) => console.error(err));
 
       axios
-        .get(
-          `http://192.168.1.106:8080/server-0.0/restEndpoint/getStoreEmployees?storeId=1`
-        )
+        .get(`${apiUrl}/getStoreEmployees?storeId=1`)
         .then((response) => {
-          this.employees = [...response.data.returned];
+          this.employees = response.data;
         })
         .catch((err) => console.error(err));
     },
@@ -809,32 +1012,51 @@ export default {
       Object.assign(this.$data, initialData());
       this.fetchDataFromServer();
     },
-    createSale(e) {
+    openPaymentModal(e) {
       e.preventDefault();
+      const form = document.getElementById("saleForm");
 
-      let frames = this.productIds.frames.map((f) => ({
-        productId: f.productId,
-        quantity: f.quantity,
-      }));
-      let lenses = this.productIds.lenses.map((l) => ({
-        productId: l.productId,
-        quantity: l.quantity,
-      }));
+      if (!form.checkValidity()) {
+        this.showPaymentModal = false;
+        form.reportValidity();
+      } else {
+        this.showPaymentModal = true;
+      }
+    },
+    createSale() {
+      if (!this.formHasErrors) {
+        let frames = this.productIds.frames.map((f) => ({
+          productId: f.productId,
+          quantity: f.quantity,
+        }));
+        let lenses = this.productIds.lenses.map((l) => ({
+          productId: l.productId,
+          quantity: l.quantity,
+        }));
 
-      const productsToSend = [...frames, ...lenses];
+        let customLenses = this.productIds.customLenses.map((l) => ({
+          productId: l.productId,
+          quantity: l.quantity,
+        }));
 
-      const newSaleObj = {
-        newSale: {
-          promotionId: this.selectedPromotion,
-          grandTotal: `${this.netAmount}`,
-          salespersonId: this.selectedEmployeeId,
-          storeId: 1,
-          initialPaymentDate: new Date().toISOString().substring(0, 19),
-          initialPaymentType: this.selectedPaymentType,
-          initialPaymentAmount: `${this.initialPaymentAmt}`,
+        const productsToSend = [...frames, ...lenses, ...customLenses];
+
+        const newSaleObj = {
           customerId: this.selectedCustomerId ? this.selectedCustomerId : 0,
-          delivered: false,
-          customer: {
+          itemsSold: productsToSend.length,
+          sale: {
+            promotionId: this.selectedPromotion,
+            grandTotal: `${this.netAmount}`,
+            employeeId: this.selectedEmployeeId,
+            storeId: 1,
+            initialDepositDate: new Date().toISOString().substring(0, 19),
+            initialDepositType: this.selectedPaymentType,
+            initialDepositAmount: this.showDepositInfo
+              ? `${this.initialPaymentAmt}`
+              : `${this.netAmount}`,
+          },
+          products: productsToSend,
+          newCustomer: {
             firstName: this.firstName,
             lastName: this.lastName,
             phoneNumber: this.phoneNum,
@@ -851,101 +1073,114 @@ export default {
             rightEyeAdd: this.prescription.rightEyeAdd,
             rightEyePrism: this.prescription.rightEyePrism,
           },
-          products: productsToSend,
-        },
-      };
+        };
 
-      axios
-        .post(
-          "http://192.168.1.106:8080/server-0.0/restEndpoint/newSale",
-          newSaleObj
-        )
-        .then((response) => {
-          console.log(response);
-          alert("Sale created");
-          this.resetData();
-        })
-        .catch((err) => console.log(err.response));
+        console.log(newSaleObj);
+        axios
+          .post(`${apiUrl}/newSale`, newSaleObj)
+          .then((response) => {
+            console.log(response);
+            alert("Sale created");
+            this.resetData();
+          })
+          .catch((err) => console.log(err.response));
+      }
     },
-    validateFrameBarcode(idx) {
-      let frame = this.productIds.frames[idx];
-      if (frame) {
-        if (frame.productId.length != 16) {
-          frame.barcodeError = "Length of barcode should be 16 characters";
+    validateBarcode(product) {
+      if (product) {
+        if (product.productId.length != 16) {
+          product.barcodeError = "Length of barcode should be 16 characters";
         } else {
           axios
             .get(
-              `http://192.168.1.106:8080/server-0.0/restEndpoint/getStoreProducts?storeId=1&productId=${frame.productId}`
+              `${apiUrl}/getStoreFrameQuantity?storeId=1&frameId=${product.productId}`
             )
             .then((response) => {
-              if (response.data.returned.length == 1) {
-                let {
-                  price: productPrice,
-                  quantity: quantityAvailable,
-                  name,
-                } = response.data.returned[0];
-                frame.price = productPrice;
-                frame.availableAmt = quantityAvailable;
-                frame.name = name;
-                frame.barcodeError = null;
-                frame.quantityError = null;
-              }
+              let {
+                productPrice,
+                storeQuantity: quantityAvailable,
+                productName,
+              } = response.data;
+              product.price = productPrice;
+              product.availableAmt = quantityAvailable;
+              product.name = productName;
+              product.barcodeError = null;
+              product.quantityError = null;
             })
             .catch((error) => {
               console.error(error);
-              frame.barcodeError = "No such barcode exists";
-              frame.quantityError = "";
-              frame.price = 0;
-              frame.availableAmt = 1;
-              frame.quantity = 1;
-              frame.name = "";
+              product.barcodeError = "No such barcode exists";
+              product.quantityError = "";
+              product.price = 0;
+              product.availableAmt = 1;
+              product.quantity = 1;
+              product.name = "";
             });
         }
       }
     },
-
-    validateQuantity(idx, productType) {
-      if (productType === "frame") {
+    validateBarcodeInput(idx, type) {
+      if (type === "frame") {
         let frame = this.productIds.frames[idx];
-        if (frame) {
-          if (!frame.productId) {
-            frame.barcodeError = "Please enter a barcode";
-            return;
-          }
-          if (frame.quantity > frame.availableAmt) {
-            frame.quantityError =
-              "Quantity requested is more than what is available in store";
-          } else {
-            frame.barcodeError = null;
-            frame.quantityError = null;
-          }
-        }
+        this.validateBarcode(frame);
       } else {
-        //validation for lens quanity if needed
         let lens = this.productIds.lenses[idx];
-        if (lens) {
-          if (lens.quantity > lens.availableAmt) {
-            lens.error =
-              "Quantity requested is more than what is available in store";
-          } else {
-            lens.error = null;
-          }
+        this.validateBarcode(lens);
+      }
+    },
+    validateInputQuantity(idx, productType) {
+      var product = null;
+
+      if (productType === "frame") {
+        product = this.productIds.frames[idx];
+      } else if (productType === "lens") {
+        //validation for lens quanity if needed
+        product = this.productIds.lenses[idx];
+      } else {
+        product = this.productIds.customLenses[idx];
+      }
+      this.validateQuantity(product);
+    },
+    validateQuantity(product) {
+      if (product) {
+        if (!product.productId) {
+          product.barcodeError = "Please enter a barcode";
+          return;
+        }
+        if (product.quantity > product.availableAmt) {
+          product.quantityError =
+            "Quantity requested is more than what is available in store";
+        } else {
+          product.barcodeError = null;
+          product.quantityError = null;
         }
       }
     },
-    addFrameInput() {
-      this.productIds.frames.push({
-        productId: "",
-        quantity: 1,
-        barcodeError: "",
-        quantityError: "",
-        price: 0,
-        availableAmt: 1,
-        name: "",
-      });
+    addBarcodeInput(type) {
+      if (type === "frame") {
+        this.productIds.frames.push({
+          productId: "",
+          quantity: 1,
+          barcodeError: "",
+          quantityError: "",
+          price: 0,
+          availableAmt: 1,
+          name: "",
+        });
+      } else {
+        this.productIds.lenses.push({
+          productId: "",
+          quantity: 1,
+          barcodeError: "",
+          quantityError: "",
+          price: 0,
+          availableAmt: 1,
+          name: "",
+        });
+      }
     },
-    addLensInput() {
-      this.productIds.lenses.push({
+    addCustomLensInput() {
+      this.productIds.customLenses.push({
         productId: "",
         quantity: 1,
         availableAmt: 1,
@@ -957,17 +1192,20 @@ export default {
     removeFrameInput(idx) {
       this.productIds.frames.splice(idx, 1);
     },
-    removeLensInput(idx) {
+    removeCustomLensInput(idx) {
+      this.productIds.customLenses.splice(idx, 1);
+    },
+    removeStockLensInput(idx) {
       this.productIds.lenses.splice(idx, 1);
     },
     checkCustomer() {
       if (this.firstName && this.lastName) {
         axios
           .get(
-            `http://192.168.1.106:8080/server-0.0/restEndpoint/checkCustomer?firstName=${this.firstName}&lastName=${this.lastName}`
+            `${apiUrl}/getCustomerByName?firstName=${this.firstName}&lastName=${this.lastName}`
           )
           .then((response) => {
-            this.customerList = [...response.data.returned];
+            this.customerList = response.data;
           })
           .catch((err) => {
             console.log(err);
@@ -1005,28 +1243,26 @@ export default {
       this.selectedCustomerId = selectedCustomer.customerId;
     },
     setLensDetails(idx) {
-      let lens = this.productIds.lenses[idx];
+      let lens = this.productIds.customLenses[idx];
       if (lens) {
         const productId = lens.productId;
         const { productPrice, productName } = _.find(
-          this.lenses,
+          this.customLenses,
           (l) => l.productId === productId
         );
         lens.price = productPrice;
         lens.name = productName;
         lens.error = null;
 
-        axios
-          .get(
-            `http://192.168.1.106:8080/server-0.0/restEndpoint/getStoreProducts?storeId=1&productId=${lens.productId}`
-          )
-          .then((response) => {
-            if (response.data.returned.length === 1) {
-              const { quantity } = response.data.returned[0];
-              lens.availableAmt = quantity;
-            }
-          })
-          .catch((err) => console.error(err));
+        // axios
+        //   .get(
+        //     `${apiUrl}/getStoreFrameQuantity?storeId=1&frameId=${lens.productId}`
+        //   )
+        //   .then((response) => {
+        //     const { storeQuantity } = response.data;
+        //     lens.availableAmt = storeQuantity;
+        //   })
+        //   .catch((err) => console.error(err));
       }
     },
   },
@@ -1038,5 +1274,8 @@ export default {
 }
 .costBreakdown {
   font-size: 120% !important;
+}
+.modal-active {
+  display: block !important;
 }
 </style>
