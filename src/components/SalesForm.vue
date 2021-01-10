@@ -895,7 +895,7 @@ const initialData = () => {
   };
 };
 export default {
-  name: "Home",
+  name: "SalesForm",
   components: {
     datetime: Datetime,
     CustomerList,

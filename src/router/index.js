@@ -1,15 +1,21 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../components/Home.vue";
+import SalesForm from "../components/SalesForm.vue";
 import Employees from "../components/Employees.vue";
+import Home from "@/views/Home.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
+    name: "home",
     component: Home,
+  },
+  {
+    path: "/salesForm",
+    name: "SalesForm",
+    component: SalesForm,
   },
   {
     path: "/employees",
@@ -30,6 +36,7 @@ const routes = [
 
 const router = new VueRouter({
   routes,
+  mode: "history",
 });
 
 export default router;

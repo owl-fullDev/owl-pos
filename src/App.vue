@@ -6,15 +6,27 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <router-link to="/" active-class="nav-link">Sales</router-link>
+              <router-link to="/" active-class="nav-link" class="nav-link">
+                Pending Sales
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link
+                to="/salesForm"
+                active-class="nav-link"
+                class="nav-link"
+              >
+                POS
+              </router-link>
             </li>
             <li class="nav-item">
               <router-link
                 to="/Employees"
                 active-class="nav-link"
                 class="nav-link"
-                >Employees</router-link
               >
+                Employees
+              </router-link>
             </li>
           </ul>
         </div>
