@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-if="loadTemplate">
     <transition name="fade">
-      <div v-if="loadTemplate" class="card">
+      <div class="card">
         <div
           class="card-header d-flex justify-content-between align-items-center"
         >
@@ -47,13 +47,27 @@
             </li>
             <li v-if="!pendingSale.fullyPaid" class="list-group-item">
               Amount Due:
-              <strong> Rp abcd </strong>
+              <strong> Rp {{ amountDue }} </strong>
             </li>
             <li class="list-group-item">
               Grand Total:
               <strong> Rp {{ pendingSale.grandTotal }} </strong>
             </li>
           </ul>
+          <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in pendingSale.saleDetailList" :key="item.id">
+                <td>{{ item.productId }}</td>
+                <td>{{ item.quantity }}</td>
+              </tr>
+            </tbody>
+          </table>
           <button
             v-if="!pendingSale.fullyPaid"
             class="btn btn-primary btn-block"
@@ -61,6 +75,13 @@
             data-target="#paymentModal"
           >
             Pay now
+          </button>
+          <button
+            v-else
+            class="btn btn-success btn-block"
+            @click="$emit('updateSale', selectedInStorePaymentType, amountDue)"
+          >
+            Pick-up
           </button>
         </div>
       </div>
@@ -90,7 +111,20 @@
             <div>
               <div class="row mb-3">
                 <div class="col">
-                  <label for="Payment Type" class="form-label">
+                  <label for="paymentAmount" class="form-label">
+                    Payment Amount
+                  </label>
+                  <input
+                    type="text"
+                    readonly
+                    :value="amountDue"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <label for="paymentType" class="form-label">
                     Payment Type
                   </label>
                   <select
@@ -121,6 +155,9 @@
               type="button"
               data-dismiss="modal"
               class="btn btn-success"
+              @click="
+                $emit('updateSale', selectedInStorePaymentType, amountDue)
+              "
             >
               Pay now
             </button>
@@ -151,6 +188,11 @@ export default {
     },
     disablePaymentBtn() {
       return this.selectedInStorePaymentType === "";
+    },
+    amountDue() {
+      return (
+        this.pendingSale.grandTotal - this.pendingSale.initialDepositAmount
+      ).toFixed(2);
     },
   },
 };

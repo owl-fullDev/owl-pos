@@ -2,9 +2,9 @@
   <div class="card mb-3">
     <div class="card-body">
       <h5 class="card-title">
-        {{ customerName }}
+        {{ customer.firstName }} {{ customer.lastName }}
         <span class="small text-muted" style="font-size: 65% !important;">
-          id: {{ saleId }}
+          {{ new Date(transactionDate).toDateString() }}
         </span>
       </h5>
       <p class="card-text">Sudah Bayar: <i :class="iconClass"></i></p>
@@ -21,7 +21,7 @@
 <script>
 export default {
   name: "PendingSale",
-  props: ["saleId", "customerName", "paid"],
+  props: ["transactionDate", "customer", "paid", "saleId"],
   computed: {
     iconClass() {
       return this.paid
