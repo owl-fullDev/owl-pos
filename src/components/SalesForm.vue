@@ -850,7 +850,8 @@ import "vue-datetime/dist/vue-datetime.min.css";
 import CustomerList from "./CustomerList.vue";
 import _ from "lodash";
 
-const apiUrl = "http://192.168.1.123:8080/posEndpoint";
+const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
+
 const initialData = () => {
   return {
     productIds: {
@@ -1049,7 +1050,7 @@ export default {
             grandTotal: `${this.netAmount}`,
             employeeId: this.selectedEmployeeId,
             storeId: 1,
-            initialDepositDate: new Date().toISOString().substring(0, 19),
+            initialDepositDate: new Date().toISOString(),
             initialDepositType: this.selectedPaymentType,
             initialDepositAmount: this.showDepositInfo
               ? `${this.initialPaymentAmt}`

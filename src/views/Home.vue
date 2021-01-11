@@ -55,6 +55,8 @@ import PendingSaleDetails from "../components/PendingSaleDetails.vue";
 import _ from "lodash";
 import axios from "axios";
 
+const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
+
 export default {
   name: "Home",
   data: () => {
@@ -74,9 +76,7 @@ export default {
   methods: {
     updatePendingSalesList() {
       axios
-        .get(
-          "http://192.168.1.106:8080/posEndpoint/getPendingSaleList?storeId=2"
-        )
+        .get(`${apiUrl}/getPendingSaleList?storeId=1`)
         .then((response) => {
           this.pendingSaleList = [...response.data];
         })
@@ -105,10 +105,7 @@ export default {
       }
 
       axios
-        .post(
-          "http://192.168.1.106:8080/posEndpoint/updateSale?storeId=2",
-          saleDetails
-        )
+        .post(`${apiUrl}/updateSale?storeId=1`, saleDetails)
         .then((response) => {
           this.updatePendingSalesList();
           this.selectedSale = null;
