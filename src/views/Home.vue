@@ -1,117 +1,46 @@
 <template>
-  <div class="container mt-3">
-    <div
-      v-if="alertMsg"
-      class="alert alert-success alert-dismissible fade show"
-      role="alert"
-    >
-      {{ alertMsg }}
-      <button
-        type="button"
-        class="close"
-        data-dismiss="alert"
-        aria-label="Close"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="row">
-      <div class="col">
-        <h3>Pending Sales</h3>
-        <button
-          type="button"
-          class="btn btn-light"
-          @click="updatePendingSalesList"
-        >
-          Refresh Pending Sales
-        </button>
-
-        <hr />
-        <PendingSale
-          v-for="sale in pendingSaleList"
-          :key="sale.id"
-          :transaction-date="sale.initialDepositDate"
-          :sale-id="sale.saleId"
-          :customer="sale.customer"
-          :paid="sale.fullyPaid"
-          @selectSale="selectSale"
-        />
-      </div>
-      <div class="col mt-5">
-        <PendingSaleDetails
-          :pendingSale="selectedSale"
-          @resetSelectedSale="resetSelectedSale"
-          @updateSale="updateSale"
-        />
-      </div>
-    </div>
+  <div class="container mt-3 text-center">
+    <h1>Select Store</h1>
+    <select class="custom-select custom-select-lg mb-3" v-model="storeId">
+      <option value="" selected disabled>Select store</option>
+      <option v-for="store in stores" :key="store.id" :value="store.storeId">
+        {{ store.location }}
+      </option>
+    </select>
+    <button v-if="storeId" class="btn btn-success btn-lg" @click="selectStore">
+      Select store
+    </button>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import PendingSale from "@/components/PendingSale.vue";
-import PendingSaleDetails from "../components/PendingSaleDetails.vue";
-import _ from "lodash";
 import axios from "axios";
-
-const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
+import storeData from "@/storeData";
+const apiUrl =
+  "https://owl-backend-server.herokuapp.com/hoStoresEndpoint/getAllStores";
 
 export default {
   name: "Home",
   data: () => {
     return {
-      selectedSale: null,
-      pendingSaleList: [],
-      alertMsg: "",
+      stores: [],
+      storeId: "",
     };
   },
-  components: {
-    PendingSale,
-    PendingSaleDetails,
-  },
+  components: {},
   created() {
-    this.updatePendingSalesList();
+    axios
+      .get(`${apiUrl}`)
+      .then((response) => {
+        this.stores = [...response.data];
+      })
+      .catch((err) => console.log(err));
   },
   methods: {
-    updatePendingSalesList() {
-      axios
-        .get(`${apiUrl}/getPendingSaleList?storeId=1`)
-        .then((response) => {
-          this.pendingSaleList = [...response.data];
-        })
-        .catch((err) => console.log(err));
-    },
-    selectSale(saleId) {
-      this.selectedSale = _.find(
-        this.pendingSaleList,
-        (x) => x.saleId === saleId
-      );
-    },
-    resetSelectedSale() {
-      this.selectedSale = null;
-    },
-    updateSale(selectedPaymentType, amountDue) {
-      const today = new Date().toISOString();
-      let saleDetails = {
-        saleId: this.selectedSale.saleId,
-        pickUpDate: today,
-      };
-
-      if (!this.selectedSale.fullyPaid) {
-        saleDetails.finalPaymentDate = today;
-        saleDetails.finalPaymentType = selectedPaymentType;
-        saleDetails.finalPaymentAmount = parseFloat(amountDue);
-      }
-
-      axios
-        .post(`${apiUrl}/updateSale?storeId=1`, saleDetails)
-        .then((response) => {
-          this.updatePendingSalesList();
-          this.selectedSale = null;
-          this.alertMsg = response.data;
-        })
-        .catch((err) => console.log(err));
+    selectStore() {
+      storeData.storeId = this.storeId;
+      this.$router.push("PendingSales");
     },
   },
 };

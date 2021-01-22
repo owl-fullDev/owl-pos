@@ -551,8 +551,9 @@
             class="form-control"
             aria-label="promotion selection"
             v-model="selectedPromotion"
+            required
           >
-            <option value="0">Select promo</option>
+            <option value="0">No promotion</option>
             <option
               v-for="promo in promotions"
               :key="promo.id"
@@ -794,7 +795,7 @@
                     id="hasCustomerPaid"
                   />
                   <label class="form-check-label" for="hasCustomerPaid">
-                    Customer Sudah Bayar?
+                    Customer sudah bayar?
                   </label>
                 </div>
               </div>
@@ -849,6 +850,7 @@ import { Datetime } from "vue-datetime";
 import "vue-datetime/dist/vue-datetime.min.css";
 import CustomerList from "./CustomerList.vue";
 import _ from "lodash";
+import storeData from "@/storeData";
 
 const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
 
@@ -991,7 +993,7 @@ export default {
         .catch((err) => console.error(err));
 
       axios
-        .get(`${apiUrl}/getStorePromotions?storeId=1`)
+        .get(`${apiUrl}/getStorePromotions?storeId=${storeData.storeId}`)
         .then((response) => {
           const promotionsReceived = response.data;
           this.promotions = promotionsReceived.map((p) => ({
@@ -1003,7 +1005,7 @@ export default {
         .catch((err) => console.error(err));
 
       axios
-        .get(`${apiUrl}/getStoreEmployees?storeId=1`)
+        .get(`${apiUrl}/getStoreEmployees?storeId=${storeData.storeId}`)
         .then((response) => {
           this.employees = response.data;
         })
@@ -1049,7 +1051,7 @@ export default {
             promotionId: this.selectedPromotion,
             grandTotal: `${this.netAmount}`,
             employeeId: this.selectedEmployeeId,
-            storeId: 1,
+            storeId: storeData.storeId,
             initialDepositDate: new Date().toISOString(),
             initialDepositType: this.selectedPaymentType,
             initialDepositAmount: this.showDepositInfo
@@ -1094,7 +1096,7 @@ export default {
         } else {
           axios
             .get(
-              `${apiUrl}/getStoreFrameQuantity?storeId=1&frameId=${product.productId}`
+              `${apiUrl}/getStoreFrameQuantity?storeId=${storeData.storeId}&frameId=${product.productId}`
             )
             .then((response) => {
               let {
@@ -1257,7 +1259,7 @@ export default {
 
         // axios
         //   .get(
-        //     `${apiUrl}/getStoreFrameQuantity?storeId=1&frameId=${lens.productId}`
+        //     `${apiUrl}/getStoreFrameQuantity?storeId=${storeData.storeId}&frameId=${lens.productId}`
         //   )
         //   .then((response) => {
         //     const { storeQuantity } = response.data;

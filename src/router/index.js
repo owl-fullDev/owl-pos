@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import SalesForm from "../components/SalesForm.vue";
 import Employees from "../components/Employees.vue";
 import Home from "@/views/Home.vue";
+import PendingSales from "@/views/PendingSales.vue";
+import storeData from "@/storeData";
 
 Vue.use(VueRouter);
 
@@ -11,6 +13,11 @@ const routes = [
     path: "/",
     name: "home",
     component: Home,
+  },
+  {
+    path: "/pendingSales",
+    name: "PendingSales",
+    component: PendingSales,
   },
   {
     path: "/salesForm",
@@ -39,4 +46,20 @@ const router = new VueRouter({
   mode: "history",
 });
 
+router.beforeEach((to, from, next) => {
+  console.log(storeData);
+  if (to.path !== "/") {
+    if (!storeData.storeId) {
+      next({ name: "home" });
+    } else {
+      next();
+    }
+  } else {
+    if (!storeData.storeId) {
+      next();
+    } else {
+      next({ name: "PendingSales" });
+    }
+  }
+});
 export default router;

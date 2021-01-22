@@ -63,7 +63,7 @@
             </thead>
             <tbody>
               <tr v-for="item in pendingSale.saleDetailList" :key="item.id">
-                <td>{{ item.productId }}</td>
+                <td>{{ item.product.productId }}</td>
                 <td>{{ item.quantity }}</td>
               </tr>
             </tbody>
