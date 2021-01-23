@@ -890,7 +890,7 @@ export default {
   },
   computed: {
     hideCustomerInfo() {
-      if (!this.customerList) return false;
+      if (!this.customerList) return true;
 
       return this.customerList.length < 1 && !this.createNewCustomer;
     },
