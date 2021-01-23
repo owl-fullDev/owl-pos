@@ -1,5 +1,15 @@
 <template>
   <div class="container-fluid mt-2">
+    <div id="overlay" class="d-flex justify-content-center" v-if="loading">
+      <div
+        id="loader"
+        class="spinner-border text-light"
+        style="width: 3rem; height: 3rem;"
+        role="status"
+      >
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
     <h1>Create Sale</h1>
     <form id="saleForm" class="mt-3">
       <!-- Customer info -->
@@ -46,6 +56,7 @@
                 class="btn btn-info mr-5"
                 type="button"
                 @click="checkCustomer"
+                :disabled="loading"
               >
                 Check Customer
               </button>
@@ -57,6 +68,7 @@
                   v-model="createNewCustomer"
                   name="createNewCustomer"
                   id="createNewCustomer"
+                  :disabled="loading"
                 />
                 <label class="form-check-label" for="createNewCustomer">
                   Create New Customer
@@ -658,79 +670,11 @@
               :key="employee.id"
               :value="employee.employeeId"
             >
-              {{ employee.firstName }} {{ employee.lastName }} ({{
-                employee.title
+              {{ employee.firstName }} {{ employee.lastname }} ({{
+                employee.jobTitle
               }})
             </option>
           </select>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col">
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              v-model="showDepositInfo"
-              id="showDepositInfo"
-            />
-            <label class="form-check-label" for="showDepositInfo">
-              Deposit dulu?
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Deposit -->
-      <div class="row mb-3" :class="{ 'd-none': !showDepositInfo }">
-        <div class="col">
-          <h3>Deposit Info</h3>
-          <hr />
-          <div class="row mb-3">
-            <div class="col">
-              <label for="Initial Payment Amount" class="form-label">
-                Initial Payment Amount
-              </label>
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="rupiah-currency">Rp</span>
-                <input
-                  type="number"
-                  class="form-control"
-                  v-model.number="initialPaymentAmt"
-                  aria-label="initialPaymentAmount"
-                  aria-describedby="rupiah-currency"
-                  :required="showDepositInfo"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col">
-              <label for="Initial Payment Type" class="form-label">
-                Initial Payment Type
-              </label>
-              <select
-                class="form-control"
-                v-model="selectedPaymentType"
-                :required="showDepositInfo"
-              >
-                <option v-for="type in initialPaymentType" :key="type.id">
-                  {{ type }}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col">
-              <label for="PickupDate" class="form-label">Pickup Date</label>
-              <datetime
-                input-class="form-control"
-                type="datetime"
-                v-model="pickupDate"
-                :required="showDepositInfo"
-              ></datetime>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -784,6 +728,22 @@
             </button>
           </div>
           <div class="modal-body">
+            <div class="row mb-3">
+              <div class="col">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    v-model="showDepositInfo"
+                    id="showDepositInfo"
+                    :disabled="hasCustomerPaid"
+                  />
+                  <label class="form-check-label" for="showDepositInfo">
+                    Deposit dulu?
+                  </label>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col">
                 <div class="form-check d-inline-block">
@@ -793,31 +753,57 @@
                     v-model="hasCustomerPaid"
                     name="hasCustomerPaid"
                     id="hasCustomerPaid"
+                    :disabled="showDepositInfo"
                   />
                   <label class="form-check-label" for="hasCustomerPaid">
-                    Customer sudah bayar?
+                    Full payment
                   </label>
                 </div>
               </div>
             </div>
             <hr />
-            <div v-if="hasCustomerPaid">
-              <div class="row mb-3">
-                <div class="col">
-                  <label for="Payment Type" class="form-label">
-                    Payment Type
-                  </label>
-                  <select
-                    class="form-control"
-                    v-model="selectedInStorePaymentType"
-                    :required="hasCustomerPaid"
-                  >
-                    <option value="">Select Payment Type</option>
-                    <option v-for="type in inStorePaymentType" :key="type.id">
-                      {{ type }}
-                    </option>
-                  </select>
+            <!-- Deposit -->
+            <div class="row" v-if="showDepositInfo">
+              <div class="col">
+                <h3>Deposit Info</h3>
+                <hr />
+                <div class="row">
+                  <div class="col">
+                    <label for="Initial Payment Amount" class="form-label">
+                      Initial Payment Amount
+                    </label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="rupiah-currency"
+                        >Rp</span
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model.number="initialPaymentAmt"
+                        aria-label="initialPaymentAmount"
+                        aria-describedby="rupiah-currency"
+                        :required="showDepositInfo"
+                      />
+                    </div>
+                  </div>
                 </div>
+              </div>
+            </div>
+            <div v-if="hasCustomerPaid || showDepositInfo" class="row mb-3">
+              <div class="col">
+                <label for="Payment Type" class="form-label">
+                  Payment Type
+                </label>
+                <select
+                  class="form-control"
+                  v-model="selectedPaymentType"
+                  :required="hasCustomerPaid"
+                >
+                  <option value="">Select Payment Type</option>
+                  <option v-for="type in paymentTypes" :key="type.id">
+                    {{ type }}
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -833,7 +819,7 @@
               type="button"
               data-dismiss="modal"
               class="btn btn-success"
-              :disabled="!hasCustomerPaid"
+              :disabled="!hasCustomerPaid && !showDepositInfo"
               @click="createSale()"
             >
               Create Sale
@@ -846,8 +832,6 @@
 </template>
 <script>
 import axios from "axios";
-import { Datetime } from "vue-datetime";
-import "vue-datetime/dist/vue-datetime.min.css";
 import CustomerList from "./CustomerList.vue";
 import _ from "lodash";
 import storeData from "@/storeData";
@@ -856,6 +840,7 @@ const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
 
 const initialData = () => {
   return {
+    loading: false,
     productIds: {
       frames: [],
       lenses: [],
@@ -885,22 +870,18 @@ const initialData = () => {
     selectedPromotion: 0,
     showDepositInfo: false,
     initialPaymentAmt: 0,
-    initialPaymentType: ["Cash", "Debit", "Credit"],
+    paymentTypes: ["Cash", "Debit", "Credit"],
     selectedPaymentType: "",
-    pickupDate: new Date().toISOString(),
     createNewCustomer: false,
-    customerList: [],
+    customerList: null,
     selectedCustomerId: null,
     hasCustomerPaid: false,
     showPaymentModal: false,
-    inStorePaymentType: ["Cash", "Debit", "Credit"],
-    selectedInStorePaymentType: "",
   };
 };
 export default {
   name: "SalesForm",
   components: {
-    datetime: Datetime,
     CustomerList,
   },
   data: initialData,
@@ -909,6 +890,8 @@ export default {
   },
   computed: {
     hideCustomerInfo() {
+      if (!this.customerList) return false;
+
       return this.customerList.length < 1 && !this.createNewCustomer;
     },
     discountName() {
@@ -1203,12 +1186,14 @@ export default {
     },
     checkCustomer() {
       if (this.firstName && this.lastName) {
+        this.loading = true;
         axios
           .get(
             `${apiUrl}/getCustomerByName?firstName=${this.firstName}&lastName=${this.lastName}`
           )
           .then((response) => {
             this.customerList = response.data;
+            this.loading = false;
           })
           .catch((err) => {
             console.log(err);
@@ -1280,5 +1265,23 @@ export default {
 }
 .modal-active {
   display: block !important;
+}
+#overlay {
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  cursor: pointer;
+}
+
+#loader {
+  position: absolute;
+  top: 50%;
 }
 </style>
