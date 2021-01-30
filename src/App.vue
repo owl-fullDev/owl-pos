@@ -25,6 +25,15 @@
             </li>
             <li class="nav-item">
               <router-link
+                to="/shipments"
+                active-class="nav-link"
+                class="nav-link"
+              >
+                Shipments
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link
                 to="/Employees"
                 active-class="nav-link"
                 class="nav-link"
