@@ -7,6 +7,7 @@
           {{ new Date(transactionDate).toDateString() }}
         </span>
       </h5>
+      <p class="card-text">Phone Number: {{ customer.phoneNumber }}</p>
       <p class="card-text">Sudah Bayar: <i :class="iconClass"></i></p>
       <button
         @click="$emit('selectSale', saleId)"
