@@ -55,10 +55,10 @@
               <button
                 class="btn btn-info mr-5"
                 type="button"
-                @click="checkCustomer"
+                @click="searchCustomerByName"
                 :disabled="loading"
               >
-                Check Customer
+                Search By Customer First and Last name
               </button>
 
               <div class="form-check d-inline-block">
@@ -69,6 +69,7 @@
                   name="createNewCustomer"
                   id="createNewCustomer"
                   :disabled="loading"
+                  @click="resetCustomerInfo"
                 />
                 <label class="form-check-label" for="createNewCustomer">
                   Create New Customer
@@ -76,21 +77,33 @@
               </div>
             </div>
           </div>
-          <div :class="{ 'd-none': hideCustomerInfo }">
-            <div class="mb-3 row">
-              <div class="col">
-                <label for="CustomerPhone" class="form-label">
-                  Customer Phone
-                </label>
-                <input
-                  v-model="phoneNum"
-                  type="text"
-                  class="form-control"
-                  name="phoneNumber"
-                  required
-                />
-              </div>
+          <div class="mb-3 row">
+            <div class="col">
+              <label for="CustomerPhone" class="form-label">
+                Customer Phone
+              </label>
+              <input
+                v-model="phoneNum"
+                type="text"
+                class="form-control"
+                name="phoneNumber"
+                required
+              />
             </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <button
+                class="btn btn-info mr-5"
+                type="button"
+                @click="searchCustomerByPhone"
+                :disabled="loading"
+              >
+                Search by Customer Phone #
+              </button>
+            </div>
+          </div>
+          <div v-if="showCustomerInfo">
             <div class="mb-3 row">
               <div class="col">
                 <label for="CustomerEmail" class="form-label">
@@ -109,7 +122,7 @@
       </div>
 
       <!-- Prescription -->
-      <div class="row" :class="{ 'd-none': hideCustomerInfo }">
+      <div class="row" v-if="showCustomerInfo">
         <div class="col">
           <div class="mt-3 row">
             <div class="col">
@@ -889,10 +902,10 @@ export default {
     this.fetchDataFromServer();
   },
   computed: {
-    hideCustomerInfo() {
-      if (!this.customerList) return true;
+    showCustomerInfo() {
+      if (!this.customerList && this.createNewCustomer) return true;
 
-      return this.customerList.length < 1 && !this.createNewCustomer;
+      return this.selectedCustomerId !== null || this.createNewCustomer;
     },
     discountName() {
       const promo = this.promotions.find(
@@ -948,6 +961,11 @@ export default {
       }
 
       return parseFloat(netAmt.toFixed(2));
+    },
+    validPhoneNum() {
+      const regex = new RegExp("^\\d+$");
+
+      return regex.test(this.phoneNum);
     },
     formHasErrors() {
       let frameErrors = _.some(
@@ -1184,15 +1202,16 @@ export default {
     removeStockLensInput(idx) {
       this.productIds.lenses.splice(idx, 1);
     },
-    checkCustomer() {
+    searchCustomerByName() {
       if (this.firstName && this.lastName) {
         this.loading = true;
+        this.createNewCustomer = false;
         axios
           .get(
             `${apiUrl}/getCustomerByName?firstName=${this.firstName}&lastName=${this.lastName}`
           )
           .then((response) => {
-            this.customerList = response.data;
+            this.customerList = [...response.data];
             this.loading = false;
           })
           .catch((err) => {
@@ -1200,6 +1219,23 @@ export default {
           });
       } else {
         alert("Please fill in a customer first name and last name");
+      }
+    },
+    searchCustomerByPhone() {
+      if (this.validPhoneNum) {
+        this.loading = true;
+        this.createNewCustomer = false;
+        axios
+          .get(
+            `${apiUrl}/getCustomerByPhoneNumber?phoneNumber=${this.phoneNum}`
+          )
+          .then((response) => {
+            this.customerList = [...response.data];
+            this.loading = false;
+          })
+          .catch((err) => console.log(err));
+      } else {
+        alert("Please enter a valid phone number");
       }
     },
     setCustomerInfo(customerId) {
@@ -1229,6 +1265,31 @@ export default {
       this.prescription.pd = selectedCustomer.pupilDistance;
 
       this.selectedCustomerId = selectedCustomer.customerId;
+    },
+    resetCustomerInfo() {
+      if (this.selectedCustomerId) {
+        this.selectedCustomerId == null;
+
+        //personal info
+        this.phoneNum = "";
+        this.email = "";
+
+        // left eye info
+        this.prescription.leftEyeSphere = null;
+        this.prescription.leftEyeCylinder = null;
+        this.prescription.leftEyeAxis = null;
+        this.prescription.leftEyeAdd = null;
+        this.prescription.leftEyePrism = null;
+
+        //right eye info
+        this.prescription.rightEyeSphere = null;
+        this.prescription.rightEyeCylinder = null;
+        this.prescription.rightEyeAxis = null;
+        this.prescription.rightEyeAdd = null;
+        this.prescription.rightEyePrism = null;
+
+        this.prescription.pd = null;
+      }
     },
     setLensDetails(idx) {
       let lens = this.productIds.customLenses[idx];
