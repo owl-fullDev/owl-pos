@@ -41,6 +41,15 @@
                 Employees
               </router-link>
             </li>
+            <li class="nav-item">
+              <router-link
+                to="/refunds"
+                active-class="nav-link"
+                class="nav-link"
+              >
+                Refunds
+              </router-link>
+            </li>
           </ul>
         </div>
       </div>

@@ -17,19 +17,19 @@
     </div>
     <div class="row">
       <div class="col">
-        <h3>Pending Sales</h3>
+        <h3>Refund Sales</h3>
         <button
           type="button"
           class="btn btn-light"
-          @click="updatePendingSalesList"
+          @click="updateRecentSalesList"
         >
-          Refresh Pending Sales
+          Refresh Sales
         </button>
 
         <hr />
         <div style="height: 700px; overflow-y: auto;">
           <Sale
-            v-for="sale in pendingSaleList"
+            v-for="sale in recetSalesList"
             :key="sale.id"
             :transaction-date="sale.initialDepositDate"
             :sale-id="sale.saleId"
@@ -42,6 +42,7 @@
       <div class="col mt-5">
         <SaleDetails
           :sale="selectedSale"
+          :canRefund="true"
           @resetSelectedSale="resetSelectedSale"
           @updateSale="updateSale"
         />
@@ -65,7 +66,7 @@ export default {
   data: () => {
     return {
       selectedSale: null,
-      pendingSaleList: [],
+      recetSalesList: [],
       alertMsg: "",
     };
   },
@@ -74,43 +75,31 @@ export default {
     SaleDetails,
   },
   created() {
-    this.updatePendingSalesList();
+    this.updateRecentSalesList();
   },
   methods: {
-    updatePendingSalesList() {
+    updateRecentSalesList() {
       axios
-        .get(`${apiUrl}/getPendingSaleList?storeId=${storeData.storeId}`)
+        .get(`${apiUrl}/getRecentSalesList?storeId=${storeData.storeId}`)
         .then((response) => {
-          this.pendingSaleList = [...response.data];
+          this.recetSalesList = [...response.data];
         })
         .catch((err) => console.log(err));
     },
     selectSale(saleId) {
       this.selectedSale = _.find(
-        this.pendingSaleList,
+        this.recetSalesList,
         (x) => x.saleId === saleId
       );
     },
     resetSelectedSale() {
       this.selectedSale = null;
     },
-    updateSale(selectedPaymentType, amountDue) {
-      const today = new Date().toISOString();
-      let saleDetails = {
-        saleId: this.selectedSale.saleId,
-        pickUpDate: today,
-      };
-
-      if (!this.selectedSale.fullyPaid) {
-        saleDetails.finalPaymentDate = today;
-        saleDetails.finalPaymentType = selectedPaymentType;
-        saleDetails.finalPaymentAmount = parseFloat(amountDue);
-      }
-
+    updateSale() {
       axios
-        .post(`${apiUrl}/updateSale?storeId=${storeData.storeId}`, saleDetails)
+        .get(`${apiUrl}/refundSale?saleId=${this.selectedSale.saleId}`)
         .then((response) => {
-          this.updatePendingSalesList();
+          this.updateRecentSalesList();
           this.selectedSale = null;
           this.alertMsg = response.data;
         })

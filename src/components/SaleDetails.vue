@@ -23,35 +23,34 @@
         <div class="card-body">
           <ul class="list-group mb-2">
             <li class="list-group-item " :class="listTitleClassName">
-              customer name -
-              <strong>
-                {{ pendingSale.fullyPaid ? "Sudah" : "Belum" }} Bayar
-              </strong>
+              {{ sale.customer.firstName }}
+              {{ sale.customer.lastName }}-
+              <strong> {{ sale.fullyPaid ? "Sudah" : "Belum" }} Bayar </strong>
             </li>
-            <li class="list-group-item">Sale id: {{ pendingSale.saleId }}</li>
+            <li class="list-group-item">Sale id: {{ sale.saleId }}</li>
             <li class="list-group-item">
               Initial Deposit Date:
               <strong>
-                {{ new Date(pendingSale.initialDepositDate).toDateString() }}
+                {{ new Date(sale.initialDepositDate).toDateString() }}
               </strong>
             </li>
             <li class="list-group-item">
               Initial Deposit Type:
               <strong>
-                {{ pendingSale.initialDepositType }}
+                {{ sale.initialDepositType }}
               </strong>
             </li>
             <li class="list-group-item">
               Initial Deposit Amount:
-              <strong> Rp {{ pendingSale.initialDepositAmount }} </strong>
+              <strong> Rp {{ sale.initialDepositAmount }} </strong>
             </li>
-            <li v-if="!pendingSale.fullyPaid" class="list-group-item">
+            <li v-if="!sale.fullyPaid" class="list-group-item">
               Amount Due:
               <strong> Rp {{ amountDue }} </strong>
             </li>
             <li class="list-group-item">
               Grand Total:
-              <strong> Rp {{ pendingSale.grandTotal }} </strong>
+              <strong> Rp {{ sale.grandTotal }} </strong>
             </li>
           </ul>
           <table class="table table-striped table-hover">
@@ -62,42 +61,54 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in pendingSale.saleDetailList" :key="item.id">
+              <tr v-for="item in sale.saleDetailList" :key="item.id">
                 <td>{{ item.product.productId }}</td>
                 <td>{{ item.quantity }}</td>
               </tr>
             </tbody>
           </table>
-          <button
-            v-if="!pendingSale.fullyPaid"
-            class="btn btn-primary btn-block"
-            data-toggle="modal"
-            data-target="#paymentModal"
-          >
-            Pay now
-          </button>
-          <button
-            v-else
-            class="btn btn-success btn-block"
-            @click="$emit('updateSale', selectedInStorePaymentType, amountDue)"
-          >
-            Pick-up
-          </button>
+          <div v-if="canRefund">
+            <button
+              class="btn btn-danger btn-block"
+              data-toggle="modal"
+              data-target="#completionModal"
+            >
+              Refund Sale
+            </button>
+          </div>
+          <div v-else>
+            <button
+              v-if="!sale.fullyPaid"
+              class="btn btn-primary btn-block"
+              data-toggle="modal"
+              data-target="#completionModal"
+            >
+              Pay now
+            </button>
+            <button
+              v-else
+              class="btn btn-success btn-block"
+              @click="
+                $emit('updateSale', selectedInStorePaymentType, amountDue)
+              "
+            >
+              Pick-up
+            </button>
+          </div>
         </div>
       </div>
     </transition>
     <div
       class="modal fade"
-      id="paymentModal"
+      id="completionModal"
       tabindex="-1"
       role="dialog"
-      aria-labelledby="continueToPaymentBtn"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Payment</h5>
+            <h5 class="modal-title">{{ modalTitle }}</h5>
             <button
               type="button"
               class="close"
@@ -108,7 +119,12 @@
             </button>
           </div>
           <div class="modal-body">
-            <div>
+            <div v-if="canRefund">
+              <strong>
+                Are you sure you want to issue this refund?
+              </strong>
+            </div>
+            <div v-else>
               <div class="row mb-3">
                 <div class="col">
                   <label for="paymentAmount" class="form-label">
@@ -155,11 +171,9 @@
               type="button"
               data-dismiss="modal"
               class="btn btn-success"
-              @click="
-                $emit('updateSale', selectedInStorePaymentType, amountDue)
-              "
+              @click="confirmAction"
             >
-              Pay now
+              Confirm
             </button>
           </div>
         </div>
@@ -169,8 +183,8 @@
 </template>
 <script>
 export default {
-  name: "PendingSaleDetail",
-  props: ["pendingSale"],
+  name: "SaleDetail",
+  props: ["sale", "canRefund"],
   data: () => {
     return {
       inStorePaymentType: ["Cash", "Debit", "Credit"],
@@ -179,20 +193,34 @@ export default {
   },
   computed: {
     loadTemplate() {
-      return this.pendingSale != null;
+      return this.sale != null;
     },
     listTitleClassName() {
-      return this.pendingSale.fullyPaid
+      return this.sale.fullyPaid
         ? "list-group-item-success"
         : "list-group-item-danger";
     },
     disablePaymentBtn() {
-      return this.selectedInStorePaymentType === "";
+      return this.selectedInStorePaymentType === "" && !this.canRefund;
     },
     amountDue() {
-      return (
-        this.pendingSale.grandTotal - this.pendingSale.initialDepositAmount
-      ).toFixed(2);
+      return (this.sale.grandTotal - this.sale.initialDepositAmount).toFixed(2);
+    },
+    modalTitle() {
+      return this.canRefund ? "Refund Sale" : "Payment";
+    },
+  },
+  methods: {
+    confirmAction() {
+      if (!this.canRefund) {
+        this.$emit(
+          "updateSale",
+          this.selectedInStorePaymentType,
+          this.amountDue
+        );
+      } else {
+        this.$emit("updateSale");
+      }
     },
   },
 };
