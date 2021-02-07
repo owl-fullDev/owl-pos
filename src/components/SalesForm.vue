@@ -121,155 +121,10 @@
         </div>
       </div>
 
-      <!-- Prescription -->
-      <div class="row" v-if="showCustomerInfo">
-        <div class="col">
-          <div class="mt-3 row">
-            <div class="col">
-              <h5>Prescription</h5>
-            </div>
-          </div>
-          <!-- Right Eye -->
-          <h6>Right eye</h6>
-          <div class="row mb-3">
-            <div class="col">
-              <label for="RightEyeSphere" class="form-label">
-                Right Eye Sphere
-              </label>
-              <input
-                v-model="prescription.rightEyeSphere"
-                type="text"
-                class="form-control"
-                name="rightEyeSphere"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="RightEyeCylinder" class="form-label">
-                Right Eye Cylinder
-              </label>
-              <input
-                v-model="prescription.rightEyeCylinder"
-                type="text"
-                class="form-control"
-                name="rightEyeCylinder"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="RightEyeAxis" class="form-label">
-                Right Eye Axis
-              </label>
-              <input
-                v-model.number="prescription.rightEyeAxis"
-                type="text"
-                class="form-control"
-                name="rightEyeAxis"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="RightEyeAdd" class="form-label">
-                Right Eye Add
-              </label>
-              <input
-                v-model="prescription.rightEyeAdd"
-                type="text"
-                class="form-control"
-                name="rightEyeAdd"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="RightEyePrism" class="form-label">
-                Right Eye Prism
-              </label>
-              <input
-                v-model="prescription.rightEyePrism"
-                type="text"
-                class="form-control"
-                name="rightEyePrism"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="pupilaryDistance">PD</label>
-              <input
-                class="form-control"
-                id="pupilaryDistance"
-                type="number"
-                name="pd"
-                v-model.number="prescription.pd"
-                required
-              />
-            </div>
-          </div>
-
-          <!-- Left Eye -->
-          <h6>Left eye</h6>
-          <div class="row mb-3">
-            <div class="col">
-              <label for="LeftEyeSphere" class="form-label">
-                Left Eye Sphere
-              </label>
-              <input
-                v-model="prescription.leftEyeSphere"
-                type="text"
-                class="form-control"
-                name="leftEyeSphere"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="LeftEyeCylinder" class="form-label">
-                Left Eye Cylinder
-              </label>
-              <input
-                v-model="prescription.leftEyeCylinder"
-                type="text"
-                name="leftEyeCylinder"
-                class="form-control"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="LeftEyeAxis" class="form-label">
-                Left Eye Axis
-              </label>
-              <input
-                v-model.number="prescription.leftEyeAxis"
-                type="text"
-                name="leftEyeAxis"
-                class="form-control"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="LeftEyeAdd" class="form-label"> Left Eye Add </label>
-              <input
-                v-model="prescription.leftEyeAdd"
-                type="text"
-                name="leftEyeAdd"
-                class="form-control"
-                required
-              />
-            </div>
-            <div class="col">
-              <label for="LeftEyePrism" class="form-label">
-                Left Eye Prism
-              </label>
-              <input
-                v-model="prescription.leftEyePrism"
-                type="text"
-                class="form-control"
-                name="leftEyePrism"
-                required
-              />
-            </div>
-            <div class="col"></div>
-          </div>
-        </div>
-      </div>
+      <Prescription
+        ref="prescriptionElem"
+        :show-prescription="showCustomerInfo"
+      />
 
       <!-- Product info -->
       <div class="row">
@@ -848,6 +703,7 @@ import axios from "axios";
 import CustomerList from "./CustomerList.vue";
 import _ from "lodash";
 import storeData from "@/storeData";
+import Prescription from "./Prescription.vue";
 
 const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
 
@@ -866,19 +722,6 @@ const initialData = () => {
     lastName: "",
     phoneNum: "",
     email: "",
-    prescription: {
-      leftEyeSphere: null,
-      leftEyeCylinder: null,
-      leftEyeAxis: null,
-      leftEyeAdd: null,
-      leftEyePrism: null,
-      rightEyeSphere: null,
-      rightEyeCylinder: null,
-      rightEyeAxis: null,
-      rightEyeAdd: null,
-      rightEyePrism: null,
-      pd: null,
-    },
     promotions: [],
     selectedPromotion: 0,
     showDepositInfo: false,
@@ -896,12 +739,16 @@ export default {
   name: "SalesForm",
   components: {
     CustomerList,
+    Prescription,
   },
   data: initialData,
   created() {
     this.fetchDataFromServer();
   },
   computed: {
+    prescription() {
+      return this.$refs.prescriptionElem.$data;
+    },
     showCustomerInfo() {
       if (!this.customerList && this.createNewCustomer) return true;
 
@@ -1065,17 +912,7 @@ export default {
             lastName: this.lastName,
             phoneNumber: this.phoneNum,
             email: this.email,
-            pupilDistance: this.prescription.pd,
-            leftEyeSphere: this.prescription.leftEyeSphere,
-            leftEyeCylinder: this.prescription.leftEyeCylinder,
-            leftEyeAxis: this.prescription.leftEyeAxis,
-            leftEyeAdd: this.prescription.leftEyeAdd,
-            leftEyePrism: this.prescription.leftEyePrism,
-            rightEyeSphere: this.prescription.rightEyeSphere,
-            rightEyeCylinder: this.prescription.rightEyeCylinder,
-            rightEyeAxis: this.prescription.rightEyeAxis,
-            rightEyeAdd: this.prescription.rightEyeAdd,
-            rightEyePrism: this.prescription.rightEyePrism,
+            ...this.prescription,
           },
         };
 
@@ -1249,20 +1086,27 @@ export default {
       this.email = selectedCustomer.email;
 
       // left eye info
-      this.prescription.leftEyeSphere = selectedCustomer.leftEyeSphere;
-      this.prescription.leftEyeCylinder = selectedCustomer.leftEyeCylinder;
-      this.prescription.leftEyeAxis = selectedCustomer.leftEyeAxis;
-      this.prescription.leftEyeAdd = selectedCustomer.leftEyeAdd;
-      this.prescription.leftEyePrism = selectedCustomer.leftEyePrism;
+
+      // prettier-ignore
+      this.$refs.prescriptionElem.leftEyeSphere = selectedCustomer.leftEyeSphere;
+      // prettier-ignore
+      this.$refs.prescriptionElem.leftEyeCylinder = selectedCustomer.leftEyeCylinder;
+      this.$refs.prescriptionElem.leftEyeAxis = selectedCustomer.leftEyeAxis;
+      this.$refs.prescriptionElem.leftEyeAdd = selectedCustomer.leftEyeAdd;
+      this.$refs.prescriptionElem.leftEyePrism = selectedCustomer.leftEyePrism;
 
       //right eye info
-      this.prescription.rightEyeSphere = selectedCustomer.rightEyeSphere;
-      this.prescription.rightEyeCylinder = selectedCustomer.rightEyeCylinder;
-      this.prescription.rightEyeAxis = selectedCustomer.rightEyeAxis;
-      this.prescription.rightEyeAdd = selectedCustomer.rightEyeAdd;
-      this.prescription.rightEyePrism = selectedCustomer.rightEyePrism;
+      // prettier-ignore
+      this.$refs.prescriptionElem.rightEyeSphere = selectedCustomer.rightEyeSphere;
+      // prettier-ignore
+      this.$refs.prescriptionElem.rightEyeCylinder = selectedCustomer.rightEyeCylinder;
+      this.$refs.prescriptionElem.rightEyeAxis = selectedCustomer.rightEyeAxis;
+      this.$refs.prescriptionElem.rightEyeAdd = selectedCustomer.rightEyeAdd;
+      // prettier-ignore
+      this.$refs.prescriptionElem.rightEyePrism = selectedCustomer.rightEyePrism;
 
-      this.prescription.pd = selectedCustomer.pupilDistance;
+      // prettier-ignore
+      this.$refs.prescriptionElem.pupilDistance = selectedCustomer.pupilDistance;
 
       this.selectedCustomerId = selectedCustomer.customerId;
     },
@@ -1275,20 +1119,20 @@ export default {
         this.email = "";
 
         // left eye info
-        this.prescription.leftEyeSphere = null;
-        this.prescription.leftEyeCylinder = null;
-        this.prescription.leftEyeAxis = null;
-        this.prescription.leftEyeAdd = null;
-        this.prescription.leftEyePrism = null;
+        this.$refs.prescriptionElem.leftEyeSphere = 0;
+        this.$refs.prescriptionElem.leftEyeCylinder = 0;
+        this.$refs.prescriptionElem.leftEyeAxis = 0;
+        this.$refs.prescriptionElem.leftEyeAdd = 0;
+        this.$refs.prescriptionElem.leftEyePrism = 0;
 
         //right eye info
-        this.prescription.rightEyeSphere = null;
-        this.prescription.rightEyeCylinder = null;
-        this.prescription.rightEyeAxis = null;
-        this.prescription.rightEyeAdd = null;
-        this.prescription.rightEyePrism = null;
+        this.$refs.prescriptionElem.rightEyeSphere = 0;
+        this.$refs.prescriptionElem.rightEyeCylinder = 0;
+        this.$refs.prescriptionElem.rightEyeAxis = 0;
+        this.$refs.prescriptionElem.rightEyeAdd = 0;
+        this.$refs.prescriptionElem.rightEyePrism = 0;
 
-        this.prescription.pd = null;
+        this.$refs.prescriptionElem.pupilDistance = 0;
       }
     },
     setLensDetails(idx) {
