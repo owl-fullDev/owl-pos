@@ -747,7 +747,7 @@ export default {
   },
   computed: {
     prescription() {
-      return this.$refs.prescriptionElem.$data;
+      return this.$refs.prescriptionElem.prescriptionValues;
     },
     showCustomerInfo() {
       if (!this.customerList && this.createNewCustomer) return true;

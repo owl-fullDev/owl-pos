@@ -1,12 +1,11 @@
 <template>
   <div class="col">
-    <div class="form-check mb-2">
-      <input class="form-check-input" type="checkbox" v-model="showInput" />
-      <label class="form-check-label">
+    <div class="form-group mb-2">
+      <label class="form-label">
         <span v-if="showSide">{{ side }} Eye</span> {{ name }}
       </label>
     </div>
-    <div class="row " v-show="showInput">
+    <div class="row ">
       <div
         class="col"
         v-for="input in inputs"
@@ -43,7 +42,6 @@ export default {
   },
   data: () => {
     return {
-      showInput: true,
       prescriptionDetails: null,
       finalVal: 0.0,
     };
@@ -116,16 +114,16 @@ export default {
             } else {
               this.$children[0].selectedVal = "+";
             }
-            this.$children[1].selectedVal = Math.trunc(val);
+            this.$children[1].selectedVal = Math.abs(Math.trunc(val));
 
-            this.$children[2].selectedVal = (val % 1)
+            this.$children[2].selectedVal = Math.abs(val % 1)
               .toFixed(2)
               .replace(/^0/, "");
           } else if (this.name === "Prism") {
             this.$children[0].textVal = val;
           } else {
             if (this.inputs[0].interval === 0.25) {
-              this.$children[0].selectedVal = val.toFixed(2).replace(/^0/, "");
+              this.$children[0].selectedVal = val.toFixed(2);
             } else {
               this.$children[0].selectedVal = val;
             }
