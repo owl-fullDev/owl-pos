@@ -934,7 +934,7 @@ export default {
         } else {
           axios
             .get(
-              `${apiUrl}/getStoreFrameQuantity?storeId=${storeData.storeId}&frameId=${product.productId}`
+              `${apiUrl}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
             )
             .then((response) => {
               let {
@@ -1146,16 +1146,6 @@ export default {
         lens.price = productPrice;
         lens.name = productName;
         lens.error = null;
-
-        // axios
-        //   .get(
-        //     `${apiUrl}/getStoreFrameQuantity?storeId=${storeData.storeId}&frameId=${lens.productId}`
-        //   )
-        //   .then((response) => {
-        //     const { storeQuantity } = response.data;
-        //     lens.availableAmt = storeQuantity;
-        //   })
-        //   .catch((err) => console.error(err));
       }
     },
   },
