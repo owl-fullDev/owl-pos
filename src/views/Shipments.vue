@@ -29,7 +29,7 @@ import storeData from "@/storeData";
 
 // // prettier-ignore
 const apiUrl =
-  "https://owl-backend-server.herokuapp.com/posEndpoint/receiveRestockShipment";
+  "https://owl-backend-server.herokuapp.com/posEndpoint/receiveShipment";
 
 export default {
   name: "Shipments",
@@ -48,14 +48,18 @@ export default {
       axios
         .post(apiUrl, {
           storeId: storeData.storeId,
-          restockShipmentId: this.barcode,
+          shipmentId: this.barcode,
           receivedDate: new Date().toISOString(),
         })
         .then((response) => {
           alert(response.data);
           this.barcode = null;
         })
-        .catch((err) => alert(`Server error: ${err} . Please try again later`));
+        .catch((err) => {
+          alert(
+            `Server error: ${err.response.data.message} . Please try again later`
+          );
+        });
     },
   },
 };

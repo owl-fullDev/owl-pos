@@ -939,7 +939,7 @@ export default {
             .then((response) => {
               let {
                 productPrice,
-                storeQuantity: quantityAvailable,
+                quantity: quantityAvailable,
                 productName,
               } = response.data;
               product.price = productPrice;
