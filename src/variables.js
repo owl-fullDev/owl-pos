@@ -70,7 +70,7 @@ export const PrescriptionDetails = [
     name: "Prism",
     inputs: [
       {
-        placeholder: "Enter Prism Value",
+        placeholder: "Nilai Prism",
         component: "TextInput",
       },
     ],

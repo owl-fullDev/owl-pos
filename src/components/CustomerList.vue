@@ -5,7 +5,7 @@
       v-if="list.length === 0"
       role="alert"
     >
-      No customers found
+      Tidak ada pelanggan dapat ditemukan dengan nama yang diberikan
       <button
         type="button"
         class="close"
@@ -23,13 +23,13 @@
               {{ customer.firstName }} {{ customer.lastName }}
             </h5>
             <p class="card-text">Email: {{ customer.email }}</p>
-            <p class="card-text">Phone # : {{ customer.phoneNumber }}</p>
+            <p class="card-text">No Telepon: {{ customer.phoneNumber }}</p>
             <button
               type="button"
               class="btn btn-primary"
               @click="selectCustomer(customer.customerId)"
             >
-              Select Customer
+              Pilih Pelanggan
             </button>
           </div>
         </div>

@@ -7,7 +7,7 @@
         >
           <div class="div align-self-center">
             <h4>
-              Sale Details
+              Detail Penjualan
             </h4>
           </div>
           <div class="div ">
@@ -25,39 +25,39 @@
             <li class="list-group-item " :class="listTitleClassName">
               {{ sale.customer.firstName }}
               {{ sale.customer.lastName }}-
-              <strong> {{ sale.fullyPaid ? "Sudah" : "Belum" }} Bayar </strong>
+              <strong> Pembayaran {{ sale.fullyPaid ? "Sudah" : "Belum" }} Lunas </strong>
             </li>
-            <li class="list-group-item">Sale id: {{ sale.saleId }}</li>
+            <li class="list-group-item">ID Penjualan: {{ sale.saleId }}</li>
             <li class="list-group-item">
-              Initial Deposit Date:
+              Tanggal Deposit Awal:
               <strong>
                 {{ new Date(sale.initialDepositDate).toDateString() }}
               </strong>
             </li>
             <li class="list-group-item">
-              Initial Deposit Type:
+              Jenis Deposit Awal:
               <strong>
                 {{ sale.initialDepositType }}
               </strong>
             </li>
             <li class="list-group-item">
-              Initial Deposit Amount:
+              Jumlah Deposit Awal:
               <strong> Rp {{ sale.initialDepositAmount }} </strong>
             </li>
             <li v-if="!sale.fullyPaid" class="list-group-item">
-              Amount Due:
+              Jumlah Sisa:
               <strong> Rp {{ amountDue }} </strong>
             </li>
             <li class="list-group-item">
-              Grand Total:
+               Harga Total:
               <strong> Rp {{ sale.grandTotal }} </strong>
             </li>
           </ul>
           <table class="table table-striped table-hover">
             <thead class="thead-dark">
               <tr>
-                <th scope="col">Product</th>
-                <th scope="col">Quantity</th>
+                <th scope="col">Produk</th>
+                <th scope="col">Kuantitas</th>
               </tr>
             </thead>
             <tbody>
@@ -83,7 +83,7 @@
               data-toggle="modal"
               data-target="#completionModal"
             >
-              Pay now
+              Bayar dan Terima
             </button>
             <button
               v-else
@@ -92,7 +92,7 @@
                 $emit('updateSale', selectedInStorePaymentType, amountDue)
               "
             >
-              Pick-up
+              Terima Barang
             </button>
           </div>
         </div>

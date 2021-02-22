@@ -1,14 +1,14 @@
 <template>
   <div class="container mt-3 text-center">
-    <h1>Select Store</h1>
+    <h1>Pilih toko</h1>
     <select class="custom-select custom-select-lg mb-3" v-model="storeId">
-      <option value="" selected disabled>Select store</option>
+      <option value="" selected disabled>Pilih toko</option>
       <option v-for="store in stores" :key="store.id" :value="store.storeId">
         {{ store.name }}
       </option>
     </select>
     <button v-if="storeId" class="btn btn-success btn-lg" @click="selectStore">
-      Select store
+      Pilih Toko
     </button>
   </div>
 </template>

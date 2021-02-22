@@ -7,14 +7,14 @@
           {{ new Date(transactionDate).toDateString() }}
         </span>
       </h5>
-      <p class="card-text">Phone Number: {{ customer.phoneNumber }}</p>
-      <p class="card-text">Sudah Bayar: <i :class="iconClass"></i></p>
+      <p class="card-text">Nomor Telepon: {{ customer.phoneNumber }}</p>
+      <p class="card-text">Pembayaran Lunas: <i :class="iconClass"></i></p>
       <button
         @click="$emit('selectSale', saleId)"
         class="btn btn-primary btn-block"
         type="button"
       >
-        Select sale
+        Pilih Transaksi
       </button>
     </div>
   </div>
