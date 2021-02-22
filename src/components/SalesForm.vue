@@ -10,10 +10,9 @@
         <span class="sr-only">Loading...</span>
       </div>
     </div>
-    <h1>Create Sale</h1>
     <form id="saleForm" class="mt-3">
       <!-- Customer info -->
-      <h3>Customer information</h3>
+      <h3>Data Customer</h3>
       <hr />
       <customer-list
         :list="customerList"
@@ -25,7 +24,7 @@
           <div class="mb-3 row">
             <div class="col">
               <label for="CustomerName" class="form-label">
-                Customer First Name
+                Nama Depan
               </label>
               <input
                 v-model.trim="firstName"
@@ -39,7 +38,7 @@
           <div class="mb-3 row">
             <div class="col">
               <label for="CustomerName" class="form-label">
-                Customer Last Name
+                Nama Belakang
               </label>
               <input
                 v-model.trim="lastName"
@@ -58,7 +57,7 @@
                 @click="searchCustomerByName"
                 :disabled="loading"
               >
-                Search By Customer First and Last name
+                Cari Customer Menggunakan Nama
               </button>
 
               <div class="form-check d-inline-block">
@@ -72,7 +71,7 @@
                   @click="resetCustomerInfo"
                 />
                 <label class="form-check-label" for="createNewCustomer">
-                  Create New Customer
+                  Customer Baru
                 </label>
               </div>
             </div>
@@ -80,7 +79,7 @@
           <div class="mb-3 row">
             <div class="col">
               <label for="CustomerPhone" class="form-label">
-                Customer Phone
+                Nomor Telepon
               </label>
               <input
                 v-model="phoneNum"
@@ -99,7 +98,7 @@
                 @click="searchCustomerByPhone"
                 :disabled="loading"
               >
-                Search by Customer Phone #
+                Cari Menggunakan Nomor Telepon
               </button>
             </div>
           </div>
@@ -107,7 +106,7 @@
             <div class="mb-3 row">
               <div class="col">
                 <label for="CustomerEmail" class="form-label">
-                  Customer Email
+                  Email
                 </label>
                 <input
                   v-model="email"
@@ -125,15 +124,16 @@
         ref="prescriptionElem"
         :show-prescription="showCustomerInfo"
       />
+      <br><br>
 
       <!-- Product info -->
       <div class="row">
         <div class="col">
-          <h3>Product info</h3>
+          <h3>Informasi Barang </h3>
           <hr />
           <div class="row" :class="{ 'd-none': productIds.frames.length < 1 }">
             <div class="col">
-              <h4>Frames</h4>
+              <h4>Frame</h4>
             </div>
           </div>
           <div
@@ -142,7 +142,7 @@
             :key="product.id"
           >
             <div class="col">
-              <label for="ProductId" class="form-label">Frame Barcode</label>
+              <label for="ProductId" class="form-label">Barcode Frame</label>
               <input
                 type="text"
                 class="form-control"
@@ -162,7 +162,7 @@
               </small>
             </div>
             <div class="col">
-              <label for="Quantity" class="form-label">Quantity</label>
+              <label for="Quantity" class="form-label">Kuantitas</label>
               <input
                 type="number"
                 class="form-control"
@@ -185,7 +185,7 @@
             </div>
             <div class="col-2">
               <label for="Remove Product" class="form-label">
-                Remove Product
+                Batalkan Frame
               </label>
               <button
                 class="btn btn-danger form-control"
@@ -209,7 +209,7 @@
           </div>
           <div class="row" :class="{ 'd-none': productIds.lenses.length < 1 }">
             <div class="col">
-              <h4>Stock Lenses</h4>
+              <h4>Lensa Standar</h4>
             </div>
           </div>
           <div
@@ -238,7 +238,7 @@
               </small>
             </div>
             <div class="col">
-              <label for="Quantity" class="form-label">Quantity</label>
+              <label for="Quantity" class="form-label">Kuantitas</label>
               <input
                 type="number"
                 class="form-control"
@@ -261,7 +261,7 @@
             </div>
             <div class="col-2">
               <label for="Remove Product" class="form-label">
-                Remove Product
+                Batalkan Lensa
               </label>
               <button
                 class="btn btn-danger form-control"
@@ -303,7 +303,7 @@
                 v-model="product.productId"
                 @change="setLensDetails(index)"
               >
-                <option selected disabled value="">Select Custom Lens</option>
+                <option selected disabled value="">Pilih Lensa Custom</option>
                 <option
                   v-for="lens in customLenses"
                   :key="lens.id"
@@ -314,7 +314,7 @@
               </select>
             </div>
             <div class="col">
-              <label for="Quantity" class="form-label">Quantity</label>
+              <label for="Quantity" class="form-label">Kuantitas</label>
               <input
                 type="number"
                 class="form-control"
@@ -336,7 +336,7 @@
             </div>
             <div class="col-2">
               <label for="Remove Product" class="form-label">
-                Remove Product
+                Batalkan Lensa Custom
               </label>
               <button
                 class="btn btn-danger form-control"
@@ -365,7 +365,7 @@
                 type="button"
                 @click="addBarcodeInput('frame')"
               >
-                Add Frame
+                Tambah Frame
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -384,7 +384,7 @@
                 type="button"
                 @click="addBarcodeInput('lens')"
               >
-                Add Stock Lens
+                Tambah Lensa Standar
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -403,7 +403,7 @@
                 type="button"
                 @click="addCustomLensInput"
               >
-                Add Custom Lens
+                Tambah Lensa Custom
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -421,11 +421,12 @@
           </div>
         </div>
       </div>
+      <br><br>
 
       <!-- Promotion -->
       <div class="row mb-3">
         <div class="col">
-          <h3>Promotion</h3>
+          <h3>Promosi</h3>
           <hr />
           <select
             class="form-control"
@@ -433,7 +434,7 @@
             v-model="selectedPromotion"
             required
           >
-            <option value="0">No promotion</option>
+            <option value="0">Tanpa promosi</option>
             <option
               v-for="promo in promotions"
               :key="promo.id"
@@ -444,9 +445,35 @@
           </select>
         </div>
       </div>
+      <br><br>
+
+      <!-- Employee -->
+      <div class="row mb-3">
+        <div class="col-4">
+          <h3>Salesman</h3>
+          <hr />
+          <select
+              class="form-control"
+              aria-label="employee selection"
+              v-model="selectedEmployeeId"
+              required
+          >
+            <option value="">Pilih Karyawan</option>
+            <option
+                v-for="employee in employees"
+                :key="employee.id"
+                :value="employee.employeeId"
+            >
+              {{ employee.firstName }} {{ employee.lastname }} ({{
+                employee.jobTitle
+              }})
+            </option>
+          </select>
+        </div>
+      </div>
+      <br>
 
       <!-- Grand total -->
-
       <div v-if="netAmount">
         <div class="row mb-3">
           <div class="col">
@@ -459,10 +486,10 @@
             <table class="table">
               <thead class="thead-dark">
                 <tr>
-                  <th scope="col">Item Code</th>
-                  <th scope="col">Item Name</th>
+                  <th scope="col">Kode Barang</th>
+                  <th scope="col">Nama Barang</th>
                   <th scope="col">Qty</th>
-                  <th scope="col">Price(Rupiah)</th>
+                  <th scope="col">Harga Barang</th>
                 </tr>
               </thead>
               <tbody>
@@ -493,7 +520,7 @@
       <div id="costBreakdownDiv">
         <div class="row justify-content-end">
           <div class="col-2 text-right">
-            <h4>Total Amount:</h4>
+            <h4>Harga Total:</h4>
           </div>
           <div class="col-2 text-right">
             <span class="text-success align-middle costBreakdown">
@@ -503,7 +530,7 @@
         </div>
         <div class="row justify-content-end">
           <div class="col-2 text-right">
-            <h4>Discount:</h4>
+            <h4>Promosi / Diskon:</h4>
           </div>
           <div class="col-2 text-right">
             <span class="text-success align-middle costBreakdown">
@@ -522,29 +549,7 @@
           </div>
         </div>
       </div>
-      <div class="row mb-3">
-        <div class="col-4">
-          <h3>Employee</h3>
-          <hr />
-          <select
-            class="form-control"
-            aria-label="employee selection"
-            v-model="selectedEmployeeId"
-            required
-          >
-            <option value="">Select Employee</option>
-            <option
-              v-for="employee in employees"
-              :key="employee.id"
-              :value="employee.employeeId"
-            >
-              {{ employee.firstName }} {{ employee.lastname }} ({{
-                employee.jobTitle
-              }})
-            </option>
-          </select>
-        </div>
-      </div>
+
 
       <!-- Submit -->
       <div class="row mb-3">
@@ -559,14 +564,14 @@
             id="continueToPaymentBtn"
             @click="openPaymentModal($event)"
           >
-            Continue
+            Checkout Pembelian
           </button>
           <button
             class="btn btn-warning mr-2 float-right"
             type="reset"
             @click="resetData"
           >
-            Cancel Sale
+            Batalkan Pembelian
           </button>
         </div>
       </div>
@@ -585,7 +590,7 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Payment</h5>
+            <h5 class="modal-title">Pembayaran</h5>
             <button
               type="button"
               class="close"
@@ -607,7 +612,7 @@
                     :disabled="hasCustomerPaid"
                   />
                   <label class="form-check-label" for="showDepositInfo">
-                    Deposit dulu?
+                    Pembayaran dengan Deposit
                   </label>
                 </div>
               </div>
@@ -624,7 +629,7 @@
                     :disabled="showDepositInfo"
                   />
                   <label class="form-check-label" for="hasCustomerPaid">
-                    Full payment
+                    Pembayaran Penuh
                   </label>
                 </div>
               </div>
@@ -633,12 +638,12 @@
             <!-- Deposit -->
             <div class="row" v-if="showDepositInfo">
               <div class="col">
-                <h3>Deposit Info</h3>
+                <h3>Pembayaran Deposit</h3>
                 <hr />
                 <div class="row">
                   <div class="col">
                     <label for="Initial Payment Amount" class="form-label">
-                      Initial Payment Amount
+                      Jumlah Deposit
                     </label>
                     <div class="input-group mb-3">
                       <span class="input-group-text" id="rupiah-currency"
@@ -660,14 +665,14 @@
             <div v-if="hasCustomerPaid || showDepositInfo" class="row mb-3">
               <div class="col">
                 <label for="Payment Type" class="form-label">
-                  Payment Type
+                  Jenis Pembayaran
                 </label>
                 <select
                   class="form-control"
                   v-model="selectedPaymentType"
                   :required="hasCustomerPaid"
                 >
-                  <option value="">Select Payment Type</option>
+                  <option value="">Jenis Pembayaran</option>
                   <option v-for="type in paymentTypes" :key="type.id">
                     {{ type }}
                   </option>

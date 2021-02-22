@@ -2,7 +2,7 @@
   <div class="col">
     <div class="form-group mb-2">
       <label class="form-label">
-        <span v-if="showSide">{{ side }} Eye</span> {{ name }}
+        <span v-if="showSide">Mata {{ side }} </span> {{ name }}
       </label>
     </div>
     <div class="row ">

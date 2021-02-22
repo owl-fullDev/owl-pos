@@ -12,36 +12,42 @@
               id="prescriptionCheck"
             />
             <span class="h4 form-check-label" for="prescriptionCheck">
-              Prescription
+              Resep Kacamata
             </span>
+            <br><br><br>
           </div>
         </div>
       </div>
       <div class="row" v-show="showPrescriptionInputs">
         <div class="col">
           <!-- Right Eye -->
-          <h6>Right eye</h6>
+          <h4>Mata Kanan</h4>
           <div class="row mb-3">
+            <!-- SPH -->
             <PrescriptionInput
               :name="'Sphere'"
               :side="'Right'"
               v-model="prescriptionValues.rightEyeSphere"
             />
+            <!-- CYL -->
             <PrescriptionInput
               :name="'Cylinder'"
               :side="'Right'"
               v-model="prescriptionValues.rightEyeCylinder"
             />
+            <!-- AXIS -->
             <PrescriptionInput
               :name="'Axis'"
               :side="'Right'"
               v-model="prescriptionValues.rightEyeAxis"
             />
+            <!-- ADD -->
             <PrescriptionInput
               :name="'Progressive'"
               :side="'Right'"
               v-model="prescriptionValues.rightEyeAdd"
             />
+            <!-- PRISM -->
             <PrescriptionInput
               :name="'Prism'"
               :side="'Right'"
@@ -53,9 +59,10 @@
               v-model="prescriptionValues.pupilDistance"
             />
           </div>
+          <br>
 
           <!-- Left Eye -->
-          <h6>Left eye</h6>
+          <h4>Mata Kiri</h4>
           <div class="row mb-3">
             <PrescriptionInput
               :name="'Sphere'"
