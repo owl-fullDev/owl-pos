@@ -5,6 +5,7 @@ export const PrescriptionDetails = [
       {
         signValues: ["+", "-"],
         component: "SelectInput",
+        defaultVal: "+",
       },
       {
         min: 0,
@@ -27,6 +28,7 @@ export const PrescriptionDetails = [
       {
         signValues: ["+", "-"],
         component: "SelectInput",
+        defaultVal: "+",
       },
       {
         min: 0,

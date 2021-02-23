@@ -52,7 +52,7 @@
           <div class="mb-3 row">
             <div class="col">
               <button
-                class="btn btn-info mr-5"
+                class="btn btn-primary mr-5"
                 type="button"
                 @click="searchCustomerByName"
                 :disabled="loading"
@@ -93,7 +93,7 @@
           <div class="row mb-3">
             <div class="col">
               <button
-                class="btn btn-info mr-5"
+                class="btn btn-primary mr-5"
                 type="button"
                 @click="searchCustomerByPhone"
                 :disabled="loading"
@@ -124,12 +124,12 @@
         ref="prescriptionElem"
         :show-prescription="showCustomerInfo"
       />
-      <br><br>
+      <br /><br />
 
       <!-- Product info -->
       <div class="row">
         <div class="col">
-          <h3>Informasi Barang </h3>
+          <h3>Informasi Barang</h3>
           <hr />
           <div class="row" :class="{ 'd-none': productIds.frames.length < 1 }">
             <div class="col">
@@ -421,7 +421,7 @@
           </div>
         </div>
       </div>
-      <br><br>
+      <br /><br />
 
       <!-- Promotion -->
       <div class="row mb-3">
@@ -445,7 +445,7 @@
           </select>
         </div>
       </div>
-      <br><br>
+      <br /><br />
 
       <!-- Employee -->
       <div class="row mb-3">
@@ -453,16 +453,16 @@
           <h3>Salesman</h3>
           <hr />
           <select
-              class="form-control"
-              aria-label="employee selection"
-              v-model="selectedEmployeeId"
-              required
+            class="form-control"
+            aria-label="employee selection"
+            v-model="selectedEmployeeId"
+            required
           >
             <option value="">Pilih Karyawan</option>
             <option
-                v-for="employee in employees"
-                :key="employee.id"
-                :value="employee.employeeId"
+              v-for="employee in employees"
+              :key="employee.id"
+              :value="employee.employeeId"
             >
               {{ employee.firstName }} {{ employee.lastname }} ({{
                 employee.jobTitle
@@ -471,7 +471,7 @@
           </select>
         </div>
       </div>
-      <br>
+      <br />
 
       <!-- Grand total -->
       <div v-if="netAmount">
@@ -549,7 +549,6 @@
           </div>
         </div>
       </div>
-
 
       <!-- Submit -->
       <div class="row mb-3">
@@ -706,10 +705,10 @@
 </template>
 <script>
 import axios from "axios";
-import CustomerList from "./CustomerList.vue";
+import CustomerList from "@/components/CustomerList.vue";
 import _ from "lodash";
 import storeData from "@/storeData";
-import Prescription from "./Prescription.vue";
+import Prescription from "@/components/Prescription.vue";
 
 const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
 
@@ -1091,6 +1090,8 @@ export default {
       this.phoneNum = selectedCustomer.phoneNumber;
       this.email = selectedCustomer.email;
 
+      // prescription info
+      this.$refs.prescriptionElem.showPrescriptionInputs = true;
       // left eye info
 
       // prettier-ignore
@@ -1123,6 +1124,9 @@ export default {
         //personal info
         this.phoneNum = "";
         this.email = "";
+
+        // prescription info
+        this.$refs.prescriptionElem.showPrescriptionInputs = true;
 
         // left eye info
         this.$refs.prescriptionElem.leftEyeSphere = 0;
