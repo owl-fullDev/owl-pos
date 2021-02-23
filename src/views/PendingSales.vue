@@ -17,13 +17,13 @@
     </div>
     <div class="row">
       <div class="col">
-        <h3>Transaksi Pending</h3>
+        <h3>Pembelian Pending</h3>
         <button
           type="button"
           class="btn btn-light"
           @click="updatePendingSalesList"
         >
-          Refresh Transaksi Pending
+          Refresh Semua Pembelian
         </button>
 
         <hr />

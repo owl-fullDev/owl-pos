@@ -11,7 +11,7 @@
                 active-class="nav-link"
                 class="nav-link"
               >
-                Pending Sales
+                Pembelian Pending
               </router-link>
             </li>
             <li class="nav-item">
@@ -29,7 +29,7 @@
                 active-class="nav-link"
                 class="nav-link"
               >
-                Shipments
+                Kiriman
               </router-link>
             </li>
             <li class="nav-item">
@@ -38,7 +38,7 @@
                 active-class="nav-link"
                 class="nav-link"
               >
-                Employees
+                Karyawan
               </router-link>
             </li>
             <li class="nav-item">

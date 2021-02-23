@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid mt-2">
-    <h1>Restock shipment</h1>
+    <h1>Terima Kiriman</h1>
     <hr />
     <div class="row mb-3">
       <div class="col">
@@ -17,7 +17,7 @@
     <div class="row ">
       <div class="col d-flex justify-content-center">
         <button :disabled="disableBtn" class="btn btn-primary" @click="confirm">
-          Click to confirm shipment is received
+          Cek kode kiriman
         </button>
       </div>
     </div>
@@ -57,7 +57,7 @@ export default {
         })
         .catch((err) => {
           alert(
-            `Server error: ${err.response.data.message} . Please try again later`
+            `Server error: ${err.response.data.message} . Please try again`
           );
         });
     },
