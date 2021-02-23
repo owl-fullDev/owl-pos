@@ -566,7 +566,7 @@
             Checkout Penjualan
           </button>
           <button
-            class="btn btn-warning mr-2 float-right"
+            class="btn btn-danger mr-2 float-right"
             type="reset"
             @click="resetData"
           >
