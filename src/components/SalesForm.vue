@@ -564,18 +564,19 @@
             id="continueToPaymentBtn"
             @click="openPaymentModal($event)"
           >
-            Checkout Pembelian
+            Checkout Penjualan
           </button>
           <button
             class="btn btn-warning mr-2 float-right"
             type="reset"
             @click="resetData"
           >
-            Batalkan Pembelian
+            Batalkan Penjualan
           </button>
         </div>
       </div>
     </form>
+
     <!-- Payment Modal -->
     <div
       ref="modal"

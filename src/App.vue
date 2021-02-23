@@ -11,7 +11,7 @@
                 active-class="nav-link"
                 class="nav-link"
               >
-                Pembelian Pending
+                Penjualan Pending
               </router-link>
             </li>
             <li class="nav-item">

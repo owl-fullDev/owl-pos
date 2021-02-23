@@ -14,7 +14,7 @@
         class="btn btn-primary btn-block"
         type="button"
       >
-        Pilih Transaksi
+        Pilih Penjualan
       </button>
     </div>
   </div>
