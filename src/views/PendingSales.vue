@@ -2,7 +2,8 @@
   <div class="container mt-3">
     <div
       v-if="alertMsg"
-      class="alert alert-success alert-dismissible fade show"
+      class="alert alert-dismissible fade show"
+      :class="alertClass"
       role="alert"
     >
       {{ alertMsg }}
@@ -27,7 +28,12 @@
         </button>
 
         <hr />
-        <div style="height: 700px; overflow-y: auto;">
+        <div v-if="loading" class="d-flex justify-content-center">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div v-else style="height: 700px; overflow-y: auto;">
           <Sale
             v-for="sale in pendingSaleList"
             :key="sale.id"
@@ -67,6 +73,8 @@ export default {
       selectedSale: null,
       pendingSaleList: [],
       alertMsg: "",
+      loading: true,
+      alertClass: "alert-info",
     };
   },
   components: {
@@ -77,13 +85,29 @@ export default {
     this.updatePendingSalesList();
   },
   methods: {
-    updatePendingSalesList() {
+    updatePendingSalesList(showQuantityMsg = true) {
+      this.loading = true;
       axios
         .get(`${apiUrl}/getPendingSaleList?storeId=${storeData.storeId}`)
         .then((response) => {
+          if (showQuantityMsg) {
+            if (response.data.length === 0) {
+              this.alertMsg = "No pending sales";
+              this.alertClass = "alert-warning";
+            } else {
+              this.alertMsg = `Received ${response.data.length} pending sales`;
+              this.alertClass = "alert-success";
+            }
+          }
+          this.loading = false;
           this.pendingSaleList = [...response.data];
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          this.loading = false;
+          this.alertMsg = err.response.data;
+          this.alertClass = "alert-danger";
+        });
     },
     selectSale(saleId) {
       this.selectedSale = _.find(
@@ -110,11 +134,16 @@ export default {
       axios
         .post(`${apiUrl}/updateSale?storeId=${storeData.storeId}`, saleDetails)
         .then((response) => {
-          this.updatePendingSalesList();
+          this.updatePendingSalesList(false);
           this.selectedSale = null;
           this.alertMsg = response.data;
+          this.alertClass = "alert-success";
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          this.updatePendingSalesList(false);
+          this.alertClass = "alert-warning";
+        });
     },
   },
 };
