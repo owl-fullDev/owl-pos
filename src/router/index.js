@@ -7,7 +7,8 @@ import PendingSales from "@/views/PendingSales.vue";
 import Shipments from "@/views/Shipments.vue";
 import Refunds from "@/views/Refunds.vue";
 import storeData from "@/storeData";
-// import CreateShipment from "@/views/CreateShipment";
+import CreateShipment from "@/views/CreateShipment";
+import ReceiveShipment from "@/views/ReceiveShipment";
 
 Vue.use(VueRouter);
 
@@ -40,13 +41,18 @@ const routes = [
   {
     path: "/shipments",
     component: Shipments,
-    // children: [
-    //   {
-    //     path: "CreateShipments",
-    //     name: "Create Shipments",
-    //     component: CreateShipment,
-    //   },
-    // ],
+    children: [
+      {
+        path: "CreateShipments",
+        name: "Create Shipments",
+        component: CreateShipment,
+      },
+      {
+        path: "ReceiveShipments",
+        name: "Receive Shipments",
+        component: ReceiveShipment,
+      },
+    ],
   },
   /*
   {

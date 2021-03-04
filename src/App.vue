@@ -52,7 +52,7 @@
               Kiriman
             </span>
               <div class="dropdown-menu" aria-labelledby="salesDropdown">
-                <router-link to="/shipments" class="dropdown-item">
+                <router-link to="/shipments/ReceiveShipments" class="dropdown-item">
                   Terima Kiriman
                 </router-link>
                 <router-link to="/shipments/CreateShipments" class="dropdown-item">
