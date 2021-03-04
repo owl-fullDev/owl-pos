@@ -25,15 +25,6 @@
             </li>
             <li class="nav-item">
               <router-link
-                to="/shipments"
-                active-class="nav-link"
-                class="nav-link"
-              >
-                Kiriman
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link
                 to="/Employees"
                 active-class="nav-link"
                 class="nav-link"
@@ -49,6 +40,25 @@
               >
                 Refunds
               </router-link>
+            </li>
+            <li class="nav-item dropdown">
+            <span
+                class="nav-link dropdown-toggle"
+                id="salesDropdown"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+            >
+              Kiriman
+            </span>
+              <div class="dropdown-menu" aria-labelledby="salesDropdown">
+                <router-link to="/shipments" class="dropdown-item">
+                  Terima Kiriman
+                </router-link>
+                <router-link to="/shipments/CreateShipments" class="dropdown-item">
+                  Buat Kiriman
+                </router-link>
+              </div>
             </li>
           </ul>
         </div>
