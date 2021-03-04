@@ -552,7 +552,7 @@
 
       <!-- Submit -->
       <div class="row mb-3">
-        <div class="col-10"></div>
+        <div class="col-9"></div>
         <div class="col">
           <button
             class="btn btn-primary float-right"
@@ -1092,28 +1092,19 @@ export default {
 
       // prescription info
       this.$refs.prescriptionElem.showPrescriptionInputs = true;
-      // left eye info
-
-      // prettier-ignore
-      this.$refs.prescriptionElem.leftEyeSphere = selectedCustomer.leftEyeSphere;
-      // prettier-ignore
-      this.$refs.prescriptionElem.leftEyeCylinder = selectedCustomer.leftEyeCylinder;
-      this.$refs.prescriptionElem.leftEyeAxis = selectedCustomer.leftEyeAxis;
-      this.$refs.prescriptionElem.leftEyeAdd = selectedCustomer.leftEyeAdd;
-      this.$refs.prescriptionElem.leftEyePrism = selectedCustomer.leftEyePrism;
-
-      //right eye info
-      // prettier-ignore
-      this.$refs.prescriptionElem.rightEyeSphere = selectedCustomer.rightEyeSphere;
-      // prettier-ignore
-      this.$refs.prescriptionElem.rightEyeCylinder = selectedCustomer.rightEyeCylinder;
-      this.$refs.prescriptionElem.rightEyeAxis = selectedCustomer.rightEyeAxis;
-      this.$refs.prescriptionElem.rightEyeAdd = selectedCustomer.rightEyeAdd;
-      // prettier-ignore
-      this.$refs.prescriptionElem.rightEyePrism = selectedCustomer.rightEyePrism;
-
-      // prettier-ignore
-      this.$refs.prescriptionElem.pupilDistance = selectedCustomer.pupilDistance;
+      const newPrescriptionValues = {
+        leftEyeSphere: selectedCustomer.leftEyeSphere,
+        leftEyeCylinder: selectedCustomer.leftEyeCylinder,
+        leftEyeAxis: selectedCustomer.leftEyeAxis,
+        leftEyePrism: selectedCustomer.leftEyePrism,
+        rightEyeSphere: selectedCustomer.rightEyeSphere,
+        rightEyeCylinder: selectedCustomer.rightEyeCylinder,
+        rightEyeAxis: selectedCustomer.rightEyeAxis,
+        rightEyeAdd: selectedCustomer.rightEyeAdd,
+        rightEyePrism: selectedCustomer.rightEyePrism,
+        pupilDistance: selectedCustomer.pupilDistance,
+      };
+      this.$refs.prescriptionElem.setPrescriptionValues(newPrescriptionValues);
 
       this.selectedCustomerId = selectedCustomer.customerId;
     },
@@ -1125,24 +1116,9 @@ export default {
         this.phoneNum = "";
         this.email = "";
 
-        // prescription info
+        // reset prescription info
         this.$refs.prescriptionElem.showPrescriptionInputs = true;
-
-        // left eye info
-        this.$refs.prescriptionElem.leftEyeSphere = 0;
-        this.$refs.prescriptionElem.leftEyeCylinder = 0;
-        this.$refs.prescriptionElem.leftEyeAxis = 0;
-        this.$refs.prescriptionElem.leftEyeAdd = 0;
-        this.$refs.prescriptionElem.leftEyePrism = 0;
-
-        //right eye info
-        this.$refs.prescriptionElem.rightEyeSphere = 0;
-        this.$refs.prescriptionElem.rightEyeCylinder = 0;
-        this.$refs.prescriptionElem.rightEyeAxis = 0;
-        this.$refs.prescriptionElem.rightEyeAdd = 0;
-        this.$refs.prescriptionElem.rightEyePrism = 0;
-
-        this.$refs.prescriptionElem.pupilDistance = 0;
+        this.$refs.prescriptionElem.setPrescriptionValues(null);
       }
     },
     setLensDetails(idx) {

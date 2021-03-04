@@ -14,7 +14,7 @@
             <span class="h4 form-check-label" for="prescriptionCheck">
               Resep Kacamata
             </span>
-            <br><br><br>
+            <br /><br /><br />
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
               v-model="prescriptionValues.pupilDistance"
             />
           </div>
-          <br>
+          <br />
 
           <!-- Left Eye -->
           <h4>Mata Kiri</h4>
@@ -126,11 +126,22 @@ export default {
       showPrescriptionInputs: false,
     };
   },
+  methods: {
+    resetPrescriptionValues() {
+      Object.assign(this.prescriptionValues, { ...prescriptionDetails });
+    },
+    setPrescriptionValues(newValues) {
+      if (newValues) {
+        Object.assign(this.prescriptionValues, { ...newValues });
+      } else {
+        this.resetPrescriptionValues();
+      }
+    },
+  },
   watch: {
     showPrescriptionInputs(val) {
       if (!val) {
-        console.log(val, "HERE", prescriptionDetails);
-        Object.assign(this.prescriptionValues, { ...prescriptionDetails });
+        this.resetPrescriptionValues();
       }
     },
   },
