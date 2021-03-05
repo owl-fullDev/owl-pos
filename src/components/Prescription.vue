@@ -21,73 +21,73 @@
       <div class="row" v-show="showPrescriptionInputs">
         <div class="col">
           <!-- Right Eye -->
-          <h4>Mata Kanan</h4>
+          <h4>Mata Kanan (R)</h4>
           <div class="row mb-3">
             <!-- SPH -->
             <PrescriptionInput
-              :name="'Sphere'"
-              :side="'Right'"
+              :name="'SPH'"
+              :side="'Kanan'"
               v-model="prescriptionValues.rightEyeSphere"
             />
             <!-- CYL -->
             <PrescriptionInput
-              :name="'Cylinder'"
-              :side="'Right'"
+              :name="'CYL'"
+              :side="'Kanan'"
               v-model="prescriptionValues.rightEyeCylinder"
             />
             <!-- AXIS -->
             <PrescriptionInput
               :name="'Axis'"
-              :side="'Right'"
+              :side="'Kanan'"
               v-model="prescriptionValues.rightEyeAxis"
             />
             <!-- ADD -->
             <PrescriptionInput
-              :name="'Progressive'"
-              :side="'Right'"
+              :name="'ADD'"
+              :side="'Kanan'"
               v-model="prescriptionValues.rightEyeAdd"
             />
             <!-- PRISM -->
             <PrescriptionInput
-              :name="'Prism'"
-              :side="'Right'"
+              :name="'P.Height'"
+              :side="'Kanan'"
               v-model="prescriptionValues.rightEyePrism"
             />
             <PrescriptionInput
               :name="'PD'"
-              :side="'Right'"
+              :side="'Kanan'"
               v-model="prescriptionValues.pupilDistance"
             />
           </div>
           <br />
 
           <!-- Left Eye -->
-          <h4>Mata Kiri</h4>
+          <h4>Mata Kiri (L)</h4>
           <div class="row mb-3">
             <PrescriptionInput
-              :name="'Sphere'"
-              :side="'Left'"
+              :name="'SPH'"
+              :side="'Kiri'"
               v-model="prescriptionValues.leftEyeSphere"
             />
             <PrescriptionInput
-              :name="'Cylinder'"
-              :side="'Left'"
+              :name="'CYL'"
+              :side="'Kiri'"
               v-model="prescriptionValues.leftEyeCylinder"
             />
             <PrescriptionInput
               :name="'Axis'"
-              :side="'Left'"
+              :side="'Kiri'"
               ref="leftEyeAxis"
               v-model="prescriptionValues.leftEyeAxis"
             />
             <PrescriptionInput
-              :name="'Progressive'"
-              :side="'Left'"
+              :name="'ADD'"
+              :side="'Kiri'"
               v-model="prescriptionValues.leftEyeAdd"
             />
             <PrescriptionInput
-              :name="'Prism'"
-              :side="'Left'"
+              :name="'P.Height'"
+              :side="'Kiri'"
               v-model="prescriptionValues.leftEyePrism"
             />
 

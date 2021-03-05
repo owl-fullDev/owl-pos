@@ -59,13 +59,13 @@ export default {
   },
   methods: {
     updateFinalVal() {
-      if (this.name === "Sphere" || this.name === "Cylinder") {
+      if (this.name === "SPH" || this.name === "CYL") {
         const sign = this.$children[0].selectedVal;
         const wholeNum = parseFloat(this.$children[1].selectedVal);
         const decimalVal = parseFloat(this.$children[2].selectedVal);
 
         this.finalVal = parseFloat(`${sign}${wholeNum + decimalVal}`);
-      } else if (this.name === "Prism") {
+      } else if (this.name === "P.Height") {
         this.finalVal = this.$children[0].textVal;
       } else {
         this.finalVal = parseFloat(this.$children[0].selectedVal);
@@ -77,10 +77,11 @@ export default {
       } else {
         if (!input.placeholder) {
           let options = [];
+
           for (let i = input.min; i <= input.max; i += input.interval) {
             let valueToShow = i;
             if (input.interval === 0.25) {
-              if (this.name === "Sphere" || this.name === "Cylinder") {
+              if (this.name === "SPH" || this.name === "CYL") {
                 valueToShow = i.toFixed(2).replace(/^0/, "");
               } else {
                 valueToShow = i.toFixed(2);
@@ -108,7 +109,7 @@ export default {
         console.log("VAL CHANGED", val, this.name, this.side);
         if (val !== null) {
           this.finalVal = val;
-          if (this.name === "Sphere" || this.name === "Cylinder") {
+          if (this.name === "SPH" || this.name === "CYL") {
             if (val < 0) {
               this.$children[0].selectedVal = "-";
             } else {
@@ -119,7 +120,7 @@ export default {
             this.$children[2].selectedVal = Math.abs(val % 1)
               .toFixed(2)
               .replace(/^0/, "");
-          } else if (this.name === "Prism") {
+          } else if (this.name === "P.Height") {
             this.$children[0].textVal = val;
           } else {
             if (this.inputs[0].interval === 0.25) {

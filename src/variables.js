@@ -1,6 +1,6 @@
 export const PrescriptionDetails = [
   {
-    name: "Sphere",
+    name: "SPH",
     inputs: [
       {
         signValues: ["+", "-"],
@@ -9,7 +9,7 @@ export const PrescriptionDetails = [
       },
       {
         min: 0,
-        max: 20,
+        max: 12,
         interval: 1,
         component: "SelectInput",
       },
@@ -23,16 +23,16 @@ export const PrescriptionDetails = [
     ],
   },
   {
-    name: "Cylinder",
+    name: "CYL",
     inputs: [
       {
-        signValues: ["+", "-"],
+        signValues: ["-"],
         component: "SelectInput",
-        defaultVal: "+",
+        defaultVal: "-",
       },
       {
         min: 0,
-        max: 5,
+        max: 6,
         interval: 1,
         component: "SelectInput",
       },
@@ -57,7 +57,7 @@ export const PrescriptionDetails = [
     ],
   },
   {
-    name: "Progressive",
+    name: "ADD",
     inputs: [
       {
         min: 0,
@@ -69,7 +69,7 @@ export const PrescriptionDetails = [
     ],
   },
   {
-    name: "Prism",
+    name: "P.Height",
     inputs: [
       {
         placeholder: "Nilai Prism",
