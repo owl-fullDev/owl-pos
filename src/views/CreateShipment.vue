@@ -2,6 +2,8 @@
   <div class="container-fluid mt-2">
     <h1>Buat Kiriman antar toko</h1>
     <hr />
+    <br>
+    <h4>Pilih Toko Destinasi:</h4>
     <div class="row mb-3">
       <div class="col">
         <select class="custom-select custom-select-lg mb-3" v-model="destinationId">
@@ -85,7 +87,7 @@
       </div>
       <div class="col-2">
         <label for="Remove Product" class="form-label">
-          Batalkan Frame
+          Batalkan Produk
         </label>
         <button
             class="btn btn-danger form-control"
@@ -108,7 +110,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col-4 align-middle">
         <button
             class="btn btn-danger form-control"
             type="button"
