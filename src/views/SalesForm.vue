@@ -643,8 +643,20 @@
                 <div class="row">
                   <div class="col">
                     <label for="Initial Payment Amount" class="form-label">
-                      Jumlah Deposit
+                      Jumlah Persentase Pembayaran
                     </label>
+                    <div class="input-group mb-2">
+                      <select
+                          class="form-control"
+                          v-model="selectedDepositPercentage"
+                          :required="hasCustomerPaid"
+                      >
+                        <option value="0" disabled>Pilih jumlah deposit</option>
+                        <option v-for="amount in depositPercentages " :key="amount.id">
+                          {{ amount }}%
+                        </option>
+                      </select>
+                    </div>
                     <div class="input-group mb-3">
                       <span class="input-group-text" id="rupiah-currency"
                         >Rp</span
@@ -655,7 +667,7 @@
                         v-model.number="initialPaymentAmt"
                         aria-label="initialPaymentAmount"
                         aria-describedby="rupiah-currency"
-                        :required="showDepositInfo"
+                        readonly
                       />
                     </div>
                   </div>
@@ -730,8 +742,9 @@ const initialData = () => {
     promotions: [],
     selectedPromotion: 0,
     showDepositInfo: false,
-    initialPaymentAmt: 0,
     paymentTypes: ["Cash", "Debit", "Credit"],
+    depositPercentages: [30, 50, 70],
+    selectedDepositPercentage: 0,
     selectedPaymentType: "",
     createNewCustomer: false,
     customerList: null,
@@ -751,6 +764,9 @@ export default {
     this.fetchDataFromServer();
   },
   computed: {
+    initialPaymentAmt(){
+      return this.netAmount*this.selectedDepositPercentage/100;
+    },
     prescription() {
       return this.$refs.prescriptionElem.prescriptionValues;
     },
@@ -808,8 +824,10 @@ export default {
       );
 
       if (promo) {
-        const discountVal = netAmt * (promo.discountVal / 100);
-        netAmt -= discountVal;
+        if (promo.discountVal!==0) {
+          const discountVal = netAmt * (promo.discountVal / 100);
+          netAmt -= discountVal;
+        }
       }
 
       return parseFloat(netAmt.toFixed(2));
@@ -898,7 +916,7 @@ export default {
         const productsToSend = [...frames, ...lenses, ...customLenses];
 
         const newSaleObj = {
-          customerId: this.selectedCustomerId ? this.selectedCustomerId : 0,
+          customerId: !this.createNewCustomer ? this.selectedCustomerId : 0,
           itemsSold: productsToSend.length,
           sale: {
             promotionId: this.selectedPromotion,
@@ -907,9 +925,7 @@ export default {
             storeId: storeData.storeId,
             initialDepositDate: new Date().toISOString(),
             initialDepositType: this.selectedPaymentType,
-            initialDepositAmount: this.showDepositInfo
-              ? `${this.initialPaymentAmt}`
-              : `${this.netAmount}`,
+            initialDepositAmount: this.showDepositInfo ? `${this.initialPaymentAmt}` : `${this.netAmount}`,
           },
           products: productsToSend,
           newCustomer: {

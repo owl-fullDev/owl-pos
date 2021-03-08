@@ -1,130 +1,138 @@
 <template>
   <div class="container-fluid mt-2">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" v-if="statusMessage">
+      <span>{{statusMessage}}</span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <h1>Buat Kiriman antar toko</h1>
     <hr />
     <br>
-    <h4>Pilih Toko Destinasi:</h4>
-    <div class="row mb-3">
-      <div class="col">
-        <select class="custom-select custom-select-lg mb-3" v-model="destinationId">
-          <option value="" selected disabled>Pilih toko</option>
-          <option v-for="store in stores" :key="store.id" :value="store.storeId">
-            {{ store.name }}
-          </option>
-        </select>
+    <form @submit="createShipment($event)">
+      <h4>Pilih Toko Destinasi:</h4>
+      <div class="row mb-3">
+        <div class="col">
+          <select required class="custom-select custom-select-lg mb-3" v-model="destinationId">
+            <option value="" selected disabled>Pilih toko</option>
+            <option v-for="store in stores" :key="store.id" :value="store.storeId">
+              {{ store.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col"></div>
       </div>
-      <div class="col"></div>
-    </div>
-    <div class="row mb-3">
-      <div class="col">
-        <button
-            class="btn btn-primary mr-2"
-            type="button"
-            @click="addBarcodeInput"
-        >
-          Tambah Produk
-          <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-plus-circle-fill"
-              viewBox="0 0 16 16"
+      <div class="row mb-3">
+        <div class="col">
+          <button
+              class="btn btn-primary mr-2"
+              type="button"
+              @click="addBarcodeInput"
           >
-            <path
-                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"
-            ></path>
-          </svg>
-        </button>
+            Tambah Produk
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-plus-circle-fill"
+                viewBox="0 0 16 16"
+            >
+              <path
+                  d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"
+              ></path>
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
-    <div
-        class="mb-3 row"
-        v-for="(product, index) in products"
-        :key="product.id"
-    >
-      <div class="col">
-        <label for="ProductId" class="form-label">Barcode</label>
-        <input
-            type="text"
-            class="form-control"
-            :class="{
-                  'is-invalid':
-                    product.barcodeError && product.barcodeError != null,
-                  'is-valid': product.barcodeError === null,
-                }"
-            aria-label="Product"
-            aria-describedby="productId"
-            v-model.trim="product.productId"
-            @change="validateBarcode(index)"
-            required
-        />
-        <small class="form-text text-danger">
-          {{ product.barcodeError }}
-        </small>
-      </div>
-      <div class="col">
-        <label for="Quantity" class="form-label">Kuantitas</label>
-        <input
-            type="number"
-            class="form-control"
-            :class="{
-                  'is-invalid':
-                    product.quantityError && product.quantityError != null,
-                  'is-valid': product.quantityError === null,
-                }"
-            aria-label="ProductQuantity"
-            aria-describedby="productQuantity"
-            v-model.number="product.quantity"
-            min="1"
-            :max="product.availableAmt"
-            @change="validateProductQuantity(index)"
-            :disabled="product.barcodeError || !product.productId"
-        />
-        <small class="form-text text-danger">
-          {{ product.quantityError }}
-        </small>
-      </div>
-      <div class="col-2">
-        <label for="Remove Product" class="form-label">
-          Batalkan Produk
-        </label>
-        <button
-            class="btn btn-danger form-control"
-            type="button"
-            @click="removeProduct(index)"
-        >
-          <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-dash-circle-fill"
-              viewBox="0 0 16 16"
+      <div
+          class="mb-3 row"
+          v-for="(product, index) in products"
+          :key="product.id"
+      >
+        <div class="col">
+          <label for="ProductId" class="form-label">Barcode</label>
+          <input
+              type="text"
+              class="form-control"
+              :class="{
+                    'is-invalid':
+                      product.barcodeError && product.barcodeError != null,
+                    'is-valid': product.barcodeError === null,
+                  }"
+              aria-label="Product"
+              aria-describedby="productId"
+              v-model.trim="product.productId"
+              @change="validateBarcode(index)"
+              required
+          />
+          <small class="form-text text-danger">
+            {{ product.barcodeError }}
+          </small>
+        </div>
+        <div class="col">
+          <label for="Quantity" class="form-label">Kuantitas</label>
+          <input
+              type="number"
+              class="form-control"
+              :class="{
+                    'is-invalid':
+                      product.quantityError && product.quantityError != null,
+                    'is-valid': product.quantityError === null,
+                  }"
+              aria-label="ProductQuantity"
+              aria-describedby="productQuantity"
+              v-model.number="product.quantity"
+              min="1"
+              :max="product.availableAmt"
+              @change="validateProductQuantity(index)"
+              :disabled="product.barcodeError || !product.productId"
+          />
+          <small class="form-text text-danger">
+            {{ product.quantityError }}
+          </small>
+        </div>
+        <div class="col-2">
+          <label for="Remove Product" class="form-label">
+            Batalkan Produk
+          </label>
+          <button
+              class="btn btn-danger form-control"
+              type="button"
+              @click="removeProduct(index)"
           >
-            <path
-                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z"
-            ></path>
-          </svg>
-        </button>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-dash-circle-fill"
+                viewBox="0 0 16 16"
+            >
+              <path
+                  d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z"
+              ></path>
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-4 align-middle">
-        <button
-            class="btn btn-danger form-control"
-            type="button"
-            @click="createShipment"
-        >
-          Buat Kiriman baru
-        </button>
+      <div class="row">
+        <div class="col-4 align-middle">
+          <button
+              class="btn btn-danger form-control"
+              type="submit"
+          >
+            Buat Kiriman baru
+          </button>
+        </div>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 <script>
 import axios from "axios";
 import storeData from "@/storeData";
+import _ from "lodash";
 
 // // prettier-ignore
 const apiUrl =
@@ -134,6 +142,7 @@ export default {
   name: "CreateShipment",
   data: () => {
     return {
+      statusMessage: "",
       destinationId: 0,
       stores: [],
       products: [],
@@ -144,12 +153,19 @@ export default {
     axios
         .get(`${apiUrl}/hoStoresEndpoint/getAllStores`)
         .then((response) => {
-          this.stores = [...response.data];
+          this.stores = response.data.filter(s => s.storeId != storeData.storeId);
+
         })
         .catch((err) => console.log(err));
   },
   computed: {
-
+    formHasErrors() {
+      let barcodeErrors = _.some(
+          this.products,
+          (p) => p.barcodeError || p.quantityError
+      );
+      return barcodeErrors;
+    },
   },
   methods: {
     addBarcodeInput() {
@@ -213,21 +229,30 @@ export default {
     removeProduct(index) {
       this.products.splice(index, 1);
     },
-    createShipment(){
-      const formattedProducts= this.products.map(p => ({productId: p.productId, quantity: p.quantity}));
-      const shipment = {
-        originType:3,
-        destinationType:3,
-        originStoreId: storeData.storeId,
-        destinationStoreId: this.destinationId,
-        products: formattedProducts
-      };
-      console.log(shipment)
-      axios.post(`${apiUrl}/posEndpoint/newTransferShipment`,shipment)
-      .then((response)=>{
-        console.log(response)
-      })
-      .catch(err => console.log(err))
+    createShipment(e) {
+      e.preventDefault();
+      if (this.formHasErrors) {
+        alert("Form has error: ")
+      }
+      else if(this.products.length===0){
+        alert("No products added to shipment")
+      }
+      else {
+        const formattedProducts = this.products.map(p => ({productId: p.productId, quantity: p.quantity}));
+        const shipment = {
+          originType: 3,
+          destinationType: 3,
+          originStoreId: storeData.storeId,
+          destinationStoreId: this.destinationId,
+          products: formattedProducts
+        };
+        console.log(shipment)
+        axios.post(`${apiUrl}/posEndpoint/newTransferShipment`, shipment)
+            .then((response) => {
+              console.log(response)
+            })
+            .catch(err => console.log(err))
+      }
     }
   },
 };
