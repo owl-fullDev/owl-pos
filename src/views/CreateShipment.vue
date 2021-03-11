@@ -242,9 +242,9 @@ export default {
         const shipment = {
           originType: 3,
           destinationType: 3,
-          originStoreId: storeData.storeId,
-          destinationStoreId: this.destinationId,
-          products: formattedProducts
+          originId: storeData.storeId,
+          destinationId: this.destinationId,
+          shipmentDetailList: formattedProducts
         };
         console.log(shipment)
         axios.post(`${apiUrl}/posEndpoint/newTransferShipment`, shipment)
