@@ -258,13 +258,12 @@ export default {
           destinationId: this.destinationId,
           shipmentDetailList: formattedProducts,
         };
-        console.log(shipment);
         axios
           .post(`${apiUrl}/posEndpoint/newTransferShipment`, shipment)
           .then((response) => {
-            console.log(response);
+            alert(response);
           })
-          .catch((err) => console.log(err));
+          .catch((err) => alert(err));
       }
     },
   },
