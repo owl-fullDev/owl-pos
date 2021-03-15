@@ -647,12 +647,15 @@
                     </label>
                     <div class="input-group mb-2">
                       <select
-                          class="form-control"
-                          v-model="selectedDepositPercentage"
-                          :required="hasCustomerPaid"
+                        class="form-control"
+                        v-model="selectedDepositPercentage"
+                        :required="hasCustomerPaid"
                       >
                         <option value="0" disabled>Pilih jumlah deposit</option>
-                        <option v-for="amount in depositPercentages " :key="amount.id">
+                        <option
+                          v-for="amount in depositPercentages"
+                          :key="amount.id"
+                        >
                           {{ amount }}%
                         </option>
                       </select>
@@ -764,8 +767,8 @@ export default {
     this.fetchDataFromServer();
   },
   computed: {
-    initialPaymentAmt(){
-      return this.netAmount*this.selectedDepositPercentage/100;
+    initialPaymentAmt() {
+      return (this.netAmount * this.selectedDepositPercentage) / 100;
     },
     prescription() {
       return this.$refs.prescriptionElem.prescriptionValues;
@@ -824,7 +827,7 @@ export default {
       );
 
       if (promo) {
-        if (promo.discountVal!==0) {
+        if (promo.discountVal !== 0) {
           const discountVal = netAmt * (promo.discountVal / 100);
           netAmt -= discountVal;
         }
@@ -925,7 +928,9 @@ export default {
             storeId: storeData.storeId,
             initialDepositDate: new Date().toISOString(),
             initialDepositType: this.selectedPaymentType,
-            initialDepositAmount: this.showDepositInfo ? `${this.initialPaymentAmt}` : `${this.netAmount}`,
+            initialDepositAmount: this.showDepositInfo
+              ? `${this.initialPaymentAmt}`
+              : `${this.netAmount}`,
           },
           products: productsToSend,
           newCustomer: {
@@ -950,35 +955,35 @@ export default {
     },
     validateBarcode(product) {
       if (product) {
-        if (product.productId.length != 16) {
-          product.barcodeError = "Length of barcode should be 16 characters";
-        } else {
-          axios
-            .get(
-              `${apiUrl}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
-            )
-            .then((response) => {
-              let {
-                productPrice,
-                quantity: quantityAvailable,
-                productName,
-              } = response.data;
-              product.price = productPrice;
-              product.availableAmt = quantityAvailable;
-              product.name = productName;
-              product.barcodeError = null;
-              product.quantityError = null;
-            })
-            .catch((error) => {
-              console.error(error);
-              product.barcodeError = "No such barcode exists";
-              product.quantityError = "";
-              product.price = 0;
-              product.availableAmt = 1;
-              product.quantity = 1;
-              product.name = "";
-            });
-        }
+        // if (product.productId.length != 16) {
+        //   product.barcodeError = "Length of barcode should be 16 characters";
+        // } else {
+        //   }
+        axios
+          .get(
+            `${apiUrl}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
+          )
+          .then((response) => {
+            let {
+              productPrice,
+              quantity: quantityAvailable,
+              productName,
+            } = response.data;
+            product.price = productPrice;
+            product.availableAmt = quantityAvailable;
+            product.name = productName;
+            product.barcodeError = null;
+            product.quantityError = null;
+          })
+          .catch((error) => {
+            console.error(error);
+            product.barcodeError = "No such barcode exists";
+            product.quantityError = "";
+            product.price = 0;
+            product.availableAmt = 1;
+            product.quantity = 1;
+            product.name = "";
+          });
       }
     },
     validateBarcodeInput(idx, type) {
