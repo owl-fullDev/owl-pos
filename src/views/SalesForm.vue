@@ -120,6 +120,7 @@
         </div>
       </div>
 
+      <!-- Prescription -->
       <Prescription
         ref="prescriptionElem"
         :show-prescription="showCustomerInfo"
@@ -1111,7 +1112,6 @@ export default {
       this.email = selectedCustomer.email;
 
       // prescription info
-      this.$refs.prescriptionElem.showPrescriptionInputs = true;
       const newPrescriptionValues = {
         leftEyeSphere: selectedCustomer.leftEyeSphere,
         leftEyeCylinder: selectedCustomer.leftEyeCylinder,
@@ -1137,7 +1137,6 @@ export default {
         this.email = "";
 
         // reset prescription info
-        this.$refs.prescriptionElem.showPrescriptionInputs = true;
         this.$refs.prescriptionElem.setPrescriptionValues(null);
       }
     },

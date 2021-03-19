@@ -4,7 +4,6 @@
     :placeholder="options"
     v-model="textVal"
     @input="$emit('change')"
-    required
   />
 </template>
 <script>

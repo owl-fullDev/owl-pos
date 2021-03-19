@@ -4,21 +4,12 @@
     <div class="col">
       <div class="mt-3 row">
         <div class="col">
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              v-model="showPrescriptionInputs"
-              id="prescriptionCheck"
-            />
-            <span class="h4 form-check-label" for="prescriptionCheck">
-              Resep Kacamata
-            </span>
-            <br /><br /><br />
-          </div>
+          <h4>
+            Resep Kacamata
+          </h4>
         </div>
       </div>
-      <div class="row" v-show="showPrescriptionInputs">
+      <div class="row">
         <div class="col">
           <!-- Right Eye -->
           <h4>Mata Kanan (R)</h4>
@@ -106,12 +97,12 @@ const prescriptionDetails = {
   leftEyeCylinder: 0,
   leftEyeAxis: 0,
   leftEyeAdd: 0,
-  leftEyePrism: 0,
+  leftEyePrism: "",
   rightEyeSphere: 0,
   rightEyeCylinder: 0,
   rightEyeAxis: 0,
   rightEyeAdd: 0,
-  rightEyePrism: 0,
+  rightEyePrism: "",
   pupilDistance: 0,
 };
 export default {
@@ -123,7 +114,6 @@ export default {
   data: () => {
     return {
       prescriptionValues: { ...prescriptionDetails },
-      showPrescriptionInputs: false,
     };
   },
   methods: {
@@ -139,7 +129,7 @@ export default {
     },
   },
   watch: {
-    showPrescriptionInputs(val) {
+    showPrescription(val) {
       if (!val) {
         this.resetPrescriptionValues();
       }
