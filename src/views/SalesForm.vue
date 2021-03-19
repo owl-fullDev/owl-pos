@@ -942,8 +942,6 @@ export default {
             ...this.prescription,
           },
         };
-
-        console.log(newSaleObj);
         axios
           .post(`${apiUrl}/newSale`, newSaleObj)
           .then((response) => {

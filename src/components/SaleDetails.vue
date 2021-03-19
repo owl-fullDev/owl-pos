@@ -123,6 +123,12 @@
               <strong>
                 Are you sure you want to issue this refund?
               </strong>
+              <form ref="refundForm">
+                <div class="form-group mt-2">
+                  <label for="remarks">Remarks</label>
+                  <input type="text" v-model.trim="remarks" class="form-control" id="remarks" required>
+                </div>
+              </form>
             </div>
             <div v-else>
               <div class="row mb-3">
@@ -169,7 +175,7 @@
             <button
               :disabled="disablePaymentBtn"
               type="button"
-              data-dismiss="modal"
+              :data-dismiss="isFormValid() ? 'modal' : ''"
               class="btn btn-success"
               @click="confirmAction"
             >
@@ -189,6 +195,7 @@ export default {
     return {
       inStorePaymentType: ["Cash", "Debit", "Credit"],
       selectedInStorePaymentType: "",
+      remarks: ""
     };
   },
   computed: {
@@ -211,6 +218,12 @@ export default {
     },
   },
   methods: {
+    isFormValid() {
+      if (this.$refs.refundForm)
+        return this.$refs.refundForm.checkValidity();
+
+      return false;
+    },
     confirmAction() {
       if (!this.canRefund) {
         this.$emit(
@@ -219,7 +232,12 @@ export default {
           this.amountDue
         );
       } else {
-        this.$emit("updateSale");
+        if (!this.isFormValid()) {
+          this.$refs.refundForm.reportValidity();
+          return;
+        } else {
+          this.$emit("updateSale", this.remarks);
+        }
       }
     },
   },

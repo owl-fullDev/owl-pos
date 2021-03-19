@@ -95,9 +95,13 @@ export default {
     resetSelectedSale() {
       this.selectedSale = null;
     },
-    updateSale() {
+    updateSale(remarks) {
+      const refundObj = {
+        saleId: this.selectedSale.saleId,
+        remarks: remarks
+      }
       axios
-        .get(`${apiUrl}/refundSale?saleId=${this.selectedSale.saleId}`)
+        .post(`${apiUrl}/refundSale`,refundObj)
         .then((response) => {
           this.updateRecentSalesList();
           this.selectedSale = null;
