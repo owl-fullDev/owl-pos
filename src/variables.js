@@ -73,7 +73,7 @@ export const PrescriptionDetails = [
     inputs: [
       {
         component: "TextInput",
-        defaultVal: "0.00",
+        defaultVal: "",
       },
     ],
   },
