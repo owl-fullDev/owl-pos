@@ -655,6 +655,7 @@
                         <option
                           v-for="amount in depositPercentages"
                           :key="amount.id"
+                          :value="amount"
                         >
                           {{ amount }}%
                         </option>

@@ -72,8 +72,8 @@ export const PrescriptionDetails = [
     name: "P.Height",
     inputs: [
       {
-        placeholder: "Nilai Prism",
         component: "TextInput",
+        defaultVal: "0.00",
       },
     ],
   },
