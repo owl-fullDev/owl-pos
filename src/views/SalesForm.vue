@@ -446,7 +446,40 @@
           </select>
         </div>
       </div>
-      <br /><br />
+      <div class="row mb-3" v-if="selectedPromotion === 1">
+        <div class="col">
+          <h4>Select sale order</h4>
+          <hr />
+          <div class="custom-control custom-radio">
+            <input
+              type="radio"
+              id="firstSale"
+              name="customRadio"
+              class="custom-control-input"
+              :value="1"
+              v-model="saleNumber"
+              required
+            />
+            <label class="custom-control-label" for="firstSale">
+              First sale
+            </label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input
+              type="radio"
+              id="secondSale"
+              name="customRadio"
+              class="custom-control-input"
+              :value="2"
+              v-model="saleNumber"
+              required
+            />
+            <label class="custom-control-label" for="secondSale">
+              Second Sale
+            </label>
+          </div>
+        </div>
+      </div>
 
       <!-- Employee -->
       <div class="row mb-3">
@@ -475,7 +508,7 @@
       <br />
 
       <!-- Grand total -->
-      <div v-if="netAmount">
+      <div v-if="showTable">
         <div class="row mb-3">
           <div class="col">
             <h5>Sale Details</h5>
@@ -560,7 +593,7 @@
             type="submit"
             :disabled="formHasErrors"
             data-toggle="modal"
-            data-target="#paymentModal"
+            :data-target="`#${modalToOpen}`"
             id="continueToPaymentBtn"
             @click="openPaymentModal($event)"
           >
@@ -576,6 +609,171 @@
         </div>
       </div>
     </form>
+
+    <!-- First Sale picker modal -->
+    <div
+      class="modal fade"
+      id="selectFirstSaleModal"
+      tabindex="-1"
+      aria-labelledby="selectFirstSaleModalLabel"
+      aria-hidden="true"
+      v-if="showPaymentModal"
+    >
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="selectFirstSaleModalLabel">
+              Select first sale
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- prettier-ignore -->
+            <div class="alert alert-info" :class="{'alertInfo': !showDiscountError, 'alert-danger': showDiscountError}" role="alert">
+              <strong>{{ productIds.frames[0].productId }} </strong> has to be cheaper than the frame purchased in the first sale
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="firstSaleId">Select from this list</label>
+              <select
+                class="form-control"
+                id="firstSaleId"
+                v-model="selectedFirstSaleId"
+              >
+                <option value="0" selected disabled>Select first sale</option>
+                <!-- prettier-ignore -->
+                <option
+                  v-for="sale in firstSaleList"
+                  :key="sale.id"
+                  :value="sale.saleId"
+                >
+                  Customer: {{ sale.customer.firstName }} {{ sale.customer.lastName }} -
+                  Frame: {{ sale.saleDetailList[0].product.productName }} ({{sale.saleDetailList[0].product.productId}}) -
+                  Price: {{ sale.grandTotal }} Rupiah
+                  Date/Time: {{new Date(sale.initialDepositDate).toUTCString()}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+              @click="resetSaleSelection"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-dismiss="modal"
+              data-toggle="modal"
+              data-target="#paymentModal"
+              :disabled="showDiscountError || !selectedFirstSaleId"
+              @click="applyDiscount"
+            >
+              Proceed to checkout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End of first sale picker modal -->
+
+    <!-- Frame picker modal -->
+    <div
+      class="modal fade"
+      id="framePickerModal"
+      tabindex="-1"
+      aria-labelledby="framePickerModalLabel"
+      aria-hidden="true"
+      v-if="showPaymentModal"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="framePickerModalLabel">
+              Select Frames
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Select two frames to apply the 2nd pair 50% off promo</p>
+            <div class="form-group mb-2">
+              <label for="firstFrameId">First frame</label>
+              <select
+                class="form-control"
+                id="firstFrameId"
+                v-model="firstFrameId"
+              >
+                <option value="" selected disabled>Select first frame</option>
+                <option
+                  v-for="frame in productIds.frames"
+                  :key="frame.id"
+                  :value="frame.productId"
+                >
+                  {{ frame.name }} ({{ frame.productId }})
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="secondFrameId">Second frame</label>
+              <select
+                class="form-control"
+                id="secondFrameId"
+                v-model="secondFrameId"
+                @change="secondFrameId = ''"
+              >
+                <option value="" selected disabled>Select second frame</option>
+                <option
+                  v-for="frame in secondFrameOptions"
+                  :key="frame.id"
+                  :value="frame.productId"
+                >
+                  {{ frame.name }} ({{ frame.productId }})
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+              @click="resetFrameSelections"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-dismiss="modal"
+              data-toggle="modal"
+              data-target="#paymentModal"
+              :disabled="!firstFrameId || !secondFrameId"
+            >
+              Proceed to checkout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End of frame picker modal -->
 
     <!-- Payment Modal -->
     <div
@@ -718,6 +916,7 @@
         </div>
       </div>
     </div>
+    <!-- End of payment modal -->
   </div>
 </template>
 <script>
@@ -756,6 +955,12 @@ const initialData = () => {
     selectedCustomerId: null,
     hasCustomerPaid: false,
     showPaymentModal: false,
+    firstFrameId: "",
+    secondFrameId: "",
+    saleNumber: 0,
+    firstSaleList: [],
+    selectedFirstSaleId: 0,
+    showDiscountError: false,
   };
 };
 export default {
@@ -858,8 +1063,46 @@ export default {
 
       return frameErrors || lensErrors || customLensError;
     },
+    modalToOpen() {
+      if (this.selectedPromotion === 1 && this.saleNumber === 2)
+        return "selectFirstSaleModal";
+      else if (this.selectedPromotion === 2) return "framePickerModal";
+
+      return "paymentModal";
+    },
+    secondFrameOptions() {
+      if (!this.firstFrameId) return [];
+
+      let firstFrame = this.productIds.frames.find(
+        (f) => f.productId == this.firstFrameId
+      );
+
+      return this.productIds.frames.filter(
+        (f) =>
+          f.price <= firstFrame.price && f.productId != firstFrame.productId
+      );
+    },
+    showTable() {
+      // prettier-ignore
+      return this.productIds.frames.length > 0 || this.productIds.lenses.length > 0 || this.productIds.customLenses.length > 0
+    },
   },
   methods: {
+    resetFrameSelections() {
+      this.firstFrameId = null;
+      this.secondFrameId = null;
+    },
+    resetSaleSelection() {
+      this.selectedFirstSaleId = 0;
+      this.showDiscountError = false;
+    },
+    applyDiscount() {
+      if (this.selectedPromotion === 1) {
+        let frame = this.productIds.frames[0];
+        console.log(frame);
+        frame.price = 0;
+      }
+    },
     fetchDataFromServer() {
       axios
         .get(`${apiUrl}/getCustomLensList`)
@@ -877,6 +1120,7 @@ export default {
             discountVal: p.percentage,
             promotionId: p.promotionId,
           }));
+          window.scrollTo(0, 0);
         })
         .catch((err) => console.error(err));
 
@@ -920,11 +1164,22 @@ export default {
 
         const productsToSend = [...frames, ...lenses, ...customLenses];
 
+        let promotionParentSaleId = 0;
+
+        if (this.selectedPromotion === 1) {
+          if (this.saleNumber === 1) {
+            promotionParentSaleId = -1;
+          } else if (this.saleNumber === 2) {
+            promotionParentSaleId = this.selectedFirstSaleId;
+          }
+        }
+
         const newSaleObj = {
           customerId: !this.createNewCustomer ? this.selectedCustomerId : 0,
           itemsSold: productsToSend.length,
           sale: {
             promotionId: this.selectedPromotion,
+            promotionParentSaleId,
             grandTotal: `${this.netAmount}`,
             employeeId: this.selectedEmployeeId,
             storeId: storeData.storeId,
@@ -943,6 +1198,7 @@ export default {
             ...this.prescription,
           },
         };
+        console.log(newSaleObj);
         axios
           .post(`${apiUrl}/newSale`, newSaleObj)
           .then((response) => {
@@ -1151,6 +1407,60 @@ export default {
         lens.price = productPrice;
         lens.name = productName;
         lens.error = null;
+      }
+    },
+    alertBuyOneGetOneIssue() {
+      alert("You must have one frame to use the Buy 1 Get 1 promo");
+      this.selectedPromotion = 0;
+    },
+  },
+  watch: {
+    selectedPromotion(val) {
+      if (val === 1) {
+        if (this.productIds.frames.length != 1) {
+          this.alertBuyOneGetOneIssue();
+        }
+      }
+    },
+    productIds: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (this.selectedPromotion === 1) {
+          if (newVal.frames.length != 1) {
+            this.alertBuyOneGetOneIssue();
+          }
+
+          if (newVal.frames[0].productId != oldVal.frames[0].productId) {
+            this.resetSaleSelection();
+          }
+        }
+      },
+    },
+    saleNumber(val) {
+      if (val === 2) {
+        axios
+          .get(
+            `${apiUrl}/getPromotionalFirstSaleList?storeId=${storeData.storeId}`
+          )
+          .then((response) => {
+            console.log(response);
+            this.firstSaleList = [...response.data];
+          })
+          .catch((err) => {
+            alert(err.response.data);
+            console.log(err);
+          });
+      }
+    },
+    selectedFirstSaleId(val) {
+      if (val) {
+        let { grandTotal: firstFrameCost } = this.firstSaleList.find(
+          (s) => s.saleId == val
+        );
+        if (firstFrameCost) {
+          const { price: frameCost } = this.productIds.frames[0];
+          this.showDiscountError = !(frameCost <= firstFrameCost);
+        }
       }
     },
   },

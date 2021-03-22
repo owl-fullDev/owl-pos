@@ -67,7 +67,7 @@ import storeData from "@/storeData";
 const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
 
 export default {
-  name: "Home",
+  name: "PendingSales",
   data: () => {
     return {
       selectedSale: null,
