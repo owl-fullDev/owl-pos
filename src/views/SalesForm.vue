@@ -446,7 +446,7 @@
           </select>
         </div>
       </div>
-      <div class="row mb-3" v-if="selectedPromotion === 1">
+      <div class="row mb-3" v-if="specialPromo">
         <div class="col">
           <h4>Select sale order</h4>
           <hr />
@@ -498,9 +498,8 @@
               :key="employee.id"
               :value="employee.employeeId"
             >
-              {{ employee.firstName }} {{ employee.lastname }} ({{
-                employee.jobTitle
-              }})
+              {{ employee.firstName }} {{ employee.lastname }}
+              ({{employee.jobTitle}})
             </option>
           </select>
         </div>
@@ -688,92 +687,6 @@
     </div>
     <!-- End of first sale picker modal -->
 
-    <!-- Frame picker modal -->
-    <div
-      class="modal fade"
-      id="framePickerModal"
-      tabindex="-1"
-      aria-labelledby="framePickerModalLabel"
-      aria-hidden="true"
-      v-if="showPaymentModal"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="framePickerModalLabel">
-              Select Frames
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Select two frames to apply the 2nd pair 50% off promo</p>
-            <div class="form-group mb-2">
-              <label for="firstFrameId">First frame</label>
-              <select
-                class="form-control"
-                id="firstFrameId"
-                v-model="firstFrameId"
-              >
-                <option value="" selected disabled>Select first frame</option>
-                <option
-                  v-for="frame in productIds.frames"
-                  :key="frame.id"
-                  :value="frame.productId"
-                >
-                  {{ frame.name }} ({{ frame.productId }})
-                </option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="secondFrameId">Second frame</label>
-              <select
-                class="form-control"
-                id="secondFrameId"
-                v-model="secondFrameId"
-                @change="secondFrameId = ''"
-              >
-                <option value="" selected disabled>Select second frame</option>
-                <option
-                  v-for="frame in secondFrameOptions"
-                  :key="frame.id"
-                  :value="frame.productId"
-                >
-                  {{ frame.name }} ({{ frame.productId }})
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-              @click="resetFrameSelections"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-dismiss="modal"
-              data-toggle="modal"
-              data-target="#paymentModal"
-              :disabled="!firstFrameId || !secondFrameId"
-            >
-              Proceed to checkout
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End of frame picker modal -->
 
     <!-- Payment Modal -->
     <div
@@ -879,20 +792,34 @@
             </div>
             <div v-if="hasCustomerPaid || showDepositInfo" class="row mb-3">
               <div class="col">
-                <label for="Payment Type" class="form-label">
-                  Jenis Pembayaran
-                </label>
-                <select
-                  class="form-control"
-                  v-model="selectedPaymentType"
-                  :required="hasCustomerPaid"
-                >
-                  <option value="">Jenis Pembayaran</option>
-                  <option v-for="type in paymentTypes" :key="type.id">
-                    {{ type }}
-                  </option>
-                </select>
-<!--                TODO enter bank name + 4 digit card number-->
+                <div class="form-group">
+
+
+                  <label for="Payment Type" class="form-label">
+                    Jenis Pembayaran
+                  </label>
+                  <select
+                    class="form-control"
+                    v-model="selectedPaymentType"
+                    :required="hasCustomerPaid"
+                  >
+                    <option value="">Jenis Pembayaran</option>
+                    <option v-for="type in paymentTypes" :key="type.id">
+                      {{ type }}
+                    </option>
+                  </select>
+                </div>
+                <div v-if="selectedPaymentType != 'Cash' && selectedPaymentType">
+                  <div class="form-group">
+                    <label for="paymentTypeNameInput">Bank Name</label>
+                    <input type="text" class="form-control" id="paymentTypeNameInput" v-model.trim="bankName">
+                  </div>
+                  <div class="form-group">
+                    <label for="accountNumberInput">Account Number</label>
+                    <input minlength="4" maxlength="4" type="number" class="form-control" id="accountNumberInput" v-model.number="accountNumber" placeholder="0000" aria-describedby="accountNumberHelp">
+                    <small id="accountNumberHelp" class="form-text text-muted">This should contain the last 4 digits</small>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -908,7 +835,7 @@
               type="button"
               data-dismiss="modal"
               class="btn btn-success"
-              :disabled="!hasCustomerPaid && !showDepositInfo"
+              :disabled="!validPaymentInfo"
               @click="createSale()"
             >
               Create Sale
@@ -962,6 +889,8 @@ const initialData = () => {
     firstSaleList: [],
     selectedFirstSaleId: 0,
     showDiscountError: false,
+    bankName: "",
+    accountNumber: ""
   };
 };
 export default {
@@ -1035,13 +964,18 @@ export default {
       );
 
       if (promo) {
-        if (promo.discountVal !== 0) {
+        if (promo.discountVal !== 0 && !this.specialPromo) {
           const discountVal = netAmt * (promo.discountVal / 100);
           netAmt -= discountVal;
         }
       }
 
       return parseFloat(netAmt.toFixed(2));
+    },
+    validPaymentInfo(){
+      if (this.selectedPaymentType === 'Cash') return true;
+
+      return this.accountNumber && this.bankName && this.accountNumber.toString().length === 4
     },
     validPhoneNum() {
       const regex = new RegExp("^\\d+$");
@@ -1065,23 +999,13 @@ export default {
       return frameErrors || lensErrors || customLensError;
     },
     modalToOpen() {
-      if (this.selectedPromotion === 1 && this.saleNumber === 2)
+      if (this.specialPromo && this.saleNumber === 2)
         return "selectFirstSaleModal";
-      else if (this.selectedPromotion === 2) return "framePickerModal";
 
       return "paymentModal";
     },
-    secondFrameOptions() {
-      if (!this.firstFrameId) return [];
-
-      let firstFrame = this.productIds.frames.find(
-        (f) => f.productId == this.firstFrameId
-      );
-
-      return this.productIds.frames.filter(
-        (f) =>
-          f.price <= firstFrame.price && f.productId != firstFrame.productId
-      );
+    specialPromo() {
+      return this.selectedPromotion === 1 || this.selectedPromotion === 2
     },
     showTable() {
       // prettier-ignore
@@ -1098,10 +1022,17 @@ export default {
       this.showDiscountError = false;
     },
     applyDiscount() {
-      if (this.selectedPromotion === 1) {
+      if (this.specialPromo) {
         let frame = this.productIds.frames[0];
-        console.log(frame);
-        frame.price = 0;
+        if (!frame.hasDiscountApplied) {
+          const promo = this.promotions.find(
+              (p) => p.promotionId == this.selectedPromotion
+          );
+
+          let discountAmt = frame.price * (promo.discountVal / 100);
+          frame.price -= discountAmt;
+          frame.hasDiscountApplied = true;
+        }
       }
     },
     fetchDataFromServer() {
@@ -1173,6 +1104,17 @@ export default {
           } else if (this.saleNumber === 2) {
             promotionParentSaleId = this.selectedFirstSaleId;
           }
+        } else if (this.selectedPromotion === 2) {
+          if (this.saleNumber === 1) {
+            promotionParentSaleId = -2;
+          } else if (this.saleNumber === 2) {
+            promotionParentSaleId = this.selectedFirstSaleId;
+          }
+        }
+
+        let initialDepositType = this.selectedPaymentType;
+        if (this.selectedPaymentType !== 'Cash') {
+          initialDepositType += `,${this.bankName},${this.accountNumber}`;
         }
 
         const newSaleObj = {
@@ -1185,7 +1127,7 @@ export default {
             employeeId: this.selectedEmployeeId,
             storeId: storeData.storeId,
             initialDepositDate: new Date().toISOString(),
-            initialDepositType: this.selectedPaymentType,
+            initialDepositType,
             initialDepositAmount: this.showDepositInfo
               ? `${this.initialPaymentAmt}`
               : `${this.netAmount}`,
@@ -1290,6 +1232,7 @@ export default {
           price: 0,
           availableAmt: 1,
           name: "",
+          hasDiscountApplied: false,
         });
       } else {
         this.productIds.lenses.push({
@@ -1411,13 +1354,13 @@ export default {
       }
     },
     alertBuyOneGetOneIssue() {
-      alert("You must have one frame to use the Buy 1 Get 1 promo");
+      alert("You must have one frame to use the Buy 1 Get 1 promo or 2nd Pairs Promo");
       this.selectedPromotion = 0;
     },
   },
   watch: {
-    selectedPromotion(val) {
-      if (val === 1) {
+    selectedPromotion() {
+      if (this.specialPromo) {
         if (this.productIds.frames.length != 1) {
           this.alertBuyOneGetOneIssue();
         }
@@ -1441,7 +1384,7 @@ export default {
       if (val === 2) {
         axios
           .get(
-            `${apiUrl}/getPromotionalFirstSaleList?storeId=${storeData.storeId}`
+            `${apiUrl}/getPromotionalFirstSaleList?storeId=${storeData.storeId}&promoId=${this.selectedPromotion}`
           )
           .then((response) => {
             console.log(response);
