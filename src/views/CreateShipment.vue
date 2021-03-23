@@ -256,12 +256,13 @@ export default {
           destinationType: 3,
           originId: storeData.storeId,
           destinationId: this.destinationId,
+
           shipmentDetailList: formattedProducts,
         };
         axios
           .post(`${apiUrl}/posEndpoint/newTransferShipment`, shipment)
           .then((response) => {
-            alert(response);
+            alert(response.data);
           })
           .catch((err) => alert(err));
       }

@@ -892,6 +892,7 @@
                     {{ type }}
                   </option>
                 </select>
+<!--                TODO enter bank name + 4 digit card number-->
               </div>
             </div>
           </div>
@@ -947,7 +948,7 @@ const initialData = () => {
     selectedPromotion: 0,
     showDepositInfo: false,
     paymentTypes: ["Cash", "Debit", "Credit"],
-    depositPercentages: [30, 50, 70],
+    depositPercentages: [50, 60, 70, 80],
     selectedDepositPercentage: 0,
     selectedPaymentType: "",
     createNewCustomer: false,
