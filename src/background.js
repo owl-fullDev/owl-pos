@@ -21,6 +21,7 @@ async function createWindow() {
     kiosk: true,
     webPreferences: {
       nodeIntegration: true,
+      nativeWindowOpen: true,
     },
   });
 
@@ -35,6 +36,22 @@ async function createWindow() {
   }
 
   win.removeMenu();
+  win.webContents.on(
+    "new-window",
+    (event, url, frameName, disposition, options, additionalFeatures) => {
+      if (frameName === "modal") {
+        // open window as modal
+        event.preventDefault();
+        Object.assign(options, {
+          modal: true,
+          parent: win,
+          width: 100,
+          height: 100,
+        });
+        event.newGuest = new BrowserWindow(options);
+      }
+    }
+  );
 }
 
 // Quit when all windows are closed.
