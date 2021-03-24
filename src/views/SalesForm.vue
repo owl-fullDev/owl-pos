@@ -134,7 +134,7 @@
           <hr />
           <div class="row" :class="{ 'd-none': productIds.frames.length < 1 }">
             <div class="col">
-              <h4>Frame</h4>
+              <h4>Frames</h4>
             </div>
           </div>
           <div
@@ -498,8 +498,9 @@
               :key="employee.id"
               :value="employee.employeeId"
             >
-              {{ employee.firstName }} {{ employee.lastname }}
-              ({{employee.jobTitle}})
+              {{ employee.firstName }} {{ employee.lastname }} ({{
+                employee.jobTitle
+              }})
             </option>
           </select>
         </div>
@@ -616,7 +617,7 @@
       tabindex="-1"
       aria-labelledby="selectFirstSaleModalLabel"
       aria-hidden="true"
-      v-if="showPaymentModal"
+      v-if="showPaymentModal && specialPromo"
     >
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -686,7 +687,6 @@
       </div>
     </div>
     <!-- End of first sale picker modal -->
-
 
     <!-- Payment Modal -->
     <div
@@ -793,8 +793,6 @@
             <div v-if="hasCustomerPaid || showDepositInfo" class="row mb-3">
               <div class="col">
                 <div class="form-group">
-
-
                   <label for="Payment Type" class="form-label">
                     Jenis Pembayaran
                   </label>
@@ -809,15 +807,33 @@
                     </option>
                   </select>
                 </div>
-                <div v-if="selectedPaymentType != 'Cash' && selectedPaymentType">
+                <div
+                  v-if="selectedPaymentType != 'Cash' && selectedPaymentType"
+                >
                   <div class="form-group">
                     <label for="paymentTypeNameInput">Bank Name</label>
-                    <input type="text" class="form-control" id="paymentTypeNameInput" v-model.trim="bankName">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="paymentTypeNameInput"
+                      v-model.trim="bankName"
+                    />
                   </div>
                   <div class="form-group">
                     <label for="accountNumberInput">Account Number</label>
-                    <input minlength="4" maxlength="4" type="number" class="form-control" id="accountNumberInput" v-model.number="accountNumber" placeholder="0000" aria-describedby="accountNumberHelp">
-                    <small id="accountNumberHelp" class="form-text text-muted">This should contain the last 4 digits</small>
+                    <input
+                      minlength="4"
+                      maxlength="4"
+                      type="number"
+                      class="form-control"
+                      id="accountNumberInput"
+                      v-model.number="accountNumber"
+                      placeholder="0000"
+                      aria-describedby="accountNumberHelp"
+                    />
+                    <small id="accountNumberHelp" class="form-text text-muted"
+                      >This should contain the last 4 digits</small
+                    >
                   </div>
                 </div>
               </div>
@@ -831,20 +847,35 @@
             >
               Cancel
             </button>
-            <button
-              type="button"
+            <a
               data-dismiss="modal"
               class="btn btn-success"
+              href="#invoiceModal"
+              data-toggle="modal"
               :disabled="!validPaymentInfo"
               @click="createSale()"
             >
               Create Sale
-            </button>
+            </a>
           </div>
         </div>
       </div>
     </div>
     <!-- End of payment modal -->
+    <Invoice
+      :customer="currentCustomer"
+      :employee-name="selectedEmployeeName"
+      :products="productIds"
+      :payment-type="selectedPaymentType"
+      :account-num="accountNumber"
+      :total-amt="totalAmount"
+      :net-amt="netAmount"
+      :depositAmt="initialPaymentAmt"
+      :discount-percentage="discountPercentage"
+      :updated-prescription="prescription"
+      :new-sale-id="newSaleId"
+      @donePrinting="resetData"
+    />
   </div>
 </template>
 <script>
@@ -853,6 +884,7 @@ import CustomerList from "@/components/CustomerList.vue";
 import _ from "lodash";
 import storeData from "@/storeData";
 import Prescription from "@/components/Prescription.vue";
+import Invoice from "../components/Invoice.vue";
 
 const apiUrl = "https://owl-backend-server.herokuapp.com/posEndpoint";
 
@@ -890,7 +922,9 @@ const initialData = () => {
     selectedFirstSaleId: 0,
     showDiscountError: false,
     bankName: "",
-    accountNumber: ""
+    accountNumber: "",
+    isMounted: false,
+    newSaleId: null,
   };
 };
 export default {
@@ -898,22 +932,49 @@ export default {
   components: {
     CustomerList,
     Prescription,
+    Invoice,
   },
   data: initialData,
   created() {
     this.fetchDataFromServer();
+  },
+  mounted() {
+    this.isMounted = true;
   },
   computed: {
     initialPaymentAmt() {
       return (this.netAmount * this.selectedDepositPercentage) / 100;
     },
     prescription() {
-      return this.$refs.prescriptionElem.prescriptionValues;
+      if (this.isMounted) return this.$refs.prescriptionElem.prescriptionValues;
+
+      return null;
     },
     showCustomerInfo() {
       if (!this.customerList && this.createNewCustomer) return true;
 
       return this.selectedCustomerId !== null || this.createNewCustomer;
+    },
+    currentCustomer() {
+      if (!this.selectedCustomerId || this.createNewCustomer) {
+        return {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          phoneNumber: this.phoneNum,
+          email: this.email,
+          customerId: 0,
+          ...this.prescription,
+        };
+      }
+
+      return this.getCustomer(this.selectedCustomerId);
+    },
+    selectedEmployeeName() {
+      if (!this.selectedEmployeeId) return null;
+      const { firstName, lastname: lastName } = this.employees.find(
+        (e) => e.employeeId == this.selectedEmployeeId
+      );
+      return `${firstName} ${lastName}`;
     },
     discountName() {
       const promo = this.promotions.find(
@@ -925,6 +986,17 @@ export default {
       }
 
       return "0%";
+    },
+    discountPercentage() {
+      const promo = this.promotions.find(
+        (p) => p.promotionId == this.selectedPromotion
+      );
+
+      if (promo) {
+        return promo.discountVal;
+      }
+
+      return 0;
     },
     totalAmount() {
       let frameCosts = 0;
@@ -972,10 +1044,14 @@ export default {
 
       return parseFloat(netAmt.toFixed(2));
     },
-    validPaymentInfo(){
-      if (this.selectedPaymentType === 'Cash') return true;
+    validPaymentInfo() {
+      if (this.selectedPaymentType === "Cash") return true;
 
-      return this.accountNumber && this.bankName && this.accountNumber.toString().length === 4
+      return (
+        this.accountNumber &&
+        this.bankName &&
+        this.accountNumber.toString().length === 4
+      );
     },
     validPhoneNum() {
       const regex = new RegExp("^\\d+$");
@@ -1005,7 +1081,7 @@ export default {
       return "paymentModal";
     },
     specialPromo() {
-      return this.selectedPromotion === 1 || this.selectedPromotion === 2
+      return this.selectedPromotion === 1 || this.selectedPromotion === 2;
     },
     showTable() {
       // prettier-ignore
@@ -1026,7 +1102,7 @@ export default {
         let frame = this.productIds.frames[0];
         if (!frame.hasDiscountApplied) {
           const promo = this.promotions.find(
-              (p) => p.promotionId == this.selectedPromotion
+            (p) => p.promotionId == this.selectedPromotion
           );
 
           let discountAmt = frame.price * (promo.discountVal / 100);
@@ -1113,7 +1189,7 @@ export default {
         }
 
         let initialDepositType = this.selectedPaymentType;
-        if (this.selectedPaymentType !== 'Cash') {
+        if (this.selectedPaymentType !== "Cash") {
           initialDepositType += `,${this.bankName},${this.accountNumber}`;
         }
 
@@ -1146,8 +1222,8 @@ export default {
           .post(`${apiUrl}/newSale`, newSaleObj)
           .then((response) => {
             console.log(response);
-            alert("Sale created");
-            this.resetData();
+            this.newSaleId = response.data;
+            alert("Sale created. Please print the invoice");
           })
           .catch((err) => console.log(err.response));
       }
@@ -1301,11 +1377,13 @@ export default {
         alert("Please enter a valid phone number");
       }
     },
+    getCustomer(id) {
+      let customer = _.find(this.customerList, (c) => c.customerId == id);
+
+      return customer;
+    },
     setCustomerInfo(customerId) {
-      let selectedCustomer = _.find(
-        this.customerList,
-        (c) => c.customerId == customerId
-      );
+      let selectedCustomer = this.getCustomer(customerId);
 
       //personal info
       this.phoneNum = selectedCustomer.phoneNumber;
@@ -1354,7 +1432,9 @@ export default {
       }
     },
     alertBuyOneGetOneIssue() {
-      alert("You must have one frame to use the Buy 1 Get 1 promo or 2nd Pairs Promo");
+      alert(
+        "You must have one frame to use the Buy 1 Get 1 promo or 2nd Pairs Promo"
+      );
       this.selectedPromotion = 0;
     },
   },

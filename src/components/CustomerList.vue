@@ -16,7 +16,7 @@
       </button>
     </div>
     <div class="row flex-row flex-nowrap overflow-auto mb-3">
-      <div class="col" v-for="customer in list" :key="customer.id">
+      <div class="col-lg-auto" v-for="customer in list" :key="customer.id">
         <div class="card card-block">
           <div class="card-body">
             <h5 class="card-title">
