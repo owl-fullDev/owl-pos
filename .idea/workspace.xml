@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a2b9d6ed-de6b-4661-9130-8cb7d55d32ce" name="Default Changelist" comment="Bugfixes for refunds">
+    <list default="true" id="a2b9d6ed-de6b-4661-9130-8cb7d55d32ce" name="Default Changelist" comment="[Incomplete] new store Inventory">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +164,8 @@
       <workItem from="1616644664162" duration="227000" />
       <workItem from="1616645085384" duration="366000" />
       <workItem from="1616645504671" duration="587000" />
-      <workItem from="1616681691666" duration="1295000" />
+      <workItem from="1616681691666" duration="2472000" />
+      <workItem from="1616703439094" duration="700000" />
     </task>
     <task id="LOCAL-00001" summary="Indo translation">
       <created>1614026365959</created>
@@ -271,7 +272,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616517432754</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="[Incomplete] new store Inventory">
+      <created>1616684669412</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1616684669412</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -298,7 +306,8 @@
     <MESSAGE value="Alert when creating new shipment" />
     <MESSAGE value="Bugfix pos new sale" />
     <MESSAGE value="Bugfixes for refunds" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bugfixes for refunds" />
+    <MESSAGE value="[Incomplete] new store Inventory" />
+    <option name="LAST_COMMIT_MESSAGE" value="[Incomplete] new store Inventory" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
