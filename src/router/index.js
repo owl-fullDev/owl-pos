@@ -9,6 +9,7 @@ import Refunds from "@/views/Refunds.vue";
 import storeData from "@/storeData";
 import CreateShipment from "@/views/CreateShipment";
 import ReceiveShipment from "@/views/ReceiveShipment";
+import StoreInventory from "@/views/StoreInventory";
 
 Vue.use(VueRouter);
 
@@ -37,6 +38,11 @@ const routes = [
     path: "/refunds",
     name: "Refunds",
     component: Refunds,
+  },
+  {
+    path: "/storeInventory",
+    name: "Store Inventory",
+    component: StoreInventory,
   },
   {
     path: "/shipments",

@@ -41,6 +41,15 @@
                 Refunds
               </router-link>
             </li>
+            <li class="nav-item">
+              <router-link
+                  to="/StoreInventory"
+                  active-class="nav-link"
+                  class="nav-link"
+              >
+                Store Inventory
+              </router-link>
+            </li>
             <li class="nav-item dropdown">
             <span
                 class="nav-link dropdown-toggle"

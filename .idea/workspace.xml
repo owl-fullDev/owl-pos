@@ -2,24 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a2b9d6ed-de6b-4661-9130-8cb7d55d32ce" name="Default Changelist" comment="Bugfixes for refunds">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/OWL_POS.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/mario.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_19_21,_5_48_PM_[Default_Changelist]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_19_21__5_48_PM__Default_Changelist_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dist/css/app.943b5cf2.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dist/js/app.03d0b849.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dist/js/app.03d0b849.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/SalesForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/SalesForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Single File Component" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -162,7 +160,11 @@
       <workItem from="1616186907698" duration="103000" />
       <workItem from="1616516038928" duration="1302000" />
       <workItem from="1616517980910" duration="40000" />
-      <workItem from="1616518851360" duration="4058000" />
+      <workItem from="1616518851360" duration="4355000" />
+      <workItem from="1616644664162" duration="227000" />
+      <workItem from="1616645085384" duration="366000" />
+      <workItem from="1616645504671" duration="587000" />
+      <workItem from="1616681691666" duration="1295000" />
     </task>
     <task id="LOCAL-00001" summary="Indo translation">
       <created>1614026365959</created>
