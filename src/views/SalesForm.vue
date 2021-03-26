@@ -1172,7 +1172,7 @@ export default {
 
         const productsToSend = [...frames, ...lenses, ...customLenses];
 
-        let promotionParentSaleId = 0;
+        let promotionParentSaleId = null;
 
         if (this.selectedPromotion === 1) {
           if (this.saleNumber === 1) {
@@ -1194,10 +1194,9 @@ export default {
         }
 
         const newSaleObj = {
-          customerId: !this.createNewCustomer ? this.selectedCustomerId : 0,
-          itemsSold: productsToSend.length,
+          customerId: !this.createNewCustomer ? this.selectedCustomerId : null,
           sale: {
-            promotionId: this.selectedPromotion,
+            promotionId: this.selectedPromotion>0 ? this.selectedPromotion : null,
             promotionParentSaleId,
             grandTotal: `${this.netAmount}`,
             employeeId: this.selectedEmployeeId,
