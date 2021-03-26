@@ -693,6 +693,7 @@
       ref="modal"
       class="modal fade"
       id="paymentModal"
+      data-backdrop="static"
       tabindex="-1"
       role="dialog"
       aria-labelledby="continueToPaymentBtn"
@@ -704,6 +705,7 @@
           <div class="modal-header">
             <h5 class="modal-title">Pembayaran</h5>
             <button
+              v-if="!successfulSale"
               type="button"
               class="close"
               data-dismiss="modal"
@@ -721,7 +723,7 @@
                     type="checkbox"
                     v-model="showDepositInfo"
                     id="showDepositInfo"
-                    :disabled="hasCustomerPaid"
+                    :disabled="hasCustomerPaid || specialPromo"
                   />
                   <label class="form-check-label" for="showDepositInfo">
                     Pembayaran dengan Deposit
@@ -840,23 +842,33 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <a
-              data-dismiss="modal"
-              class="btn btn-success"
-              href="#invoiceModal"
-              data-toggle="modal"
-              :disabled="!validPaymentInfo"
-              @click="createSale()"
-            >
-              Create Sale
-            </a>
+            <div v-if="!successfulSale">
+              <button
+                type="button"
+                class="btn btn-secondary mr-2"
+                data-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                class="btn btn-success"
+                :disabled="!validPaymentInfo"
+                @click="createSale()"
+              >
+                Create Sale
+              </button>
+            </div>
+            <div v-else>
+              <button
+                data-dismiss="modal"
+                type="button"
+                class="btn btn-primary"
+                href="#invoiceModal"
+                data-toggle="modal"
+              >
+                Print invoice
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -925,6 +937,7 @@ const initialData = () => {
     accountNumber: "",
     isMounted: false,
     newSaleId: null,
+    successfulSale: false,
   };
 };
 export default {
@@ -1141,6 +1154,7 @@ export default {
     },
     resetData() {
       Object.assign(this.$data, initialData());
+      this.isMounted = true;
       this.fetchDataFromServer();
     },
     openPaymentModal(e) {
@@ -1194,9 +1208,9 @@ export default {
         }
 
         const newSaleObj = {
-          customerId: !this.createNewCustomer ? this.selectedCustomerId : null,
           sale: {
-            promotionId: this.selectedPromotion>0 ? this.selectedPromotion : null,
+            promotionId:
+              this.selectedPromotion > 0 ? this.selectedPromotion : null,
             promotionParentSaleId,
             grandTotal: `${this.netAmount}`,
             employeeId: this.selectedEmployeeId,
@@ -1206,9 +1220,10 @@ export default {
             initialDepositAmount: this.showDepositInfo
               ? `${this.initialPaymentAmt}`
               : `${this.netAmount}`,
+            products: productsToSend,
           },
-          products: productsToSend,
-          newCustomer: {
+          customerId: !this.createNewCustomer ? this.selectedCustomerId : null,
+          customer: {
             firstName: this.firstName,
             lastName: this.lastName,
             phoneNumber: this.phoneNum,
@@ -1223,8 +1238,13 @@ export default {
             console.log(response);
             this.newSaleId = response.data;
             alert("Sale created. Please print the invoice");
+            this.successfulSale = true;
           })
-          .catch((err) => console.log(err.response));
+          .catch((err) => {
+            console.log(err.response);
+            alert("Transaction was unsuccessful!");
+            this.successfulSale = false;
+          });
       }
     },
     validateBarcode(product) {
