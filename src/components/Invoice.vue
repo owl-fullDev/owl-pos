@@ -28,8 +28,7 @@
                     <div class="row">
                       <div class="col">
                         <p>
-                          1F-202, Lantai 1, SMS 2, Jl. Boulevard Raya Gading
-                          Serpong Kelapa Dua Tangerang
+                          {{storeAddress}}
                         </p>
                       </div>
                     </div>
@@ -398,6 +397,9 @@ export default {
 
       return `${date}/${month}/${year} ${time}`;
     },
+    storeAddress() {
+      return storeData.storeAddress;
+    },
     storeName() {
       return storeData.storeName;
     },
@@ -445,6 +447,9 @@ export default {
 };
 </script>
 <style scoped>
+p {
+  margin-bottom: 0 !important;
+}
 ul {
   padding: 0 !important;
 }

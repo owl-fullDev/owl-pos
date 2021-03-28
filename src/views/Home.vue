@@ -40,11 +40,12 @@ export default {
   methods: {
     selectStore() {
       storeData.storeId = this.storeId;
-      const { name: storeName, phoneNumber } = this.stores.find(
+      const { name: storeName, phoneNumber, address } = this.stores.find(
         (s) => s.storeId == this.storeId
       );
       storeData.storeName = storeName;
       storeData.storePhoneNum = phoneNumber;
+      storeData.storeAddress = address;
 
       this.$router.push("PendingSales");
     },
