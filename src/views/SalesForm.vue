@@ -480,6 +480,8 @@
           </div>
         </div>
       </div>
+      <br>
+      <br>
 
       <!-- Employee -->
       <div class="row mb-3">
@@ -503,6 +505,21 @@
               }})
             </option>
           </select>
+        </div>
+      </div>
+      <br />
+
+
+      <!--  Remarks  -->
+      <div class="row mb-3">
+        <div class="col">
+          <label for="remarksInput">Remarks</label>
+          <input
+              type="text"
+              class="form-control"
+              id="remarksInput"
+              v-model.trim="remarks"
+          />
         </div>
       </div>
       <br />
@@ -938,6 +955,7 @@ const initialData = () => {
     isMounted: false,
     newSaleId: null,
     successfulSale: false,
+    remarks: "",
   };
 };
 export default {
@@ -1220,6 +1238,7 @@ export default {
             initialDepositAmount: this.showDepositInfo
               ? `${this.initialPaymentAmt}`
               : `${this.netAmount}`,
+            remarks: this.remarks,
             products: productsToSend,
           },
           customerId: !this.createNewCustomer ? this.selectedCustomerId : null,

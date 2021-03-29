@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a2b9d6ed-de6b-4661-9130-8cb7d55d32ce" name="Default Changelist" comment="Changes to sale">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_19_21,_5_48_PM_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_3_19_21__5_48_PM__Default_Changelist_.xml" beforeDir="false" />
+    <list default="true" id="a2b9d6ed-de6b-4661-9130-8cb7d55d32ce" name="Default Changelist" comment="Changes to sale invoice">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Invoice.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Invoice.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/SalesForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/SalesForm.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,7 +165,8 @@
       <workItem from="1616681691666" duration="2472000" />
       <workItem from="1616703439094" duration="758000" />
       <workItem from="1616783143743" duration="1648000" />
-      <workItem from="1616953641645" duration="1814000" />
+      <workItem from="1616953641645" duration="1881000" />
+      <workItem from="1617033353306" duration="1441000" />
     </task>
     <task id="LOCAL-00001" summary="Indo translation">
       <created>1614026365959</created>
@@ -303,7 +301,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616784819711</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Changes to sale invoice">
+      <created>1616956972044</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1616956972045</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -333,7 +338,8 @@
     <MESSAGE value="[Incomplete] new store Inventory" />
     <MESSAGE value="Store inventory" />
     <MESSAGE value="Changes to sale" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes to sale" />
+    <MESSAGE value="Changes to sale invoice" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changes to sale invoice" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
