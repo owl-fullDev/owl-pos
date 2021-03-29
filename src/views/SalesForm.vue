@@ -1267,7 +1267,8 @@ export default {
             product.availableAmt = quantityAvailable;
             product.name = productName;
             product.barcodeError = null;
-            product.quantityError = null;
+            // prettier-ignore
+            product.quantityError = product.quantity > quantityAvailable ? "Quantity requested is more than what is available in store" : null;
           })
           .catch((error) => {
             console.error(error);
