@@ -1,3 +1,4 @@
 node_modules/
 .DS_STORE
 dist_electron/
+.idea/
