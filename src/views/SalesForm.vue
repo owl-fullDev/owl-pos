@@ -480,8 +480,8 @@
           </div>
         </div>
       </div>
-      <br>
-      <br>
+      <br />
+      <br />
 
       <!-- Employee -->
       <div class="row mb-3">
@@ -509,17 +509,18 @@
       </div>
       <br />
 
-
       <!--  Remarks  -->
       <div class="row mb-3">
         <div class="col">
-          <label for="remarksInput">Remarks</label>
-          <input
-              type="text"
-              class="form-control"
-              id="remarksInput"
-              v-model.trim="remarks"
-          />
+          <h3>Remarks</h3>
+          <hr />
+          <textarea
+            class="form-control"
+            name="remarks"
+            id="remarksInput"
+            v-model.trim="remarks"
+            placeholder="Catatan..."
+          ></textarea>
         </div>
       </div>
       <br />
