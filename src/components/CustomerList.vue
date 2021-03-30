@@ -26,10 +26,11 @@
             <p class="card-text">No Telepon: {{ customer.phoneNumber }}</p>
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn"
+              :class="currentSelectedCustomerClass(customer.customerId)"
               @click="selectCustomer(customer.customerId)"
             >
-              Pilih Pelanggan
+              {{ currentSelectedCustomerText(customer.customerId) }}
             </button>
           </div>
         </div>
@@ -40,12 +41,29 @@
 <script>
 export default {
   name: "CustomerList",
+  data: () => {
+    return {
+      selectedCustomerId: null,
+    };
+  },
   props: {
     list: Array,
   },
   methods: {
     selectCustomer(customerId) {
+      this.selectedCustomerId = customerId;
       this.$emit("selectCustomer", customerId);
+    },
+    currentSelectedCustomerClass(customerId) {
+      // prettier-ignore
+      return this.isCustomerSelected(customerId) ? 'btn-success' : 'btn-primary'
+    },
+    currentSelectedCustomerText(customerId) {
+      // prettier-ignore
+      return this.isCustomerSelected(customerId) ? "Customer selected" : "Pilih Pelanggan";
+    },
+    isCustomerSelected(customerId) {
+      return this.selectedCustomerId === customerId;
     },
   },
 };

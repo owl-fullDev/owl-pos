@@ -904,6 +904,7 @@
       :discount-percentage="discountPercentage"
       :updated-prescription="prescription"
       :new-sale-id="newSaleId"
+      :fully-paid="hasCustomerPaid"
       @donePrinting="resetData"
     />
   </div>

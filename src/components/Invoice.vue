@@ -28,7 +28,7 @@
                     <div class="row">
                       <div class="col">
                         <p>
-                          {{storeAddress}}
+                          {{ storeAddress }}
                         </p>
                       </div>
                     </div>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="row mb-5">
                   <div class="col">
-                    <h3 class="text-center">Deposit</h3>
+                    <h3 class="text-center">{{ headerText }}</h3>
                   </div>
                 </div>
                 <div class="row mb-5 justify-content-around">
@@ -386,6 +386,7 @@ export default {
     "discountPercentage",
     "updatedPrescription",
     "newSaleId",
+    "fullyPaid",
   ],
   computed: {
     currentDate() {
@@ -421,10 +422,13 @@ export default {
       );
     },
     balanceAmt() {
-      return this.netAmt - this.depositAmt;
+      return this.fullyPaid ? 0 : this.netAmt - this.depositAmt;
     },
     renderPrescription() {
       return this.customer.rightEyeSphere !== undefined;
+    },
+    headerText() {
+      return this.fullyPaid ? "Tax Invoice" : "Desposit";
     },
   },
   methods: {
