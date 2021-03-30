@@ -27,7 +27,12 @@
         </button>
 
         <hr />
-        <div style="height: 700px; overflow-y: auto;">
+        <div v-if="loading" class="d-flex justify-content-center">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div v-else style="height: 700px; overflow-y: auto;">
           <Sale
             v-for="sale in recetSalesList"
             :key="sale.id"
@@ -68,6 +73,7 @@ export default {
       selectedSale: null,
       recetSalesList: [],
       alertMsg: "",
+      loading: false,
     };
   },
   components: {
@@ -79,10 +85,21 @@ export default {
   },
   methods: {
     updateRecentSalesList() {
+      this.loading = true;
       axios
         .get(`${apiUrl}/getRecentSalesList?storeId=${storeData.storeId}`)
         .then((response) => {
-          this.recetSalesList = [...response.data];
+          this.recetSalesList = response.data.map((x) => {
+            let saleDetailList = x.saleDetailList.map((saleDetail) => ({
+              isReturned: true,
+              ...saleDetail,
+            }));
+            return {
+              ...x,
+              saleDetailList,
+            };
+          });
+          this.loading = false;
         })
         .catch((err) => console.log(err));
     },
@@ -98,10 +115,11 @@ export default {
     updateSale(remarks) {
       const refundObj = {
         saleId: this.selectedSale.saleId,
-        remarks: remarks
-      }
+        remarks: remarks,
+        refundedProducts: this.selectedSale.saleDetailList,
+      };
       axios
-        .post(`${apiUrl}/refundSale`,refundObj)
+        .post(`${apiUrl}/refundSale`, refundObj)
         .then((response) => {
           this.updateRecentSalesList();
           this.selectedSale = null;

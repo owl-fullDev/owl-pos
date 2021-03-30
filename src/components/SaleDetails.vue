@@ -1,103 +1,121 @@
 <template>
   <div v-if="loadTemplate">
-    <transition name="fade">
-      <div class="card">
-        <div
-          class="card-header d-flex justify-content-between align-items-center"
-        >
-          <div class="div align-self-center">
-            <h4>
-              Detail Penjualan
-            </h4>
-          </div>
-          <div class="div ">
-            <button
-              class="btn"
-              style="padding-top: 0px !important;"
-              @click="$emit('resetSelectedSale')"
-            >
-              <i class="bi bi-x" style="font-size: 1.5rem;"></i>
-            </button>
-          </div>
+    <div class="card">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
+        <div class="div align-self-center">
+          <h4>
+            Detail Penjualan
+          </h4>
         </div>
-        <div class="card-body">
-          <ul class="list-group mb-2">
-            <li class="list-group-item " :class="listTitleClassName">
-              {{ sale.customer.firstName }}
-              {{ sale.customer.lastName }}-
-              <strong> Pembayaran {{ sale.fullyPaid ? "Sudah" : "Belum" }} Lunas </strong>
-            </li>
-            <li class="list-group-item">ID Penjualan: {{ sale.saleId }}</li>
-            <li class="list-group-item">
-              Tanggal Deposit Awal:
-              <strong>
-                {{ new Date(sale.initialDepositDate).toDateString() }}
-              </strong>
-            </li>
-            <li class="list-group-item">
-              Jenis Deposit Awal:
-              <strong>
-                {{ sale.initialDepositType }}
-              </strong>
-            </li>
-            <li class="list-group-item">
-              Jumlah Deposit Awal:
-              <strong> Rp {{ sale.initialDepositAmount }} </strong>
-            </li>
-            <li v-if="!sale.fullyPaid" class="list-group-item">
-              Jumlah Sisa:
-              <strong> Rp {{ amountDue }} </strong>
-            </li>
-            <li class="list-group-item">
-               Harga Total:
-              <strong> Rp {{ sale.grandTotal }} </strong>
-            </li>
-          </ul>
-          <table class="table table-striped table-hover">
-            <thead class="thead-dark">
-              <tr>
-                <th scope="col">Produk</th>
-                <th scope="col">Kuantitas</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in sale.saleDetailList" :key="item.id">
-                <td>{{ item.product.productId }}</td>
-                <td>{{ item.quantity }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-if="canRefund">
-            <button
-              class="btn btn-danger btn-block"
-              data-toggle="modal"
-              data-target="#completionModal"
-            >
-              Refund Sale
-            </button>
-          </div>
-          <div v-else>
-            <button
-              v-if="!sale.fullyPaid"
-              class="btn btn-primary btn-block"
-              data-toggle="modal"
-              data-target="#completionModal"
-            >
-              Bayar dan Terima
-            </button>
-            <button
-              v-else
-              class="btn btn-success btn-block"
-              @click="
-                $emit('updateSale', selectedInStorePaymentType, amountDue)
-              "
-            >
-              Terima Barang
-            </button>
-          </div>
+        <div class="div ">
+          <button
+            class="btn"
+            style="padding-top: 0px !important;"
+            @click="$emit('resetSelectedSale')"
+          >
+            <i class="bi bi-x" style="font-size: 1.5rem;"></i>
+          </button>
         </div>
       </div>
-    </transition>
+      <div class="card-body">
+        <ul class="list-group mb-2">
+          <li class="list-group-item " :class="listTitleClassName">
+            {{ sale.customer.firstName }}
+            {{ sale.customer.lastName }} -
+            <strong>
+              Pembayaran {{ sale.fullyPaid ? "Sudah" : "Belum" }} Lunas
+            </strong>
+          </li>
+          <li class="list-group-item">ID Penjualan: {{ sale.saleId }}</li>
+          <li class="list-group-item">
+            Tanggal Deposit Awal:
+            <strong>
+              {{ new Date(sale.initialDepositDate).toDateString() }}
+            </strong>
+          </li>
+          <li class="list-group-item">
+            Jenis Deposit Awal:
+            <strong>
+              {{ sale.initialDepositType }}
+            </strong>
+          </li>
+          <li class="list-group-item">
+            Jumlah Deposit Awal:
+            <strong> Rp {{ sale.initialDepositAmount }} </strong>
+          </li>
+          <li v-if="!sale.fullyPaid" class="list-group-item">
+            Jumlah Sisa:
+            <strong> Rp {{ amountDue }} </strong>
+          </li>
+          <li class="list-group-item">
+            Harga Total:
+            <strong> Rp {{ sale.grandTotal }} </strong>
+          </li>
+          <li class="list-group-item">
+            Sales Remarks:
+            <strong> {{ saleRemarks }} </strong>
+          </li>
+        </ul>
+        <table class="table table-striped table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Produk</th>
+              <th scope="col">Kuantitas</th>
+              <th scope="col" v-if="canRefund">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in sale.saleDetailList" :key="item.id">
+              <td>{{ item.product.productId }}</td>
+              <td>{{ item.quantity }}</td>
+              <td v-if="canRefund">
+                <div class="form-check">
+                  <input
+                    :id="`refundCheckbox_${item.product.productId}`"
+                    type="checkbox"
+                    v-model="item.isReturned"
+                    class="form-check-input"
+                  />
+                  <label
+                    :for="`refundCheckbox_${item.product.productId}`"
+                    class="form-check-label"
+                    >Refund item</label
+                  >
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-if="canRefund">
+          <button
+            class="btn btn-danger btn-block"
+            data-toggle="modal"
+            data-target="#completionModal"
+          >
+            Refund Sale
+          </button>
+        </div>
+        <div v-else>
+          <button
+            v-if="!sale.fullyPaid"
+            class="btn btn-primary btn-block"
+            data-toggle="modal"
+            data-target="#completionModal"
+          >
+            Bayar dan Terima
+          </button>
+          <button
+            v-else
+            class="btn btn-success btn-block"
+            @click="$emit('updateSale', selectedInStorePaymentType, amountDue)"
+          >
+            Terima Barang
+          </button>
+        </div>
+      </div>
+    </div>
     <div
       class="modal fade"
       id="completionModal"
@@ -126,7 +144,13 @@
               <form ref="refundForm">
                 <div class="form-group mt-2">
                   <label for="remarks">Remarks</label>
-                  <input type="text" v-model.trim="remarks" class="form-control" id="remarks" required>
+                  <input
+                    type="text"
+                    v-model.trim="remarks"
+                    class="form-control"
+                    id="remarks"
+                    required
+                  />
                 </div>
               </form>
             </div>
@@ -177,14 +201,32 @@
               type="button"
               :data-dismiss="isFormValid() ? 'modal' : ''"
               class="btn btn-success"
+              href="#invoiceModal"
+              data-toggle="modal"
               @click="confirmAction"
             >
+              <!-- data-dismiss="modal" -->
               Confirm
             </button>
           </div>
         </div>
       </div>
     </div>
+    <Invoice
+      :customer="currentCustomer"
+      :employee-name="selectedEmployeeName"
+      :products="productIds"
+      :payment-type="selectedPaymentType"
+      :account-num="accountNumber"
+      :total-amt="totalAmount"
+      :net-amt="netAmount"
+      :depositAmt="initialPaymentAmt"
+      :discount-percentage="discountPercentage"
+      :updated-prescription="prescription"
+      :new-sale-id="newSaleId"
+      :fully-paid="hasCustomerPaid"
+      @donePrinting="resetData"
+    />
   </div>
 </template>
 <script>
@@ -195,7 +237,7 @@ export default {
     return {
       inStorePaymentType: ["Cash", "Debit", "Credit"],
       selectedInStorePaymentType: "",
-      remarks: ""
+      remarks: "",
     };
   },
   computed: {
@@ -216,11 +258,13 @@ export default {
     modalTitle() {
       return this.canRefund ? "Refund Sale" : "Payment";
     },
+    saleRemarks() {
+      return this.sale.saleRemarks ?? "N/A";
+    },
   },
   methods: {
     isFormValid() {
-      if (this.$refs.refundForm)
-        return this.$refs.refundForm.checkValidity();
+      if (this.$refs.refundForm) return this.$refs.refundForm.checkValidity();
 
       return false;
     },
@@ -244,12 +288,8 @@ export default {
 };
 </script>
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
+.refundCheckbox {
+  vertical-align: baseline;
+  text-align: center;
 }
 </style>
