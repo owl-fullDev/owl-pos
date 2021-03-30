@@ -170,43 +170,76 @@
               </div>
               <div class="row mb-3">
                 <div class="col">
-                  <label for="paymentType" class="form-label">
-                    Payment Type
-                  </label>
-                  <select
-                    class="form-control"
-                    v-model="selectedInStorePaymentType"
-                  >
-                    <option disabled selected value=""
-                      >Select Payment Type</option
+                  <div class="form-group">
+                    <label for="Payment Type" class="form-label">
+                      Jenis Pembayaran
+                    </label>
+                    <select
+                      class="form-control"
+                      v-model="selectedInStorePaymentType"
                     >
-                    <option v-for="type in inStorePaymentType" :key="type.id">
-                      {{ type }}
-                    </option>
-                  </select>
+                      <option value="">Jenis Pembayaran</option>
+                      <option v-for="type in inStorePaymentType" :key="type.id">
+                        {{ type }}
+                      </option>
+                    </select>
+                  </div>
+                  <div
+                    v-if="
+                      selectedInStorePaymentType != 'Cash' &&
+                        selectedInStorePaymentType
+                    "
+                  >
+                    <div class="form-group">
+                      <label for="paymentTypeNameInput">Bank Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="paymentTypeNameInput"
+                        v-model.trim="bankName"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="accountNumberInput">Account Number</label>
+                      <input
+                        minlength="4"
+                        maxlength="4"
+                        type="number"
+                        class="form-control"
+                        id="accountNumberInput"
+                        v-model.number="accountNumber"
+                        placeholder="0000"
+                        aria-describedby="accountNumberHelp"
+                      />
+                      <small id="accountNumberHelp" class="form-text text-muted"
+                        >This should contain the last 4 digits</small
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
             <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button
+              v-if="!printInvoice"
               :disabled="disablePaymentBtn"
               type="button"
               :data-dismiss="isFormValid() ? 'modal' : ''"
               class="btn btn-success"
-              href="#invoiceModal"
-              data-toggle="modal"
               @click="confirmAction"
             >
-              <!-- data-dismiss="modal" -->
               Confirm
+            </button>
+            <button
+              v-if="printInvoice"
+              data-dismiss="modal"
+              type="button"
+              class="btn btn-primary"
+              href="#invoiceModal"
+              data-toggle="modal"
+            >
+              Print invoice
             </button>
           </div>
         </div>
@@ -214,33 +247,76 @@
     </div>
     <Invoice
       :customer="currentCustomer"
-      :employee-name="selectedEmployeeName"
+      :employee-name="'some employee name'"
       :products="productIds"
-      :payment-type="selectedPaymentType"
+      :payment-type="selectedInStorePaymentType"
       :account-num="accountNumber"
-      :total-amt="totalAmount"
-      :net-amt="netAmount"
-      :depositAmt="initialPaymentAmt"
+      :total-amt="sale.grandTotal"
+      :net-amt="amountDue"
+      :deposit-amt="amountDue"
       :discount-percentage="discountPercentage"
       :updated-prescription="prescription"
-      :new-sale-id="newSaleId"
-      :fully-paid="hasCustomerPaid"
-      @donePrinting="resetData"
+      :new-sale-id="sale.saleId"
+      :fully-paid="true"
+      @donePrinting="$emit('donePrinting')"
     />
   </div>
 </template>
 <script>
+import Invoice from "@/components/Invoice.vue";
 export default {
   name: "SaleDetail",
-  props: ["sale", "canRefund"],
+  props: ["sale", "canRefund", "printInvoice"],
+  components: {
+    Invoice,
+  },
   data: () => {
     return {
       inStorePaymentType: ["Cash", "Debit", "Credit"],
       selectedInStorePaymentType: "",
       remarks: "",
+      bankName: "",
+      accountNumber: "",
     };
   },
   computed: {
+    currentCustomer() {
+      return this.sale.customer;
+    },
+    prescription() {
+      if (!this.currentCustomer) return null;
+
+      const {
+        leftEyeAxis,
+        leftEyeAdd,
+        leftEyeCylinder,
+        leftEyePrism,
+        leftEyeSphere,
+        rightEyeAxis,
+        rightEyeAdd,
+        rightEyeCylinder,
+        rightEyePrism,
+        rightEyeSphere,
+        pupilDistance,
+      } = this.currentCustomer;
+
+      return {
+        leftEyeAxis,
+        leftEyeAdd,
+        leftEyeCylinder,
+        leftEyePrism,
+        leftEyeSphere,
+        rightEyeAxis,
+        rightEyeAdd,
+        rightEyeCylinder,
+        rightEyePrism,
+        rightEyeSphere,
+        pupilDistance,
+      };
+    },
+    discountPercentage() {
+      return this.sale.promotion ? this.sale.promotion.percentage : 0;
+    },
     loadTemplate() {
       return this.sale != null;
     },
@@ -249,8 +325,17 @@ export default {
         ? "list-group-item-success"
         : "list-group-item-danger";
     },
+    validPaymentInfo() {
+      if (this.selectedInStorePaymentType === "Cash") return true;
+
+      return (
+        this.accountNumber &&
+        this.bankName &&
+        this.accountNumber.toString().length === 4
+      );
+    },
     disablePaymentBtn() {
-      return this.selectedInStorePaymentType === "" && !this.canRefund;
+      return !this.validPaymentInfo && !this.canRefund;
     },
     amountDue() {
       return (this.sale.grandTotal - this.sale.initialDepositAmount).toFixed(2);
@@ -261,6 +346,43 @@ export default {
     saleRemarks() {
       return this.sale.saleRemarks ?? "N/A";
     },
+    productIds() {
+      let frames = this.sale.saleDetailList
+        .filter(({ product }) => product.productId.startsWith("F"))
+        .map(({ product, quantity }) => {
+          return {
+            productId: product.productId,
+            name: product.productName,
+            quantity,
+          };
+        });
+
+      let lenses = this.sale.saleDetailList
+        .filter(({ product }) => product.productId.startsWith("L"))
+        .map(({ product, quantity }) => {
+          return {
+            productId: product.productId,
+            name: product.productName,
+            quantity,
+          };
+        });
+
+      let customLenses = this.sale.saleDetailList
+        .filter(({ product }) => product.productId.startsWith("CL"))
+        .map(({ product, quantity }) => {
+          return {
+            productId: product.productId,
+            name: product.productName,
+            quantity,
+          };
+        });
+
+      return {
+        frames,
+        lenses,
+        customLenses,
+      };
+    },
   },
   methods: {
     isFormValid() {
@@ -270,11 +392,12 @@ export default {
     },
     confirmAction() {
       if (!this.canRefund) {
-        this.$emit(
-          "updateSale",
-          this.selectedInStorePaymentType,
-          this.amountDue
-        );
+        let paymentType = this.selectedInStorePaymentType;
+        if (this.selectedInStorePaymentType !== "Cash") {
+          paymentType += `,${this.bankName},${this.accountNumber}`;
+        }
+        console.log(paymentType);
+        this.$emit("updateSale", paymentType, this.amountDue);
       } else {
         if (!this.isFormValid()) {
           this.$refs.refundForm.reportValidity();

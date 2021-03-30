@@ -18,6 +18,7 @@
         :list="customerList"
         @selectCustomer="setCustomerInfo"
         v-show="!createNewCustomer"
+        :selected-customer-id="selectedCustomerId"
       />
       <div class="row mb-3">
         <div class="col-6">
@@ -741,7 +742,9 @@
                     type="checkbox"
                     v-model="showDepositInfo"
                     id="showDepositInfo"
-                    :disabled="hasCustomerPaid || specialPromo"
+                    :disabled="
+                      hasCustomerPaid || specialPromo || successfulSale
+                    "
                   />
                   <label class="form-check-label" for="showDepositInfo">
                     Pembayaran dengan Deposit
@@ -758,7 +761,7 @@
                     v-model="hasCustomerPaid"
                     name="hasCustomerPaid"
                     id="hasCustomerPaid"
-                    :disabled="showDepositInfo"
+                    :disabled="showDepositInfo || successfulSale"
                   />
                   <label class="form-check-label" for="hasCustomerPaid">
                     Pembayaran Penuh
@@ -1527,6 +1530,9 @@ export default {
           this.showDiscountError = !(frameCost <= firstFrameCost);
         }
       }
+    },
+    createNewCustomer(val) {
+      if (!val) this.selectedCustomerId = null;
     },
   },
 };

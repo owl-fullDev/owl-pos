@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-3">
     <div
-      v-if="alertMsg"
+      v-if="showAlert"
       class="alert alert-dismissible fade show"
       :class="alertClass"
       role="alert"
@@ -48,8 +48,10 @@
       <div class="col mt-5">
         <SaleDetails
           :sale="selectedSale"
+          :print-invoice="printInvoice"
           @resetSelectedSale="resetSelectedSale"
           @updateSale="updateSale"
+          @donePrinting="updatePendingSalesList(false)"
         />
       </div>
     </div>
@@ -73,8 +75,10 @@ export default {
       selectedSale: null,
       pendingSaleList: [],
       alertMsg: "",
+      showAlert: false,
       loading: true,
       alertClass: "alert-info",
+      printInvoice: false,
     };
   },
   components: {
@@ -86,6 +90,7 @@ export default {
   },
   methods: {
     updatePendingSalesList(showQuantityMsg = true) {
+      this.resetSelectedSale();
       this.loading = true;
       axios
         .get(`${apiUrl}/getPendingSaleList?storeId=${storeData.storeId}`)
@@ -101,6 +106,7 @@ export default {
           }
           this.loading = false;
           this.pendingSaleList = [...response.data];
+          this.showAlert = true;
         })
         .catch((err) => {
           console.log(err);
@@ -117,6 +123,7 @@ export default {
     },
     resetSelectedSale() {
       this.selectedSale = null;
+      this.printInvoice = false;
     },
     updateSale(selectedPaymentType, amountDue) {
       const today = new Date().toISOString();
@@ -134,14 +141,19 @@ export default {
       axios
         .post(`${apiUrl}/updateSale?storeId=${storeData.storeId}`, saleDetails)
         .then((response) => {
-          this.updatePendingSalesList(false);
-          this.selectedSale = null;
+          if (!this.selectedSale.fullyPaid) {
+            alert(`${response.data}. Please print the invoice.`);
+            this.printInvoice = true;
+          } else {
+            this.updatePendingSalesList(false);
+          }
           this.alertMsg = response.data;
           this.alertClass = "alert-success";
         })
         .catch((err) => {
           console.log(err);
-          this.updatePendingSalesList(false);
+          alert("Sale could not be updated please try again");
+          this.alertMsg = "Sale could not be updated please try again";
           this.alertClass = "alert-warning";
         });
     },

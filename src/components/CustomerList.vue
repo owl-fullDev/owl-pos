@@ -41,17 +41,9 @@
 <script>
 export default {
   name: "CustomerList",
-  data: () => {
-    return {
-      selectedCustomerId: null,
-    };
-  },
-  props: {
-    list: Array,
-  },
+  props: ["selectedCustomerId", "list"],
   methods: {
     selectCustomer(customerId) {
-      this.selectedCustomerId = customerId;
       this.$emit("selectCustomer", customerId);
     },
     currentSelectedCustomerClass(customerId) {

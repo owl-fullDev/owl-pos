@@ -428,7 +428,7 @@ export default {
       return this.customer.rightEyeSphere !== undefined;
     },
     headerText() {
-      return this.fullyPaid ? "Tax Invoice" : "Desposit";
+      return this.fullyPaid ? "Tax Invoice" : "Deposit";
     },
   },
   methods: {
@@ -445,6 +445,7 @@ export default {
     finishTransaction() {
       if (confirm("Are you sure you have printed the invoice?")) {
         this.$emit("donePrinting");
+        this.disableCheckbox = true;
       }
     },
   },
