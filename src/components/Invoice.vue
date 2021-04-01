@@ -178,7 +178,7 @@
                         <tr>
                           <td>{{ paymentType }}</td>
                           <td>{{ accountNum }}</td>
-                          <td>RP {{ formatNumber(totalAmt) }}</td>
+                          <td>RP {{ formatNumber(paymentAmount) }}</td>
                           <td>0</td>
                           <td>{{ numOfProducts }}</td>
                         </tr>
@@ -415,11 +415,21 @@ export default {
       return values.every((v) => v !== null || v !== undefined);
     },
     numOfProducts() {
-      return (
-        this.products.frames.length +
-        this.products.lenses.length +
-        this.products.customLenses.length
-      );
+      if (this.renderData) {
+        const reducer = (accumulator, { quantity }) => accumulator + quantity;
+        const { frames, lenses, customLenses } = this.products;
+
+        const numOfFrames = frames.reduce(reducer, 0);
+        const numOfLenses = lenses.reduce(reducer, 0);
+        const numOfCustomLenses = customLenses.reduce(reducer, 0);
+
+        return numOfFrames + numOfLenses + numOfCustomLenses;
+      }
+
+      return 0;
+    },
+    paymentAmount() {
+      return this.fullyPaid ? this.netAmt : this.depositAmt;
     },
     balanceAmt() {
       return this.fullyPaid ? 0 : this.netAmt - this.depositAmt;

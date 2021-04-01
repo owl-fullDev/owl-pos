@@ -577,7 +577,7 @@
           </div>
           <div class="col-2 text-right">
             <span class="text-success align-middle costBreakdown">
-              {{ totalAmount }} Rupiah
+              {{ formatNumber(totalAmount) }} Rupiah
             </span>
           </div>
         </div>
@@ -597,7 +597,7 @@
           </div>
           <div class="col-2 text-right">
             <span class="text-success align-middle costBreakdown">
-              {{ netAmount }} Rupiah
+              {{ formatNumber(netAmount) }} Rupiah
             </span>
           </div>
         </div>
@@ -675,7 +675,7 @@
                 >
                   Customer: {{ sale.customer.firstName }} {{ sale.customer.lastName }} -
                   Frame: {{ sale.saleDetailList[0].product.productName }} ({{sale.saleDetailList[0].product.productId}}) -
-                  Price: {{ sale.grandTotal }} Rupiah
+                  Price: {{ formatNumber(sale.grandTotal) }} Rupiah
                   Date/Time: {{new Date(sale.initialDepositDate).toUTCString()}}
                 </option>
               </select>
@@ -801,9 +801,9 @@
                         >Rp</span
                       >
                       <input
-                        type="number"
+                        type="text"
                         class="form-control"
-                        v-model.number="initialPaymentAmt"
+                        :value="formatNumber(initialPaymentAmt)"
                         aria-label="initialPaymentAmount"
                         aria-describedby="rupiah-currency"
                         readonly
@@ -979,7 +979,9 @@ export default {
   },
   computed: {
     initialPaymentAmt() {
-      return (this.netAmount * this.selectedDepositPercentage) / 100;
+      // prettier-ignore
+      const depositAmt = (this.netAmount * this.selectedDepositPercentage) / 100
+      return Math.round(depositAmt / 10000) * 10000;
     },
     prescription() {
       if (this.isMounted) return this.$refs.prescriptionElem.prescriptionValues;
@@ -1179,6 +1181,9 @@ export default {
       Object.assign(this.$data, initialData());
       this.isMounted = true;
       this.fetchDataFromServer();
+    },
+    formatNumber(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     },
     openPaymentModal(e) {
       e.preventDefault();
