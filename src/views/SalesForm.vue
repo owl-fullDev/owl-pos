@@ -1232,7 +1232,7 @@ export default {
 
         let initialDepositType = this.selectedPaymentType;
         if (this.selectedPaymentType !== "Cash") {
-          initialDepositType += `,${this.bankName},${this.accountNumber}`;
+          initialDepositType += `:${this.bankName}:${this.accountNumber}`;
         }
 
         const newSaleObj = {
