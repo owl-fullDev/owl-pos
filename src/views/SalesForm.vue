@@ -908,6 +908,7 @@
       :updated-prescription="prescription"
       :new-sale-id="newSaleId"
       :fully-paid="hasCustomerPaid"
+      :remarks="remarks"
       @donePrinting="resetData"
     />
   </div>

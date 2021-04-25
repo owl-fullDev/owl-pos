@@ -258,6 +258,7 @@
       :updated-prescription="prescription"
       :new-sale-id="sale.saleId"
       :fully-paid="true"
+      :remarks="saleRemarks"
       @donePrinting="$emit('donePrinting')"
     />
   </div>

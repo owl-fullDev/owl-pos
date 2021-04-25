@@ -238,6 +238,12 @@
                     </div>
                   </div>
                 </div>
+                <div class="row mt-2">
+                  <div class="col">
+                    <h5>Remarks:</h5>
+                    <p>{{ remarks }}</p>
+                  </div>
+                </div>
                 <div class="row mt-5" v-if="renderPrescription">
                   <div class="col">
                     <table class="table table-sm table-bordered">
@@ -387,6 +393,7 @@ export default {
     "updatedPrescription",
     "newSaleId",
     "fullyPaid",
+    "remarks",
   ],
   computed: {
     currentDate() {
