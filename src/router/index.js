@@ -10,6 +10,8 @@ import storeData from "@/storeData";
 import CreateShipment from "@/views/CreateShipment";
 import ReceiveShipment from "@/views/ReceiveShipment";
 import StoreInventory from "@/views/StoreInventory";
+import Login from "@/views/Login.vue";
+import store from "@/store/store";
 
 Vue.use(VueRouter);
 
@@ -18,6 +20,11 @@ const routes = [
     path: "/",
     name: "home",
     component: Home,
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
   },
   {
     path: "/pendingSales",
@@ -78,17 +85,25 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.path !== "/") {
-    if (!storeData.storeId) {
-      next({ name: "home" });
-    } else {
+  if (!store.getters.loggedIn) {
+    if (to.name === "Login") {
       next();
+    } else {
+      next({ name: "Login" });
     }
   } else {
-    if (!storeData.storeId) {
-      next();
+    if (to.path !== "/") {
+      if (!storeData.storeId) {
+        next({ name: "home" });
+      } else {
+        next();
+      }
     } else {
-      next({ name: "PendingSales" });
+      if (!storeData.storeId) {
+        next();
+      } else {
+        next({ name: "PendingSales" });
+      }
     }
   }
 });
