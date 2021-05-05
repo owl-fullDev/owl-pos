@@ -53,7 +53,7 @@
 <script>
 import axios from "axios";
 
-const apiUrl = "https://owl-backend-server.herokuapp.com/usersEndpoint";
+const apiUrl = "https://owl-server-5twzqfhlba-et.a.run.app/usersEndpoint";
 
 export default {
   name: "Login",

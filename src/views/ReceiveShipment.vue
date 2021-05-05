@@ -29,7 +29,7 @@ import storeData from "@/storeData";
 
 // // prettier-ignore
 const apiUrl =
-    "https://owl-backend-server.herokuapp.com/posEndpoint/receiveShipment";
+    "https://owl-server-5twzqfhlba-et.a.run.app/posEndpoint/receiveShipment";
 
 export default {
   name: "ReceiveShipments",

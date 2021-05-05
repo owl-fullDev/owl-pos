@@ -149,7 +149,7 @@ import storeData from "@/storeData";
 import _ from "lodash";
 
 // // prettier-ignore
-const apiUrl = "https://owl-backend-server.herokuapp.com";
+const apiUrl = "https://owl-server-5twzqfhlba-et.a.run.app";
 
 export default {
   name: "CreateShipment",
