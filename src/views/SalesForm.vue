@@ -605,7 +605,7 @@
 
       <!-- Submit -->
       <div class="row mb-3">
-        <div class="col-9"></div>
+        <div class="col-8"></div>
         <div class="col">
           <button
             class="btn btn-primary float-right"
@@ -722,7 +722,7 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Pembayaran</h5>
+            <h5 class="modal-title">Checkout</h5>
             <button
               v-if="!successfulSale"
               type="button"
@@ -734,132 +734,139 @@
             </button>
           </div>
           <div class="modal-body">
-            <div class="row mb-3">
-              <div class="col">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    v-model="showDepositInfo"
-                    id="showDepositInfo"
-                    :disabled="
-                      hasCustomerPaid || specialPromo || successfulSale
-                    "
-                  />
-                  <label class="form-check-label" for="showDepositInfo">
-                    Pembayaran dengan Deposit
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="form-check d-inline-block">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    v-model="hasCustomerPaid"
-                    name="hasCustomerPaid"
-                    id="hasCustomerPaid"
-                    :disabled="showDepositInfo || successfulSale"
-                  />
-                  <label class="form-check-label" for="hasCustomerPaid">
-                    Pembayaran Penuh
-                  </label>
-                </div>
-              </div>
-            </div>
-            <hr />
-            <!-- Deposit -->
-            <div class="row" v-if="showDepositInfo">
-              <div class="col">
-                <h3>Pembayaran Deposit</h3>
-                <hr />
-                <div class="row">
-                  <div class="col">
-                    <label for="Initial Payment Amount" class="form-label">
-                      Jumlah Persentase Pembayaran
+            <div v-if="!successfulSale">
+              <div class="row mb-3">
+                <div class="col">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      v-model="showDepositInfo"
+                      id="showDepositInfo"
+                      :disabled="
+                        hasCustomerPaid || specialPromo || successfulSale
+                      "
+                    />
+                    <label class="form-check-label" for="showDepositInfo">
+                      Pembayaran dengan Deposit
                     </label>
-                    <div class="input-group mb-2">
-                      <select
-                        class="form-control"
-                        v-model="selectedDepositPercentage"
-                        :required="hasCustomerPaid"
-                      >
-                        <option value="0" disabled>Pilih jumlah deposit</option>
-                        <option
-                          v-for="amount in depositPercentages"
-                          :key="amount.id"
-                          :value="amount"
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-check d-inline-block">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      v-model="hasCustomerPaid"
+                      name="hasCustomerPaid"
+                      id="hasCustomerPaid"
+                      :disabled="showDepositInfo || successfulSale"
+                    />
+                    <label class="form-check-label" for="hasCustomerPaid">
+                      Pembayaran Penuh
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <!-- Deposit -->
+              <div class="row" v-if="showDepositInfo">
+                <div class="col">
+                  <h3>Pembayaran Deposit</h3>
+                  <hr />
+                  <div class="row">
+                    <div class="col">
+                      <label for="Initial Payment Amount" class="form-label">
+                        Jumlah Persentase Pembayaran
+                      </label>
+                      <div class="input-group mb-2">
+                        <select
+                          class="form-control"
+                          v-model="selectedDepositPercentage"
+                          :required="hasCustomerPaid"
                         >
-                          {{ amount }}%
-                        </option>
-                      </select>
+                          <option value="0" disabled
+                            >Pilih jumlah deposit</option
+                          >
+                          <option
+                            v-for="amount in depositPercentages"
+                            :key="amount.id"
+                            :value="amount"
+                          >
+                            {{ amount }}%
+                          </option>
+                        </select>
+                      </div>
+                      <div class="input-group mb-3">
+                        <span class="input-group-text" id="rupiah-currency"
+                          >Rp</span
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          :value="formatNumber(initialPaymentAmt)"
+                          aria-label="initialPaymentAmount"
+                          aria-describedby="rupiah-currency"
+                          readonly
+                        />
+                      </div>
                     </div>
-                    <div class="input-group mb-3">
-                      <span class="input-group-text" id="rupiah-currency"
-                        >Rp</span
-                      >
+                  </div>
+                </div>
+              </div>
+              <div v-if="hasCustomerPaid || showDepositInfo" class="row mb-3">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="Payment Type" class="form-label">
+                      Jenis Pembayaran
+                    </label>
+                    <select
+                      class="form-control"
+                      v-model="selectedPaymentType"
+                      :required="hasCustomerPaid"
+                    >
+                      <option value="">Jenis Pembayaran</option>
+                      <option v-for="type in paymentTypes" :key="type.id">
+                        {{ type }}
+                      </option>
+                    </select>
+                  </div>
+                  <div
+                    v-if="selectedPaymentType != 'Cash' && selectedPaymentType"
+                  >
+                    <div class="form-group">
+                      <label for="paymentTypeNameInput">Bank Name</label>
                       <input
                         type="text"
                         class="form-control"
-                        :value="formatNumber(initialPaymentAmt)"
-                        aria-label="initialPaymentAmount"
-                        aria-describedby="rupiah-currency"
-                        readonly
+                        id="paymentTypeNameInput"
+                        v-model.trim="bankName"
                       />
+                    </div>
+                    <div class="form-group">
+                      <label for="accountNumberInput">Account Number</label>
+                      <input
+                        minlength="4"
+                        maxlength="4"
+                        type="number"
+                        class="form-control"
+                        id="accountNumberInput"
+                        v-model.number="accountNumber"
+                        placeholder="0000"
+                        aria-describedby="accountNumberHelp"
+                      />
+                      <small id="accountNumberHelp" class="form-text text-muted"
+                        >This should contain the last 4 digits</small
+                      >
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div v-if="hasCustomerPaid || showDepositInfo" class="row mb-3">
-              <div class="col">
-                <div class="form-group">
-                  <label for="Payment Type" class="form-label">
-                    Jenis Pembayaran
-                  </label>
-                  <select
-                    class="form-control"
-                    v-model="selectedPaymentType"
-                    :required="hasCustomerPaid"
-                  >
-                    <option value="">Jenis Pembayaran</option>
-                    <option v-for="type in paymentTypes" :key="type.id">
-                      {{ type }}
-                    </option>
-                  </select>
-                </div>
-                <div
-                  v-if="selectedPaymentType != 'Cash' && selectedPaymentType"
-                >
-                  <div class="form-group">
-                    <label for="paymentTypeNameInput">Bank Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="paymentTypeNameInput"
-                      v-model.trim="bankName"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="accountNumberInput">Account Number</label>
-                    <input
-                      minlength="4"
-                      maxlength="4"
-                      type="number"
-                      class="form-control"
-                      id="accountNumberInput"
-                      v-model.number="accountNumber"
-                      placeholder="0000"
-                      aria-describedby="accountNumberHelp"
-                    />
-                    <small id="accountNumberHelp" class="form-text text-muted"
-                      >This should contain the last 4 digits</small
-                    >
-                  </div>
-                </div>
-              </div>
+            <div v-else>
+              <p>Please print the invoice</p>
             </div>
           </div>
           <div class="modal-footer">
@@ -1436,6 +1443,8 @@ export default {
       let selectedCustomer = this.getCustomer(customerId);
 
       //personal info
+      this.firstName = selectedCustomer.firstName;
+      this.lastName = selectedCustomer.lastName;
       this.phoneNum = selectedCustomer.phoneNumber;
       this.email = selectedCustomer.email;
 
