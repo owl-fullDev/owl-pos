@@ -58,36 +58,7 @@
             <strong> {{ saleRemarks }} </strong>
           </li>
         </ul>
-        <table class="table table-striped table-hover">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">Produk</th>
-              <th scope="col">Kuantitas</th>
-              <th scope="col" v-if="canRefund">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in sale.saleDetailList" :key="item.id">
-              <td>{{ item.product.productId }}</td>
-              <td>{{ item.quantity }}</td>
-              <td v-if="canRefund">
-                <div class="form-check">
-                  <input
-                    :id="`refundCheckbox_${item.product.productId}`"
-                    type="checkbox"
-                    v-model="item.isReturned"
-                    class="form-check-input"
-                  />
-                  <label
-                    :for="`refundCheckbox_${item.product.productId}`"
-                    class="form-check-label"
-                    >Refund item</label
-                  >
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
         <div v-if="canRefund">
           <button
             class="btn btn-danger btn-block"
@@ -141,6 +112,37 @@
               <strong>
                 Are you sure you want to issue this refund?
               </strong>
+              <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">Produk</th>
+                    <th scope="col">Kuantitas</th>
+                    <th scope="col" v-if="canRefund">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in sale.saleDetailList" :key="item.id">
+                    <td>{{ item.product.productId }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td v-if="canRefund">
+                      <div class="form-check">
+                        <input
+                          :id="`refundCheckbox_${item.product.productId}`"
+                          type="checkbox"
+                          v-model="item.isReturned"
+                          class="form-check-input"
+                        />
+                        <label
+                          :for="`refundCheckbox_${item.product.productId}`"
+                          class="form-check-label"
+                        >
+                          Refund item
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
               <form ref="refundForm">
                 <div class="form-group mt-2">
                   <label for="remarks">Remarks</label>

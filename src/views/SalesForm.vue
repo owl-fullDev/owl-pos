@@ -881,7 +881,7 @@
               <button
                 class="btn btn-success"
                 :disabled="!validPaymentInfo"
-                @click="createSale()"
+                @click="createSale"
               >
                 Create Sale
               </button>
