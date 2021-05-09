@@ -68,7 +68,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 
 library.add(faArrowUp, faAngleRight, faAngleLeft);
 
-const apiUrl = "https://owl-server-5twzqfhlba-et.a.run.app";
+const apiUrl = "https://owl-pos-api.herokuapp.com/";
 
 export default {
   name: "StoreInventory",

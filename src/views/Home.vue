@@ -18,7 +18,7 @@
 import axios from "axios";
 import storeData from "@/storeData";
 const apiUrl =
-  "https://owl-server-5twzqfhlba-et.a.run.app/posEndpoint/getAllStores";
+  "https://owl-pos-api.herokuapp.com/posEndpoint/getAllStores";
 
 export default {
   name: "Home",
