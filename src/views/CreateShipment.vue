@@ -164,7 +164,7 @@ export default {
   },
   created() {
     axios
-      .get(`${apiUrl}/hoStoresEndpoint/getAllStores`)
+      .get(`${apiUrl}/posEndpoint/getAllStores`)
       .then((response) => {
         this.stores = response.data.filter(
           (s) => s.storeId != storeData.storeId

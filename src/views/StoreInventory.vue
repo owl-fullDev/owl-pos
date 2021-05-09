@@ -81,7 +81,7 @@ export default {
   },
   created() {
     axios
-        .get(`${apiUrl}/hoStoresEndpoint/getStoreQuantity?storeId=${storeData.storeId}`)
+        .get(`${apiUrl}/posEndpoint/getStoreQuantity?storeId=${storeData.storeId}`)
         .then((response) => {
           this.products = [...response.data];
           this.loading = false;
