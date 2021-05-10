@@ -928,7 +928,7 @@ import storeData from "@/storeData";
 import Prescription from "@/components/Prescription.vue";
 import Invoice from "../components/Invoice.vue";
 
-const apiUrl = "https://owl-pos-api.herokuapp.com//posEndpoint";
+const apiUrl = "https://owl-pos-api.herokuapp.com/posEndpoint";
 
 const initialData = () => {
   return {
