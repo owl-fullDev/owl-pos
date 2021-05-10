@@ -10,6 +10,8 @@ import VueHtmlToPaper from "vue-html-to-paper";
 import store from "./store/store.js";
 import axios from "axios";
 
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+
 axios.interceptors.request.use((config) => {
   if (store.getters.loggedIn) {
     config.auth = {

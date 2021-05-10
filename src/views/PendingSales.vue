@@ -66,7 +66,7 @@ import _ from "lodash";
 import axios from "axios";
 import storeData from "@/storeData";
 
-const apiUrl = "https://owl-pos-api.herokuapp.com/posEndpoint";
+const posEndpoint = "/posEndpoint";
 
 export default {
   name: "PendingSales",
@@ -93,7 +93,7 @@ export default {
       this.resetSelectedSale();
       this.loading = true;
       axios
-        .get(`${apiUrl}/getPendingSaleList?storeId=${storeData.storeId}`)
+        .get(`${posEndpoint}/getPendingSaleList?storeId=${storeData.storeId}`)
         .then((response) => {
           if (showQuantityMsg) {
             if (response.data.length === 0) {
@@ -139,7 +139,10 @@ export default {
       }
 
       axios
-        .post(`${apiUrl}/updateSale?storeId=${storeData.storeId}`, saleDetails)
+        .post(
+          `${posEndpoint}/updateSale?storeId=${storeData.storeId}`,
+          saleDetails
+        )
         .then((response) => {
           if (!this.selectedSale.fullyPaid) {
             alert(`${response.data}. Please print the invoice.`);

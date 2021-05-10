@@ -17,8 +17,6 @@
 // @ is an alias to /src
 import axios from "axios";
 import storeData from "@/storeData";
-const apiUrl =
-  "https://owl-pos-api.herokuapp.com/posEndpoint/getAllStores";
 
 export default {
   name: "Home",
@@ -31,7 +29,7 @@ export default {
   components: {},
   created() {
     axios
-      .get(`${apiUrl}`)
+      .get("/posEndpoint/getAllStores")
       .then((response) => {
         this.stores = [...response.data];
       })

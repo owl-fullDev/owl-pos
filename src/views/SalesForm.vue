@@ -928,7 +928,7 @@ import storeData from "@/storeData";
 import Prescription from "@/components/Prescription.vue";
 import Invoice from "../components/Invoice.vue";
 
-const apiUrl = "https://owl-pos-api.herokuapp.com/posEndpoint";
+const posEndpoint = "/posEndpoint";
 
 const initialData = () => {
   return {
@@ -1159,14 +1159,14 @@ export default {
     },
     fetchDataFromServer() {
       axios
-        .get(`${apiUrl}/getCustomLensList`)
+        .get(`${posEndpoint}/getCustomLensList`)
         .then((response) => {
           this.customLenses = response.data;
         })
         .catch((err) => console.error(err));
 
       axios
-        .get(`${apiUrl}/getStorePromotions?storeId=${storeData.storeId}`)
+        .get(`${posEndpoint}/getStorePromotions?storeId=${storeData.storeId}`)
         .then((response) => {
           const promotionsReceived = response.data;
           this.promotions = promotionsReceived.map((p) => ({
@@ -1179,7 +1179,7 @@ export default {
         .catch((err) => console.error(err));
 
       axios
-        .get(`${apiUrl}/getStoreEmployees?storeId=${storeData.storeId}`)
+        .get(`${posEndpoint}/getStoreEmployees?storeId=${storeData.storeId}`)
         .then((response) => {
           this.employees = response.data;
         })
@@ -1270,7 +1270,7 @@ export default {
         };
         console.log(newSaleObj);
         axios
-          .post(`${apiUrl}/newSale`, newSaleObj)
+          .post(`${posEndpoint}/newSale`, newSaleObj)
           .then((response) => {
             console.log(response);
             this.newSaleId = response.data;
@@ -1292,7 +1292,7 @@ export default {
         //   }
         axios
           .get(
-            `${apiUrl}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
+            `${posEndpoint}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
           )
           .then((response) => {
             let {
@@ -1404,7 +1404,7 @@ export default {
         this.createNewCustomer = false;
         axios
           .get(
-            `${apiUrl}/getCustomerByName?firstName=${this.firstName}&lastName=${this.lastName}`
+            `${posEndpoint}/getCustomerByName?firstName=${this.firstName}&lastName=${this.lastName}`
           )
           .then((response) => {
             this.customerList = [...response.data];
@@ -1423,7 +1423,7 @@ export default {
         this.createNewCustomer = false;
         axios
           .get(
-            `${apiUrl}/getCustomerByPhoneNumber?phoneNumber=${this.phoneNum}`
+            `${posEndpoint}/getCustomerByPhoneNumber?phoneNumber=${this.phoneNum}`
           )
           .then((response) => {
             this.customerList = [...response.data];
@@ -1523,7 +1523,7 @@ export default {
       if (val === 2) {
         axios
           .get(
-            `${apiUrl}/getPromotionalFirstSaleList?storeId=${storeData.storeId}&promoId=${this.selectedPromotion}`
+            `${posEndpoint}/getPromotionalFirstSaleList?storeId=${storeData.storeId}&promoId=${this.selectedPromotion}`
           )
           .then((response) => {
             console.log(response);

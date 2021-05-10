@@ -149,7 +149,7 @@ import storeData from "@/storeData";
 import _ from "lodash";
 
 // // prettier-ignore
-const apiUrl = "https://owl-pos-api.herokuapp.com";
+const posEndpoint = "/posEndpoint";
 
 export default {
   name: "CreateShipment",
@@ -164,7 +164,7 @@ export default {
   },
   created() {
     axios
-      .get(`${apiUrl}/posEndpoint/getAllStores`)
+      .get(`${posEndpoint}/getAllStores`)
       .then((response) => {
         this.stores = response.data.filter(
           (s) => s.storeId != storeData.storeId
@@ -201,7 +201,7 @@ export default {
         // }
         axios
           .get(
-            `${apiUrl}/posEndpoint/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
+            `${posEndpoint}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
           )
           .then((response) => {
             let { quantity: quantityAvailable, productName } = response.data;
@@ -260,7 +260,7 @@ export default {
           shipmentDetailList: formattedProducts,
         };
         axios
-          .post(`${apiUrl}/posEndpoint/newTransferShipment`, shipment)
+          .post(`${posEndpoint}/newTransferShipment`, shipment)
           .then((response) => {
             alert(response.data);
           })

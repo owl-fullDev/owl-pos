@@ -64,7 +64,7 @@ import _ from "lodash";
 import axios from "axios";
 import storeData from "@/storeData";
 
-const apiUrl = "https://owl-pos-api.herokuapp.com/posEndpoint";
+const posEndpoint = "/posEndpoint";
 
 export default {
   name: "Refunds",
@@ -87,7 +87,7 @@ export default {
     updateRecentSalesList() {
       this.loading = true;
       axios
-        .get(`${apiUrl}/getRecentSalesList?storeId=${storeData.storeId}`)
+        .get(`${posEndpoint}/getRecentSalesList?storeId=${storeData.storeId}`)
         .then((response) => {
           this.recetSalesList = response.data.map((x) => {
             let saleDetailList = x.saleDetailList.map((saleDetail) => ({
@@ -119,7 +119,7 @@ export default {
         refundedProducts: this.selectedSale.saleDetailList,
       };
       axios
-        .post(`${apiUrl}/refundSale`, refundObj)
+        .post(`${posEndpoint}/refundSale`, refundObj)
         .then((response) => {
           this.updateRecentSalesList();
           this.selectedSale = null;

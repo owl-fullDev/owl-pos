@@ -6,11 +6,11 @@
       <div class="col">
         <label for="barcode">Scan barcode</label>
         <input
-            type="number"
-            min="1"
-            id="barcode"
-            v-model.number="barcode"
-            class="form-control"
+          type="number"
+          min="1"
+          id="barcode"
+          v-model.number="barcode"
+          class="form-control"
         />
       </div>
     </div>
@@ -27,10 +27,6 @@
 import axios from "axios";
 import storeData from "@/storeData";
 
-// // prettier-ignore
-const apiUrl =
-    "https://owl-server-5twzqfhlba-et.a.run.app/posEndpoint/receiveShipment";
-
 export default {
   name: "ReceiveShipments",
   data: () => {
@@ -46,20 +42,20 @@ export default {
   methods: {
     confirm() {
       axios
-          .post(apiUrl, {
-            storeId: storeData.storeId,
-            shipmentId: this.barcode,
-            receivedDate: new Date().toISOString(),
-          })
-          .then((response) => {
-            alert(response.data);
-            this.barcode = null;
-          })
-          .catch((err) => {
-            alert(
-                `Server error: ${err.response.data.message} . Please try again`
-            );
-          });
+        .post("/posEndpoint/receiveShipment", {
+          storeId: storeData.storeId,
+          shipmentId: this.barcode,
+          receivedDate: new Date().toISOString(),
+        })
+        .then((response) => {
+          alert(response.data);
+          this.barcode = null;
+        })
+        .catch((err) => {
+          alert(
+            `Server error: ${err.response.data.message} . Please try again`
+          );
+        });
     },
   },
 };

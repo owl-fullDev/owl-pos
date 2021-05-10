@@ -53,8 +53,6 @@
 <script>
 import axios from "axios";
 
-const apiUrl = "https://owl-pos-api.herokuapp.com/usersEndpoint";
-
 export default {
   name: "Login",
   data: () => {
@@ -69,7 +67,7 @@ export default {
     login() {
       this.loading = true;
       axios
-        .post(`${apiUrl}/login`, {
+        .post(`usersEndpoint/login`, {
           username: this.username,
           password: this.password,
         })
