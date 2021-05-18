@@ -1286,36 +1286,36 @@ export default {
     },
     validateBarcode(product) {
       if (product) {
-        // if (product.productId.length != 16) {
-        //   product.barcodeError = "Length of barcode should be 16 characters";
-        // } else {
-        //   }
-        axios
-          .get(
-            `${posEndpoint}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
-          )
-          .then((response) => {
-            let {
-              productPrice,
-              quantity: quantityAvailable,
-              productName,
-            } = response.data;
-            product.price = productPrice;
-            product.availableAmt = quantityAvailable;
-            product.name = productName;
-            product.barcodeError = null;
-            // prettier-ignore
-            product.quantityError = product.quantity > quantityAvailable ? "Quantity requested is more than what is available in store" : null;
-          })
-          .catch((error) => {
-            console.error(error);
-            product.barcodeError = "No such barcode exists";
-            product.quantityError = "";
-            product.price = 0;
-            product.availableAmt = 1;
-            product.quantity = 1;
-            product.name = "";
-          });
+        if (product.productId.length != 16) {
+          product.barcodeError = "Length of barcode should be 16 characters";
+        } else {
+          axios
+            .get(
+              `${posEndpoint}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
+            )
+            .then((response) => {
+              let {
+                productPrice,
+                quantity: quantityAvailable,
+                productName,
+              } = response.data;
+              product.price = productPrice;
+              product.availableAmt = quantityAvailable;
+              product.name = productName;
+              product.barcodeError = null;
+              // prettier-ignore
+              product.quantityError = product.quantity > quantityAvailable ? "Quantity requested is more than what is available in store" : null;
+            })
+            .catch((error) => {
+              console.error(error);
+              product.barcodeError = "No such barcode exists";
+              product.quantityError = "";
+              product.price = 0;
+              product.availableAmt = 1;
+              product.quantity = 1;
+              product.name = "";
+            });
+        }
       }
     },
     validateBarcodeInput(idx, type) {

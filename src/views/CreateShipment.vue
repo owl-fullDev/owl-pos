@@ -195,30 +195,30 @@ export default {
     validateBarcode(index) {
       let product = this.products[index];
       if (product) {
-        // if (product.productId.length != 16) {
-        //   product.barcodeError = "Length of barcode should be 16 characters";
-        // } else {
-        // }
-        axios
-          .get(
-            `${posEndpoint}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
-          )
-          .then((response) => {
-            let { quantity: quantityAvailable, productName } = response.data;
-            product.availableAmt = quantityAvailable;
-            product.name = productName;
-            product.barcodeError = null;
-            product.quantityError = null;
-          })
-          .catch((error) => {
-            console.error(error);
-            product.barcodeError = "No such barcode exists";
-            product.quantityError = "";
-            product.price = 0;
-            product.availableAmt = 1;
-            product.quantity = 1;
-            product.name = "";
-          });
+        if (product.productId.length != 16) {
+          product.barcodeError = "Length of barcode should be 16 characters";
+        } else {
+          axios
+            .get(
+              `${posEndpoint}/getInStoreProductQuantity?storeId=${storeData.storeId}&productId=${product.productId}`
+            )
+            .then((response) => {
+              let { quantity: quantityAvailable, productName } = response.data;
+              product.availableAmt = quantityAvailable;
+              product.name = productName;
+              product.barcodeError = null;
+              product.quantityError = null;
+            })
+            .catch((error) => {
+              console.error(error);
+              product.barcodeError = "No such barcode exists";
+              product.quantityError = "";
+              product.price = 0;
+              product.availableAmt = 1;
+              product.quantity = 1;
+              product.name = "";
+            });
+        }
       }
     },
     validateProductQuantity(index) {
