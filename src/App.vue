@@ -34,20 +34,29 @@
             </li>
             <li class="nav-item">
               <router-link
-                to="/refunds"
+                to="/StoreInventory"
                 active-class="nav-link"
                 class="nav-link"
+              >
+                Store Inventory
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link
+                  to="/refunds"
+                  active-class="nav-link"
+                  class="nav-link"
               >
                 Refunds
               </router-link>
             </li>
             <li class="nav-item">
               <router-link
-                to="/StoreInventory"
-                active-class="nav-link"
-                class="nav-link"
+                  to="/findSale"
+                  active-class="nav-link"
+                  class="nav-link"
               >
-                Store Inventory
+                Cari Sales
               </router-link>
             </li>
             <li class="nav-item dropdown">

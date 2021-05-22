@@ -261,26 +261,6 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td>OLD RX (R)</td>
-                          <td>{{ customer.rightEyeSphere }}</td>
-                          <td>{{ customer.rightEyeCylinder }}</td>
-                          <td>{{ customer.rightEyeAxis }}</td>
-                          <td>{{ customer.rightEyeAdd }}</td>
-                          <td>{{ customer.rightEyePrism }}</td>
-                          <td>{{ customer.pupilDistance }}</td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td>OLD RX (L)</td>
-                          <td>{{ customer.leftEyeSphere }}</td>
-                          <td>{{ customer.leftEyeCylinder }}</td>
-                          <td>{{ customer.leftEyeAxis }}</td>
-                          <td>{{ customer.leftEyeAdd }}</td>
-                          <td>{{ customer.leftEyePrism }}</td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
                           <td>New RX (R)</td>
                           <td>{{ updatedPrescription.rightEyeSphere }}</td>
                           <td>{{ updatedPrescription.rightEyeCylinder }}</td>

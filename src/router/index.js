@@ -11,6 +11,7 @@ import CreateShipment from "@/views/CreateShipment";
 import ReceiveShipment from "@/views/ReceiveShipment";
 import StoreInventory from "@/views/StoreInventory";
 import Login from "@/views/Login.vue";
+import FindSale from "@/views/FindSale";
 import store from "@/store/store";
 
 Vue.use(VueRouter);
@@ -50,6 +51,11 @@ const routes = [
     path: "/storeInventory",
     name: "Store Inventory",
     component: StoreInventory,
+  },
+  {
+    path: "/findSale",
+    name: "Cari Sale",
+    component: FindSale,
   },
   {
     path: "/shipments",
