@@ -91,6 +91,8 @@
       class="modal fade"
       id="completionModal"
       tabindex="-1"
+      data-backdrop="static"
+      data-keyboard="false"
       role="dialog"
       aria-hidden="true"
     >
@@ -103,6 +105,7 @@
               class="close"
               data-dismiss="modal"
               aria-label="Close"
+              v-if="canRefund"
             >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -341,7 +344,7 @@ export default {
       return !this.validPaymentInfo && !this.canRefund;
     },
     amountDue() {
-      return (this.sale.grandTotal - this.sale.initialDepositAmount).toFixed(2);
+      return this.sale.grandTotal - this.sale.initialDepositAmount;
     },
     modalTitle() {
       return this.canRefund ? "Refund Sale" : "Payment";
