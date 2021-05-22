@@ -14,6 +14,15 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="invoiceModalLabel">Print Invoice</h5>
+            <button
+              v-if="closable"
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
           <div class="modal-body">
             <div id="invoiceSetup">
@@ -139,23 +148,37 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="frame in products.frames" :key="frame.id">
+                        <tr
+                          v-for="frame in products.frames"
+                          :key="frame.productId"
+                        >
                           <th scope="row">{{ frame.productId }}</th>
                           <td>{{ frame.name }}</td>
                           <td>{{ frame.quantity }}</td>
                         </tr>
-                        <tr v-for="lens in products.lenses" :key="lens.id">
+                        <tr
+                          v-for="lens in products.lenses"
+                          :key="lens.productId"
+                        >
                           <th scope="row">{{ lens.productId }}</th>
                           <td>{{ lens.name }}</td>
                           <td>{{ lens.quantity }}</td>
                         </tr>
                         <tr
                           v-for="lens in products.customLenses"
-                          :key="lens.id"
+                          :key="lens.productId"
                         >
                           <th scope="row">{{ lens.productId }}</th>
                           <td>{{ lens.name }}</td>
                           <td>{{ lens.quantity }}</td>
+                        </tr>
+                        <tr
+                          v-for="product in products.misc"
+                          :key="product.productId"
+                        >
+                          <th scope="row">{{ product.productId }}</th>
+                          <td>{{ product.name }}</td>
+                          <td>{{ product.quantity }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -374,6 +397,7 @@ export default {
     "newSaleId",
     "fullyPaid",
     "remarks",
+    "closable",
   ],
   computed: {
     currentDate() {
