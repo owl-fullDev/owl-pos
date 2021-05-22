@@ -937,6 +937,7 @@ const initialData = () => {
       frames: [],
       lenses: [],
       customLenses: [],
+      misc: [],
     },
     customLenses: [],
     employees: [],
@@ -1034,6 +1035,8 @@ export default {
       return "0%";
     },
     discountPercentage() {
+      if (this.specialPromo && this.saleNumber === 1) return 0;
+
       const promo = this.promotions.find(
         (p) => p.promotionId == this.selectedPromotion
       );
