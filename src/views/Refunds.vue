@@ -48,8 +48,10 @@
         <SaleDetails
           :sale="selectedSale"
           :canRefund="true"
+          :print-invoice="printInvoice"
           @resetSelectedSale="resetSelectedSale"
           @updateSale="updateSale"
+          @donePrinting="donePrinting"
         />
       </div>
     </div>
@@ -74,6 +76,7 @@ export default {
       recetSalesList: [],
       alertMsg: "",
       loading: false,
+      printInvoice: false,
     };
   },
   components: {
@@ -86,6 +89,8 @@ export default {
   methods: {
     updateRecentSalesList() {
       this.loading = true;
+      this.selectedSale = null;
+
       axios
         .get(`${posEndpoint}/getRecentSalesList?storeId=${storeData.storeId}`)
         .then((response) => {
@@ -121,11 +126,17 @@ export default {
       axios
         .post(`${posEndpoint}/refundSale`, refundObj)
         .then((response) => {
-          this.updateRecentSalesList();
-          this.selectedSale = null;
+          this.printInvoice = true;
           this.alertMsg = response.data;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          alert(err.response.data);
+        });
+    },
+    donePrinting() {
+      this.updateRecentSalesList();
+      this.printInvoice = false;
     },
   },
 };

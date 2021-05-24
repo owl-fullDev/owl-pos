@@ -105,13 +105,16 @@
               class="close"
               data-dismiss="modal"
               aria-label="Close"
-              v-if="canRefund"
+              v-if="canRefund && !printInvoice"
             >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <div v-if="canRefund">
+            <div v-if="printInvoice && canRefund">
+              Sale was successfully voided. Please print the invoice
+            </div>
+            <div v-if="canRefund && !printInvoice">
               <strong>
                 Are you sure you want to issue this refund?
               </strong>
@@ -159,7 +162,7 @@
                 </div>
               </form>
             </div>
-            <div v-else>
+            <div v-if="!canRefund">
               <div class="row mb-3">
                 <div class="col">
                   <label for="paymentAmount" class="form-label">
@@ -230,7 +233,6 @@
               v-if="!printInvoice"
               :disabled="disablePaymentBtn"
               type="button"
-              :data-dismiss="isFormValid() ? 'modal' : ''"
               class="btn btn-success"
               @click="confirmAction"
             >
@@ -344,7 +346,22 @@ export default {
       return !this.validPaymentInfo && !this.canRefund;
     },
     amountDue() {
-      return this.sale.grandTotal - this.sale.initialDepositAmount;
+      const amountDue = this.sale.grandTotal - this.sale.initialDepositAmount;
+
+      if (this.canRefund) {
+        return amountDue * -1;
+      }
+
+      return amountDue;
+    },
+    totalAmount() {
+      let total = this.sale.grandTotal;
+
+      if (this.canRefund) {
+        return total * -1;
+      }
+
+      return total;
     },
     modalTitle() {
       return this.canRefund ? "Refund Sale" : "Payment";
