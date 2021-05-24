@@ -315,6 +315,39 @@
                 </option>
               </select>
             </div>
+            <div class="col" v-if="product.createSpecialCLOrder">
+              <label class="form-label">Nama Special Custom Lensa</label>
+              <input
+                type="text"
+                class="form-control"
+                :class="{
+                  'is-invalid': !product.name,
+                  'is-valid': product.name,
+                }"
+                v-model="product.name"
+                @blur="setCustomLensOrderRemarks(index)"
+              />
+              <small class="form-text text-danger">
+                {{ product.error }}
+              </small>
+            </div>
+            <div class="col" v-if="product.createSpecialCLOrder">
+              <label class="form-label">Harga Special Custom Lensa</label>
+              <input
+                type="number"
+                class="form-control"
+                :class="{
+                  'is-invalid': product.price <= 0,
+                  'is-valid': product.price > 0,
+                }"
+                min="0"
+                v-model.number="product.price"
+                @blur="setCustomLensOrderRemarks(index)"
+              />
+              <small class="form-text text-danger">
+                {{ product.error }}
+              </small>
+            </div>
             <div class="col">
               <label for="Quantity" class="form-label">Kuantitas</label>
               <input
@@ -1390,6 +1423,7 @@ export default {
         error: "Please select lens",
         price: 0,
         name: "",
+        createSpecialCLOrder: false,
       });
     },
     removeFrameInput(idx) {
@@ -1483,14 +1517,34 @@ export default {
     setLensDetails(idx) {
       let lens = this.productIds.customLenses[idx];
       if (lens) {
-        const productId = lens.productId;
-        const { productPrice, productName } = _.find(
-          this.customLenses,
-          (l) => l.productId === productId
-        );
-        lens.price = productPrice;
-        lens.name = productName;
+        const { productId } = lens;
+
+        // if its not a custom order
+        if (productId !== "3301000100000000") {
+          const { productPrice, productName } = _.find(
+            this.customLenses,
+            (l) => l.productId === productId
+          );
+          lens.price = productPrice;
+          lens.name = productName;
+          lens.createSpecialCLOrder = false;
+          this.remarks = "";
+        } else {
+          lens.createSpecialCLOrder = true;
+          lens.price = 0;
+          lens.productName = "";
+          lens.name = "";
+        }
+
         lens.error = null;
+      }
+    },
+    setCustomLensOrderRemarks(idx) {
+      let customLens = this.productIds.customLenses[idx];
+      if (customLens) {
+        this.remarks = "";
+        const remarkString = `[Custom Lens Special Order: ${customLens.name}, ${customLens.price}, ${customLens.quantity}] `;
+        this.remarks = remarkString;
       }
     },
     alertBuyOneGetOneIssue() {
