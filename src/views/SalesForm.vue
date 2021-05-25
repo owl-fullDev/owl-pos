@@ -1295,7 +1295,7 @@ export default {
               : `${this.netAmount}`,
             remarks: this.remarks,
             products: productsToSend,
-            specialProducts,
+            specialProducts: specialProducts,
           },
           customerId: !this.createNewCustomer ? this.selectedCustomerId : null,
           customer: {
