@@ -1256,7 +1256,8 @@ export default {
           quantity: l.quantity,
         }));
 
-        const productsToSend = [...frames, ...lenses, ...customLenses];
+        const productsToSend = [...frames, ...lenses];
+        const specialProducts = [...customLenses];
 
         let promotionParentSaleId = null;
 
@@ -1294,6 +1295,7 @@ export default {
               : `${this.netAmount}`,
             remarks: this.remarks,
             products: productsToSend,
+            specialProducts,
           },
           customerId: !this.createNewCustomer ? this.selectedCustomerId : null,
           customer: {
