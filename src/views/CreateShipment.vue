@@ -15,25 +15,55 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <h1>Buat Kiriman antar toko</h1>
+    <h1>Buat Kiriman </h1>
+    <hr />
+    <br />
+    <select
+        required
+        class="custom-select custom-select-lg mb-3"
+        v-model="destinationType"
+    >
+      <option value="" selected disabled>Pilih Tipe Destinati</option>
+      <option value=3> Toko </option>
+      <option value=2> Gudang </option>
+    </select>
     <hr />
     <br />
     <form @submit="createShipment($event)">
-      <h4>Pilih Toko Destinasi:</h4>
-      <div class="row mb-3">
+      <h4>Pilih Destinasi:</h4>
+      <div class="row mb-3" v-if="destinationType==='3'">
         <div class="col">
           <select
             required
             class="custom-select custom-select-lg mb-3"
             v-model="destinationId"
           >
-            <option value="" selected disabled>Pilih toko</option>
+            <option value="" selected disabled>Pilih toko destinasi</option>
             <option
               v-for="store in stores"
               :key="store.id"
               :value="store.storeId"
             >
               {{ store.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col"></div>
+      </div>
+      <div class="row mb-3" v-if="destinationType==='2'">
+        <div class="col">
+          <select
+              required
+              class="custom-select custom-select-lg mb-3"
+              v-model="destinationId"
+          >
+            <option value="" selected disabled>Pilih gudang destinasi</option>
+            <option
+                v-for="warehouse in warehouses"
+                :key="warehouse.id"
+                :value="warehouse.warehouseId"
+            >
+              {{ warehouse.name }}
             </option>
           </select>
         </div>
@@ -155,9 +185,11 @@ export default {
   name: "CreateShipment",
   data: () => {
     return {
+      destinationType: null,
       statusMessage: "",
       destinationId: 0,
       stores: [],
+      warehouses: [],
       products: [],
       barcode: null,
     };
@@ -171,6 +203,12 @@ export default {
         );
       })
       .catch((err) => console.log(err));
+    axios
+        .get(`${posEndpoint}/getAllWarehouses`)
+        .then((response) => {
+          this.warehouses = [...response.data];
+        })
+        .catch((err) => console.log(err));
   },
   computed: {
     formHasErrors() {
@@ -253,7 +291,7 @@ export default {
         }));
         const shipment = {
           originType: 3,
-          destinationType: 3,
+          destinationType: this.destinationType,
           originId: storeData.storeId,
           destinationId: this.destinationId,
 

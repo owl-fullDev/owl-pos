@@ -26,6 +26,13 @@
         >
           Refresh Semua Penjualan
         </button>
+        <hr />
+
+        <div class="row">
+          <div class="col">
+            <input class="form-control" v-model="customerLastName" placeholder="Cari nama belakang customer">
+          </div>
+        </div>
 
         <hr />
         <div v-if="loading" class="d-flex justify-content-center">
@@ -33,9 +40,9 @@
             <span class="sr-only">Loading...</span>
           </div>
         </div>
-        <div v-else style="height: 700px; overflow-y: auto;">
+        <div v-else style="height: 700px; overflow-y: auto;" >
           <Sale
-            v-for="sale in pendingSaleList"
+            v-for="sale in filteredSalesList"
             :key="sale.id"
             :transaction-date="sale.initialDepositDate"
             :sale-id="sale.saleId"
@@ -72,6 +79,7 @@ export default {
   name: "PendingSales",
   data: () => {
     return {
+      customerLastName: null,
       selectedSale: null,
       pendingSaleList: [],
       alertMsg: "",
@@ -87,6 +95,13 @@ export default {
   },
   created() {
     this.updatePendingSalesList();
+  },
+  computed: {
+    filteredSalesList(){
+      if (!this.customerLastName) return this.pendingSaleList
+
+      return this.pendingSaleList.filter(({customer}) => this.customerLastName ? customer.lastName.includes(this.customerLastName): false)
+    }
   },
   methods: {
     updatePendingSalesList(showQuantityMsg = true) {
