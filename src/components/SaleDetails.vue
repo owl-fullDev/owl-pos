@@ -371,7 +371,7 @@ export default {
     },
     productIds() {
       let frames = this.sale.saleDetailList
-        .filter(({ product }) => product.productId.startsWith("F"))
+        .filter(({ product }) => product.productId.startsWith("11") || product.productId.startsWith("22"))
         .map(({ product, quantity }) => {
           return {
             productId: product.productId,
@@ -381,7 +381,7 @@ export default {
         });
 
       let lenses = this.sale.saleDetailList
-        .filter(({ product }) => product.productId.startsWith("L"))
+        .filter(({ product }) => product.productId.startsWith("33") && !product.productId.startsWith("3301"))
         .map(({ product, quantity }) => {
           return {
             productId: product.productId,
@@ -391,7 +391,7 @@ export default {
         });
 
       let customLenses = this.sale.saleDetailList
-        .filter(({ product }) => product.productId.startsWith("CL"))
+        .filter(({ product }) => product.productId.startsWith("3301"))
         .map(({ product, quantity }) => {
           return {
             productId: product.productId,

@@ -1421,7 +1421,7 @@ export default {
       this.productIds.customLenses.push({
         productId: "",
         quantity: 1,
-        availableAmt: 1,
+        availableAmt: 10,
         error: "Please select lens",
         price: 0,
         name: "",
