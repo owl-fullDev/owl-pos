@@ -128,6 +128,73 @@
       />
       <br /><br />
 
+      <!-- Product translator -->
+      <div class="row mb-5">
+        <div class="col">
+          <h3>Translasi Barkode</h3>
+          <hr />
+          <div class="row">
+            <div class="col">
+              <label for="oldProductId" class="form-label">
+                Barkode Tua
+              </label>
+              <input
+                type="text"
+                v-model.trim="translationObj.oldProductId"
+                max="30"
+                class="form-control"
+                id="oldProductId"
+                :class="{
+                  'is-invalid':
+                    translationObj.errorMsg && translationObj.errorMsg != null,
+                  'is-valid': translationObj.errorMsg === null,
+                }"
+              />
+              <small class="form-text text-danger">
+                {{ translationObj.errorMsg }}
+              </small>
+            </div>
+            <div class="col">
+              <label for="newProductIdTranslation" class="form-label">
+                Barkode Baru
+              </label>
+              <input
+                type="text"
+                :value="translationObj.newProductIdTranslation"
+                class="form-control"
+                id="newProductIdTranslation"
+                readonly
+              />
+            </div>
+            <div class="col-2">
+              <button
+                type="button"
+                class="btn btn-block btn-info"
+                style="margin-top: 32px;"
+                @click="translateProductId"
+              >
+                Terjemakan Translasi
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-translate"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286H4.545zm1.634-.736L5.5 3.956h-.049l-.679 2.022H6.18z"
+                  />
+                  <path
+                    d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2zm7.138 9.995c.193.301.402.583.63.846-.748.575-1.673 1.001-2.768 1.292.178.217.451.635.555.867 1.125-.359 2.08-.844 2.886-1.494.777.665 1.739 1.165 2.93 1.472.133-.254.414-.673.629-.89-1.125-.253-2.057-.694-2.82-1.284.681-.747 1.222-1.651 1.621-2.757H14V8h-3v1.047h.765c-.318.844-.74 1.546-1.272 2.13a6.066 6.066 0 0 1-.415-.492 1.988 1.988 0 0 1-.94.31z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Product info -->
       <div class="row">
         <div class="col">
@@ -980,6 +1047,11 @@ const initialData = () => {
     phoneNum: "",
     email: "",
     promotions: [],
+    translationObj: {
+      oldProductId: "",
+      newProductIdTranslation: "",
+      errorMsg: "",
+    },
     selectedPromotion: 0,
     showDepositInfo: false,
     paymentTypes: ["Cash", "Debit", "Credit"],
@@ -1171,6 +1243,29 @@ export default {
     },
   },
   methods: {
+    translateProductId() {
+      if (!this.translationObj.oldProductId) {
+        this.translationObj.errorMsg = "Masukan Barkode";
+        alert("Masukan Barkode");
+        return;
+      }
+
+      axios
+        .get(
+          `https://owl-productid-converter.herokuapp.com/productIdConverter/findByOldProductId?oldProductId=${this.translationObj.oldProductId}`
+        )
+        .then((response) => {
+          console.log(response);
+          const { newProductId } = response.data;
+          this.translationObj.newProductIdTranslation = newProductId;
+          this.translationObj.errorMsg = null;
+        })
+        .catch((err) => {
+          console.log(err.response);
+          this.translationObj.newProductIdTranslation = "";
+          this.translationObj.errorMsg = "Barcoke tidak dapat ditemukan";
+        });
+    },
     resetFrameSelections() {
       this.firstFrameId = null;
       this.secondFrameId = null;
@@ -1557,6 +1652,13 @@ export default {
     },
   },
   watch: {
+    "translationObj.oldProductId": {
+      handler(val) {
+        if (!val) {
+          this.translationObj.errorMsg = "";
+        }
+      },
+    },
     selectedPromotion() {
       if (this.specialPromo) {
         if (this.productIds.frames.length != 1) {
