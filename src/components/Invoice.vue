@@ -165,8 +165,8 @@
                           <td>{{ lens.quantity }}</td>
                         </tr>
                         <tr
-                          v-for="lens in products.customLenses"
-                          :key="lens.productId"
+                          v-for="(lens, index) in products.customLenses"
+                          :key="`${lens.productId}-${index}`"
                         >
                           <th scope="row">{{ lens.productId }}</th>
                           <td>{{ lens.name }}</td>
@@ -264,7 +264,7 @@
                 <div class="row mt-2">
                   <div class="col">
                     <h5>Remarks:</h5>
-                    <p>{{ remarks }}</p>
+                    <p v-html="remarks"></p>
                   </div>
                 </div>
                 <div class="row mt-5" v-if="renderPrescription">
