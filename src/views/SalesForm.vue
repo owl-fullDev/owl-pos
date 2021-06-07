@@ -363,7 +363,7 @@
           <div
             class="mb-3 row"
             v-for="(product, index) in productIds.customLenses"
-            :key="product.id"
+            :key="`${product.productId}-${index}`"
           >
             <div class="col">
               <label for="productId" class="form-label">Custom Lens</label>
@@ -392,7 +392,6 @@
                   'is-valid': product.name,
                 }"
                 v-model="product.name"
-                @blur="setCustomLensOrderRemarks(index)"
               />
               <small class="form-text text-danger">
                 {{ product.error }}
@@ -409,7 +408,6 @@
                 }"
                 min="0"
                 v-model.number="product.price"
-                @blur="setCustomLensOrderRemarks(index)"
               />
               <small class="form-text text-danger">
                 {{ product.error }}
@@ -1354,6 +1352,15 @@ export default {
         const productsToSend = [...frames, ...lenses];
         const specialProducts = [...customLenses];
 
+        this.productIds.customLenses
+          .filter((cl) => cl.createSpecialCLOrder)
+          .forEach((customLens) => {
+            if (customLens) {
+              const remarkString = `[Custom Lens Special Order: ${customLens.name}, ${customLens.price}, ${customLens.quantity}]<br>`;
+              this.remarks = remarkString + this.remarks;
+            }
+          });
+
         let promotionParentSaleId = null;
 
         if (this.selectedPromotion === 1) {
@@ -1634,14 +1641,6 @@ export default {
         }
 
         lens.error = null;
-      }
-    },
-    setCustomLensOrderRemarks(idx) {
-      let customLens = this.productIds.customLenses[idx];
-      if (customLens) {
-        this.remarks = "";
-        const remarkString = `[Custom Lens Special Order: ${customLens.name}, ${customLens.price}, ${customLens.quantity}] `;
-        this.remarks = remarkString;
       }
     },
     alertBuyOneGetOneIssue() {
