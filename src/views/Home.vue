@@ -26,7 +26,6 @@ export default {
       storeId: "",
     };
   },
-  components: {},
   created() {
     axios
       .get("/posEndpoint/getAllStores")
@@ -44,6 +43,15 @@ export default {
       storeData.storeName = storeName;
       storeData.storePhoneNum = phoneNumber;
       storeData.storeAddress = address;
+
+      const data = {
+        storeName,
+        storePhoneNum: phoneNumber,
+        storeId: this.storeId,
+        storeAddress: address,
+      };
+
+      window.storeInfo.persistInfo(data);
 
       this.$router.push("PendingSales");
     },

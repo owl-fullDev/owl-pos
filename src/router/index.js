@@ -105,6 +105,15 @@ router.beforeEach((to, from, next) => {
         next();
       }
     } else {
+      const persistedData = window.storeInfo.getInfo();
+
+      if (persistedData) {
+        // persist data in storeData
+        storeData.storeId = persistedData.storeId;
+        storeData.storeName = persistedData.storeName;
+        storeData.storePhoneNum = persistedData.storePhoneNum;
+        storeData.storeAddress = persistedData.storeAddress;
+      }
       if (!storeData.storeId) {
         next();
       } else {

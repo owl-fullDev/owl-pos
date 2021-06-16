@@ -1,27 +1,41 @@
 "use strict";
 
-import { app, protocol, globalShortcut, BrowserWindow } from "electron";
+import {
+  app,
+  protocol,
+  globalShortcut,
+  BrowserWindow,
+  ipcMain,
+} from "electron";
+const path = require("path");
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
+const Store = require("electron-store");
+
+Store.initRenderer();
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
+let win;
 
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
-    fullscreen: true,
+    fullscreen: false,
     frame: false,
     autoHideMenuBar: true,
-    kiosk: true,
+    kiosk: false,
     webPreferences: {
-      nodeIntegration: true,
       nativeWindowOpen: true,
+      nodeIntegration: false, // is default value after Electron v5
+      contextIsolation: true, // protect against prototype pollution
+      enableRemoteModule: false, // turn off remote
+      preload: path.join(__dirname, "preload.js"), // use a preload script
     },
   });
 
