@@ -75,7 +75,7 @@ const routes = [
     ],
   },
   {
-    path: "/ChangeStore",
+    path: "/changeStore",
     name: "Change Store",
     component: ChangeStore,
   },
