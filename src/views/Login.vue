@@ -25,13 +25,13 @@
         </div>
         <form v-else @submit.prevent="login">
           <div class="form-group">
-            <label for="usernameInput">Username</label>
+            <label for="emailInput">Email</label>
             <input
               type="text"
               class="form-control"
-              v-model="username"
-              id="usernameInput"
-              placeholder="Username"
+              v-model="email"
+              id="emailInput"
+              placeholder="Email"
             />
           </div>
           <div class="form-group">
@@ -51,13 +51,11 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-
 export default {
   name: "Login",
   data: () => {
     return {
-      username: "",
+      email: "",
       password: "",
       wrongCredentials: false,
       loading: false,
@@ -66,27 +64,17 @@ export default {
   methods: {
     login() {
       this.loading = true;
-      axios
-        .post(`usersEndpoint/login`, {
-          username: this.username,
+      this.$store
+        .dispatch("login", {
+          email: this.email,
           password: this.password,
         })
         .then((response) => {
-          console.log(response);
-
-          const user = {
-            username: this.username,
-            password: this.password,
-            role: response.data,
-          };
-
-          this.$store.commit("setUser", user);
-          this.loading = false;
-          this.$router.push("/");
-        })
-        .catch((err) => {
-          console.log(err.response);
-          this.wrongCredentials = true;
+          if (!response.user) {
+            this.wrongCredentials = true;
+          } else {
+            this.$router.push("/");
+          }
           this.loading = false;
         });
     },

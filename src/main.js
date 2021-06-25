@@ -9,15 +9,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import VueHtmlToPaper from "vue-html-to-paper";
 import store from "./store/store.js";
 import axios from "axios";
+import firebaseAuth from "../firebase";
 
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 
 axios.interceptors.request.use((config) => {
   if (store.getters.loggedIn) {
-    config.auth = {
-      username: store.state.username,
-      password: store.state.password,
-    };
+    config.headers = { Authorization: `Bearer ${store.state.idToken}` };
   }
 
   return config;
@@ -42,9 +40,20 @@ ConfigProgrammatic.setOptions({
 });
 
 Vue.config.productionTip = false;
+let app;
 
-new Vue({
-  router,
-  store,
-  render: (h) => h(App),
-}).$mount("#app");
+firebaseAuth.onAuthStateChanged((user) => {
+  if (!app) {
+    app = new Vue({
+      router,
+      store,
+      render: (h) => h(App),
+    }).$mount("#app");
+  }
+
+  if (user) {
+    store.dispatch("getUserToken");
+  } else {
+    store.dispatch("logout");
+  }
+});
