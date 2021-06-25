@@ -24,11 +24,9 @@ let win;
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
     fullscreen: false,
-    frame: false,
-    autoHideMenuBar: true,
+    frame: true,
+    autoHideMenuBar: false,
     kiosk: false,
     webPreferences: {
       nativeWindowOpen: true,
@@ -96,9 +94,6 @@ app.on("ready", async () => {
     }
   }
   createWindow();
-  globalShortcut.register("Escape", () => {
-    app.quit();
-  });
 });
 
 // Exit cleanly on request from parent process in development mode.
