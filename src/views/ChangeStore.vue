@@ -38,7 +38,7 @@ export default {
 
       axios
         .get(
-          `/posEndpoint/submitChangeStoreToken?changeStoreToken=${this.accessToken}`
+          `https://owl-sys.et.r.appspot.com/hoChangeStoreEndpoint/submitChangeStoreToken?changeStoreToken=${this.accessToken}`
         )
         .then((response) => {
           const {
