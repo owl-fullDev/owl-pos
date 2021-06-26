@@ -124,8 +124,9 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.commit("logout");
-      this.$router.push("/login");
+      this.$store.dispatch("logout").then(() => {
+        this.$router.push("/login");
+      });
     },
   },
   watch: {

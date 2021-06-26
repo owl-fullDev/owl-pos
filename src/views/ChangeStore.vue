@@ -38,7 +38,7 @@ export default {
 
       axios
         .get(
-          `https://owl-sys.et.r.appspot.com/hoChangeStoreEndpoint/submitChangeStoreToken?changeStoreToken=${this.accessToken}`
+          `https://ho-api-dot-owl-system.et.r.appspot.com/hoChangeStoreEndpoint/submitChangeStoreToken?changeStoreToken=${this.accessToken}`
         )
         .then((response) => {
           const {
@@ -55,12 +55,13 @@ export default {
           };
 
           window.storeInfo.persistInfo(data);
-          this.$store.commit("logout");
-          this.$router.push("/login");
+          this.$store.dispatch("logout").then(() => {
+            this.$router.push("/login");
+          });
         })
         .catch((err) => {
           console.log(err.response);
-          alert("Server error, please try again");
+          alert("Incorrect token, please try again");
         });
     },
   },

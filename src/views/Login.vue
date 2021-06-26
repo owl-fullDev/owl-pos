@@ -2,7 +2,7 @@
   <div class="container w-50">
     <div class="row">
       <div class="col">
-        <h1 class="display-1 mb-3">Login</h1>
+        <h1 class="display-1 mb-3">POS Login</h1>
         <div
           class="alert alert-danger alert-dismissible fade show"
           v-if="wrongCredentials"
