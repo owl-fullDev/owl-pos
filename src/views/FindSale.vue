@@ -13,6 +13,7 @@
     <h3>Cari Customer</h3>
     <hr />
     <customer-list
+      v-if="showCustomerList"
       :list="customerList"
       @selectCustomer="setCustomerInfo"
       :selected-customer-id="selectedCustomerId"
@@ -243,6 +244,7 @@ export default {
       loading: false,
       customerSaleList: [],
       selectedSale: null,
+      showCustomerList: false,
     };
   },
   computed: {
@@ -468,6 +470,7 @@ export default {
             `${posEndpoint}/getCustomerByName?firstName=${this.firstName}&lastName=${this.lastName}`
           )
           .then((response) => {
+            this.showCustomerList = true;
             this.customerList = [...response.data];
             this.loading = false;
           })
@@ -486,6 +489,7 @@ export default {
             `${posEndpoint}/getCustomerByPhoneNumber?phoneNumber=${this.phoneNum}`
           )
           .then((response) => {
+            this.showCustomerList = true;
             this.customerList = [...response.data];
             this.loading = false;
           })
